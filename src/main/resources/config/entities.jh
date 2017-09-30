@@ -1,0 +1,86 @@
+/**
+ * Dashboard is a user web page which collates information about a business
+ * via set of widgets.
+ */
+entity Dashboard {
+    /**
+     * Dashboard display name.
+     */
+    name String required,
+    /**
+     * Dashboard owner user key.
+     */
+    owner String required,
+    /**
+     * Dashboard layout configuration.
+     * Format on API level is JSON.
+     * Format on Java level is Map<String, Object>
+     */
+    layout String,
+    /**
+     * Particular dashboard configuration that is not related to the layout.
+     * Format on API level is JSON.
+     * Format on Java level is Map<String, Object>
+     */
+    config String,
+    /**
+     * Public dashboard could be shown for not authorized users. At same time,
+     * only public widgets should be shown.
+     */
+    isPublic Boolean
+}
+
+/**
+ * Widget is a web component intended to be used within dashboards.
+ * Widgets could communication with each other only via event manager.
+ * Widget can be of particular type.
+ */
+entity Widget {
+    /**
+     * Widget unique web component selector. Examples: xm-widget-map,
+     * xm-widget-profile, xm-widget-last-viewed, etc.
+     */
+    selector String required,
+    /**
+     * Widget display name.
+     */
+    name String required,
+    /**
+     * Widget configuration in JSON format.
+     * Format on Java level is Map<String, Object>
+     */
+    config String,
+    /**
+     * Public widgets could be shown for not authorized users.
+     */
+    isPublic Boolean
+}
+
+/**
+ * User's Dashboard container. Here user can customize which dashboards should be displayed.
+ * If user does not define any dashboard then default one will be returned from the config.
+ */
+entity Profile {
+    userKey String required
+}
+
+/**
+ * Default dashboard per role configuration. Tenant admin can configure it.
+ */
+entity DefaultProfile {
+    roleKey String required
+}
+
+relationship ManyToOne {
+    DefaultProfile{dashboard required} to Dashboard
+}
+
+relationship ManyToMany {
+    Profile{dashboards} to Dashboard
+}
+
+relationship OneToMany {
+    Dashboard{widgets} to Widget
+}
+
+microservice * with 'dashboard'
