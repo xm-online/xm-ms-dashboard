@@ -70,12 +70,21 @@ public class TenantInterceptor extends HandlerInterceptorAdapter {
 
                 tenant = details.getOrDefault(AUTH_TENANT_KEY, "");
 
+                String xmToken = details.getOrDefault(AUTH_XM_TOKEN_KEY, "");
+                String xmCookie = details.getOrDefault(AUTH_XM_COOKIE_KEY, "");
+                String xmUserId = details.getOrDefault(AUTH_XM_USERID_KEY, "");
+                String xmLocale = details.getOrDefault(AUTH_XM_LOCALE, "");
                 String xmUserLogin = (String) auth.getPrincipal();
                 String xmUserKey = details.getOrDefault(AUTH_USER_KEY, "");
 
 
-                TenantContext.setCurrent(new TenantInfo(tenant, xmUserLogin, xmUserKey));
+                TenantContext.setCurrent(new TenantInfo(tenant, xmToken, xmCookie, xmUserId, xmLocale,
+                    xmUserLogin, xmUserKey));
 
+                Locale locale = LocaleUtils.getLocaleFromString(xmLocale);
+                if (locale != null) {
+                    LocaleContextHolder.setLocale(locale);
+                }
             }
 
             final boolean tenantSet;

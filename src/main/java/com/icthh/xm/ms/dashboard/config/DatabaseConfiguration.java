@@ -5,9 +5,9 @@ import static com.icthh.xm.ms.dashboard.config.Constants.CHANGE_LOG_PATH;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.icthh.xm.commons.config.client.repository.TenantListRepository;
 import com.icthh.xm.commons.db.migration.XmMultiTenantSpringLiquibase;
+import com.icthh.xm.commons.db.migration.XmSpringLiquibase;
 import com.icthh.xm.ms.dashboard.util.DatabaseUtil;
 import io.github.jhipster.config.JHipsterConstants;
-import io.github.jhipster.config.liquibase.AsyncSpringLiquibase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,6 @@ import org.h2.tools.Server;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -71,11 +69,9 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public SpringLiquibase liquibase(@Qualifier("taskExecutor") TaskExecutor taskExecutor,
-        DataSource dataSource, LiquibaseProperties liquibaseProperties) {
+    public SpringLiquibase liquibase(DataSource dataSource, LiquibaseProperties liquibaseProperties) {
         createSchemas(dataSource);
-        // Use liquibase.integration.spring.SpringLiquibase if you don't want Liquibase to start asynchronously
-        SpringLiquibase liquibase = new AsyncSpringLiquibase(taskExecutor, env);
+        SpringLiquibase liquibase = new XmSpringLiquibase();
         liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(CHANGE_LOG_PATH);
         liquibase.setContexts(liquibaseProperties.getContexts());

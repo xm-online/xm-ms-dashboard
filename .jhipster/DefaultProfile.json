@@ -1,0 +1,28 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "dashboard",
+            "otherEntityName": "dashboard",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "roleKey",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "changelogDate": "20170713130627",
+    "javadoc": "Default dashboard per role configuration. Tenant admin can configure it.",
+    "entityTableName": "default_profile",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "microserviceName": "dashboard"
+}

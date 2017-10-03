@@ -1,0 +1,51 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "widgets",
+            "otherEntityName": "widget",
+            "otherEntityRelationshipName": "dashboard"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "name",
+            "javadoc": "Dashboard display name.",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "owner",
+            "javadoc": "Dashboard owner user key.",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "layout",
+            "javadoc": "Dashboard layout configuration.\nFormat on API level is JSON.\nFormat on Java level is Map<String, Object>",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "config",
+            "javadoc": "Particular dashboard configuration that is not related to the layout.\nFormat on API level is JSON.\nFormat on Java level is Map<String, Object>",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "isPublic",
+            "javadoc": "Public dashboard could be shown for not authorized users. At same time,\nonly public widgets should be shown.",
+            "fieldType": "Boolean"
+        }
+    ],
+    "changelogDate": "20170713130624",
+    "javadoc": "Dashboard is a user web page which collates information about a business\nvia set of widgets.",
+    "entityTableName": "dashboard",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceClass",
+    "microserviceName": "dashboard"
+}

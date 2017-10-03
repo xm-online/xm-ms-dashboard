@@ -17,6 +17,10 @@ public class DomainJwtAccessTokenConverter extends JwtAccessTokenConverter {
         final OAuth2Authentication authentication = super.extractAuthentication(map);
         final Map<String, String> details = new HashMap<>();
         details.put(AUTH_TENANT_KEY, (String) map.get(AUTH_TENANT_KEY));
+        details.put(AUTH_XM_TOKEN_KEY, (String) map.get(AUTH_XM_TOKEN_KEY));
+        details.put(AUTH_XM_COOKIE_KEY, (String) map.get(AUTH_XM_COOKIE_KEY));
+        details.put(AUTH_XM_USERID_KEY, (String) map.get(AUTH_XM_USERID_KEY));
+        details.put(AUTH_XM_LOCALE, (String) map.get(AUTH_XM_LOCALE));
         details.put(AUTH_USER_KEY, (String) map.get(AUTH_USER_KEY));
         authentication.setDetails(details);
 

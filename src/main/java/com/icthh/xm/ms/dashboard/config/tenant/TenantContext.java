@@ -9,7 +9,7 @@ public class TenantContext {
     public final static String DEFAULT_TENANT = "XM";
 
     private static ThreadLocal<TenantInfo> current = ThreadLocal
-        .withInitial(() -> new TenantInfo(DEFAULT_TENANT, "", ""));
+        .withInitial(() -> new TenantInfo(DEFAULT_TENANT, "", "", "", "","", ""));
 
     public static void setCurrent(TenantInfo userInfo) {
         current.set(userInfo);
@@ -17,7 +17,7 @@ public class TenantContext {
     }
 
     public static void setCurrent(String tenant) {
-        setCurrent(new TenantInfo(tenant, "", ""));
+        setCurrent(new TenantInfo(tenant, "", "", "", "", "", ""));
     }
 
     public static TenantInfo getCurrent() {
@@ -34,6 +34,6 @@ public class TenantContext {
     }
 
     public static void setCurrentQuite(String tenant) {
-        setCurrentQuite(new TenantInfo(tenant, "", ""));
+        setCurrentQuite(new TenantInfo(tenant, "", "", "", "", "", ""));
     }
 }
