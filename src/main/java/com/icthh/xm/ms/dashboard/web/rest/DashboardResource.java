@@ -7,16 +7,24 @@ import com.icthh.xm.ms.dashboard.service.DashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 
 /**
  * REST controller for managing Dashboard.
@@ -25,17 +33,20 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class DashboardResource {
 
-    private final Logger log = LoggerFactory.getLogger(DashboardResource.class);
-
     private static final String ENTITY_NAME = "dashboard";
 
     private final DashboardService dashboardService;
-
     private final WidgetService widgetService;
 
-    public DashboardResource(DashboardService dashboardService, WidgetService widgetService) {
+    private final DashboardResource dashboardResource;
+
+    public DashboardResource(
+                    DashboardService dashboardService,
+                    WidgetService widgetService,
+                    @Lazy DashboardResource dashboardResource) {
         this.dashboardService = dashboardService;
         this.widgetService = widgetService;
+        this.dashboardResource = dashboardResource;
     }
 
     /**
@@ -47,8 +58,8 @@ public class DashboardResource {
      */
     @PostMapping("/dashboards")
     @Timed
+    @PreAuthorize("hasPermission({'dashboard': #dashboard}, 'DASHBOARD.CREATE')")
     public ResponseEntity<Dashboard> createDashboard(@Valid @RequestBody Dashboard dashboard) throws URISyntaxException {
-        log.debug("REST request to save Dashboard : {}", dashboard);
         if (dashboard.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new dashboard cannot already have an ID")).body(null);
         }
@@ -69,10 +80,11 @@ public class DashboardResource {
      */
     @PutMapping("/dashboards")
     @Timed
+    @PreAuthorize("hasPermission({'id': #dashboard.id, 'newDashboard': #dashboard}, 'dashboard', 'DASHBOARD.UPDATE')")
     public ResponseEntity<Dashboard> updateDashboard(@Valid @RequestBody Dashboard dashboard) throws URISyntaxException {
-        log.debug("REST request to update Dashboard : {}", dashboard);
         if (dashboard.getId() == null) {
-            return createDashboard(dashboard);
+            //in order to call method with permissions check
+            return this.dashboardResource.createDashboard(dashboard);
         }
         Dashboard result = dashboardService.save(dashboard);
         return ResponseEntity.ok()
@@ -88,8 +100,7 @@ public class DashboardResource {
     @GetMapping("/dashboards")
     @Timed
     public List<Dashboard> getAllDashboards() {
-        log.debug("REST request to get all Dashboards");
-        return dashboardService.findAll();
+        return dashboardService.findAll(null);
     }
 
     /**
@@ -100,8 +111,8 @@ public class DashboardResource {
      */
     @GetMapping("/dashboards/{id}")
     @Timed
+    @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'DASHBOARD.GET_LIST.ITEM')")
     public ResponseEntity<Dashboard> getDashboard(@PathVariable Long id) {
-        log.debug("REST request to get Dashboard : {}", id);
         Dashboard dashboard = dashboardService.findOne(id);
         return RespContentUtil.wrapOrNotFound(Optional.ofNullable(dashboard));
     }
@@ -115,8 +126,7 @@ public class DashboardResource {
     @GetMapping("/dashboards/{id}/widgets")
     @Timed
     public List<Widget> getWidgets(@PathVariable Long id) {
-        log.debug("REST request to get Widget by Dashboard : {}", id);
-        return widgetService.findByDashboardId(id);
+        return widgetService.findByDashboardId(id, null);
     }
 
     /**
@@ -127,8 +137,8 @@ public class DashboardResource {
      */
     @DeleteMapping("/dashboards/{id}")
     @Timed
+    @PreAuthorize("hasPermission({'id': #id}, 'dashboard', 'DASHBOARD.DELETE')")
     public ResponseEntity<Void> deleteDashboard(@PathVariable Long id) {
-        log.debug("REST request to delete Dashboard : {}", id);
         dashboardService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

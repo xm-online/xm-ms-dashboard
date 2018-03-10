@@ -1,11 +1,12 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.icthh.xm.ms.dashboard.config.DefaultProfileUtil;
-
 import io.github.jhipster.config.JHipsterProperties;
-
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ public class ProfileInfoResource {
     }
 
     @GetMapping("/profile-info")
+    @PostAuthorize("hasPermission({'returnObject': returnObject}, 'PROFILE_INFO.GET_LIST.ITEM')")
     public ProfileInfoVM getActiveProfiles() {
         String[] activeProfiles = DefaultProfileUtil.getActiveProfiles(env);
         return new ProfileInfoVM(activeProfiles, getRibbonEnv(activeProfiles));

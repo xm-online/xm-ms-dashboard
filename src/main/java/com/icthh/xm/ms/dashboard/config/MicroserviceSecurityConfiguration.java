@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.config;
 
-import com.icthh.xm.ms.dashboard.security.AuthoritiesConstants;
+import com.icthh.xm.commons.permission.constants.RoleConstant;
 
 import com.icthh.xm.ms.dashboard.security.DomainJwtAccessTokenConverter;
 import io.github.jhipster.config.JHipsterProperties;
@@ -63,7 +63,7 @@ public class MicroserviceSecurityConfiguration extends ResourceServerConfigurerA
             .antMatchers("/api/profile-info").permitAll()
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
-            .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
+            .antMatchers("/management/**").hasAuthority(RoleConstant.SUPER_ADMIN)
             .antMatchers("/swagger-resources/configuration/ui").permitAll();
     }
 

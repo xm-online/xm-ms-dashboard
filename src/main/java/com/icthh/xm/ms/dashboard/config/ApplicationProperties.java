@@ -1,10 +1,12 @@
 package com.icthh.xm.ms.dashboard.config;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Properties specific to JHipster.
@@ -20,8 +22,10 @@ public class ApplicationProperties {
     private final Amazon amazon = new Amazon();
 
     private String xmEndpoint;
-    private List<String> tenantIgnoredPathList;
+    private List<String> tenantIgnoredPathList = Collections.emptyList();
     private boolean timelinesEnabled;
+    private boolean kafkaEnabled;
+    private String kafkaSystemQueue;
 
     @Getter
     @Setter

@@ -4,8 +4,8 @@ import static com.icthh.xm.ms.dashboard.config.Constants.CHANGE_LOG_PATH;
 
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.icthh.xm.commons.config.client.repository.TenantListRepository;
-import com.icthh.xm.commons.db.migration.XmMultiTenantSpringLiquibase;
-import com.icthh.xm.commons.db.migration.XmSpringLiquibase;
+import com.icthh.xm.commons.migration.db.XmMultiTenantSpringLiquibase;
+import com.icthh.xm.commons.migration.db.XmSpringLiquibase;
 import com.icthh.xm.ms.dashboard.util.DatabaseUtil;
 import io.github.jhipster.config.JHipsterConstants;
 
@@ -109,7 +109,11 @@ public class DatabaseConfiguration {
 
     private void createSchemas(DataSource dataSource) {
         for (String schema : getSchemas()) {
-            DatabaseUtil.createSchema(dataSource, schema);
+            try {
+                DatabaseUtil.createSchema(dataSource, schema);
+            } catch (Exception e) {
+                log.error("Failed to create schema '{}', error: {}", schema, e.getMessage(), e);
+            }
         }
     }
 

@@ -5,17 +5,24 @@ import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 
 /**
  * REST controller for managing Widget.
@@ -24,14 +31,17 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class WidgetResource {
 
-    private final Logger log = LoggerFactory.getLogger(WidgetResource.class);
-
     private static final String ENTITY_NAME = "widget";
 
     private final WidgetService widgetService;
 
-    public WidgetResource(WidgetService widgetService) {
+    private final WidgetResource widgetResource;
+
+    public WidgetResource(
+                    WidgetService widgetService,
+                    @Lazy WidgetResource widgetResource) {
         this.widgetService = widgetService;
+        this.widgetResource = widgetResource;
     }
 
     /**
@@ -43,8 +53,8 @@ public class WidgetResource {
      */
     @PostMapping("/widgets")
     @Timed
+    @PreAuthorize("hasPermission({'widget': #widget}, 'WIDGET.CREATE')")
     public ResponseEntity<Widget> createWidget(@Valid @RequestBody Widget widget) throws URISyntaxException {
-        log.debug("REST request to save Widget : {}", widget);
         if (widget.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new widget cannot already have an ID")).body(null);
         }
@@ -65,10 +75,11 @@ public class WidgetResource {
      */
     @PutMapping("/widgets")
     @Timed
+    @PreAuthorize("hasPermission({'id': #widget.id, 'newWidget': #widget}, 'widget', 'WIDGET.UPDATE')")
     public ResponseEntity<Widget> updateWidget(@Valid @RequestBody Widget widget) throws URISyntaxException {
-        log.debug("REST request to update Widget : {}", widget);
         if (widget.getId() == null) {
-            return createWidget(widget);
+            //in order to call method with permissions check
+            return this.widgetResource.createWidget(widget);
         }
         Widget result = widgetService.save(widget);
         return ResponseEntity.ok()
@@ -84,8 +95,7 @@ public class WidgetResource {
     @GetMapping("/widgets")
     @Timed
     public List<Widget> getAllWidgets() {
-        log.debug("REST request to get all Widgets");
-        return widgetService.findAll();
+        return widgetService.findAll(null);
     }
 
     /**
@@ -96,8 +106,8 @@ public class WidgetResource {
      */
     @GetMapping("/widgets/{id}")
     @Timed
+    @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'WIDGET.GET_LIST.ITEM')")
     public ResponseEntity<Widget> getWidget(@PathVariable Long id) {
-        log.debug("REST request to get Widget : {}", id);
         Widget widget = widgetService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(widget));
     }
@@ -110,8 +120,8 @@ public class WidgetResource {
      */
     @DeleteMapping("/widgets/{id}")
     @Timed
+    @PreAuthorize("hasPermission({'id': #id}, 'widget', 'WIDGET.DELETE')")
     public ResponseEntity<Void> deleteWidget(@PathVariable Long id) {
-        log.debug("REST request to delete Widget : {}", id);
         widgetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

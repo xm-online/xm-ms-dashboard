@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,12 +27,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.icthh.xm.commons.errors.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
@@ -45,10 +46,14 @@ import com.icthh.xm.ms.dashboard.service.ProfileService;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
+@WithMockUser(authorities = "SUPER-ADMIN")
 public class ProfileResourceIntTest {
 
     private static final String DEFAULT_USER_KEY = "AAAAAAAAAA";
     private static final String UPDATED_USER_KEY = "BBBBBBBBBB";
+
+    @Autowired
+    private ProfileResource profileResource;
 
     @Autowired
     private ProfileService profileService;
@@ -72,8 +77,8 @@ public class ProfileResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProfileResource profileResource = new ProfileResource(profileService);
-        this.restProfileMockMvc = MockMvcBuilders.standaloneSetup(profileResource)
+        ProfileResource profileResourceMock = new ProfileResource(profileService, profileResource);
+        this.restProfileMockMvc = MockMvcBuilders.standaloneSetup(profileResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -105,7 +110,7 @@ public class ProfileResourceIntTest {
     @Test
     @Transactional
     public void createProfile() throws Exception {
-        int databaseSizeBeforeCreate = profileService.findAll().size();
+        int databaseSizeBeforeCreate = profileService.findAll(null).size();
 
         // Create the Profile
         restProfileMockMvc.perform(post("/api/profiles")
@@ -114,7 +119,7 @@ public class ProfileResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Profile in the database
-        List<Profile> profileList = profileService.findAll();
+        List<Profile> profileList = profileService.findAll(null);
         assertThat(profileList).hasSize(databaseSizeBeforeCreate + 1);
         Profile testProfile = profileList.get(profileList.size() - 1);
         assertThat(testProfile.getUserKey()).isEqualTo(DEFAULT_USER_KEY);
@@ -123,7 +128,7 @@ public class ProfileResourceIntTest {
     @Test
     @Transactional
     public void createProfileWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = profileService.findAll().size();
+        int databaseSizeBeforeCreate = profileService.findAll(null).size();
 
         // Create the Profile with an existing ID
         profile.setId(1L);
@@ -135,14 +140,14 @@ public class ProfileResourceIntTest {
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
-        List<Profile> profileList = profileService.findAll();
+        List<Profile> profileList = profileService.findAll(null);
         assertThat(profileList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
     public void checkUserKeyIsRequired() throws Exception {
-        int databaseSizeBeforeTest = profileService.findAll().size();
+        int databaseSizeBeforeTest = profileService.findAll(null).size();
         // set the field null
         profile.setUserKey(null);
 
@@ -153,7 +158,7 @@ public class ProfileResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(profile)))
             .andExpect(status().isBadRequest());
 
-        List<Profile> profileList = profileService.findAll();
+        List<Profile> profileList = profileService.findAll(null);
         assertThat(profileList).hasSize(databaseSizeBeforeTest);
     }
 
@@ -215,7 +220,7 @@ public class ProfileResourceIntTest {
         // Initialize the database
         profileService.save(profile);
 
-        int databaseSizeBeforeUpdate = profileService.findAll().size();
+        int databaseSizeBeforeUpdate = profileService.findAll(null).size();
 
         // Update the profile
         Profile updatedProfile = profileService.findOne(profile.getId());
@@ -228,7 +233,7 @@ public class ProfileResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the Profile in the database
-        List<Profile> profileList = profileService.findAll();
+        List<Profile> profileList = profileService.findAll(null);
         assertThat(profileList).hasSize(databaseSizeBeforeUpdate);
         Profile testProfile = profileList.get(profileList.size() - 1);
         assertThat(testProfile.getUserKey()).isEqualTo(UPDATED_USER_KEY);
@@ -237,7 +242,7 @@ public class ProfileResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingProfile() throws Exception {
-        int databaseSizeBeforeUpdate = profileService.findAll().size();
+        int databaseSizeBeforeUpdate = profileService.findAll(null).size();
 
         // Create the Profile
 
@@ -248,7 +253,7 @@ public class ProfileResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Profile in the database
-        List<Profile> profileList = profileService.findAll();
+        List<Profile> profileList = profileService.findAll(null);
         assertThat(profileList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -258,7 +263,7 @@ public class ProfileResourceIntTest {
         // Initialize the database
         profileService.save(profile);
 
-        int databaseSizeBeforeDelete = profileService.findAll().size();
+        int databaseSizeBeforeDelete = profileService.findAll(null).size();
 
         // Get the profile
         restProfileMockMvc.perform(delete("/api/profiles/{id}", profile.getId())
@@ -266,7 +271,7 @@ public class ProfileResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Profile> profileList = profileService.findAll();
+        List<Profile> profileList = profileService.findAll(null);
         assertThat(profileList).hasSize(databaseSizeBeforeDelete - 1);
     }
 

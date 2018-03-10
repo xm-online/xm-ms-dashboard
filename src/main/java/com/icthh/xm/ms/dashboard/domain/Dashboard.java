@@ -45,6 +45,14 @@ public class Dashboard implements Serializable {
     private String owner;
 
     /**
+     * Dashboard type key.
+     */
+    @NotNull
+    @ApiModelProperty(value = "Dashboard type key.", required = true)
+    @Column(name = "type_key", nullable = false)
+    private String typeKey;
+
+    /**
      * Dashboard layout configuration. Format on API level is JSON. Format on Java level is Map<String, Object>
      */
     @ApiModelProperty(value = "Dashboard layout configuration. Format on API level is JSON. Format on Java level is Map<String, Object>")
@@ -150,6 +158,19 @@ public class Dashboard implements Serializable {
         return widgets;
     }
 
+    public String getTypeKey() {
+        return typeKey;
+    }
+
+    public Dashboard typeKey(String typeKey) {
+        this.typeKey = typeKey;
+        return this;
+    }
+
+    public void setTypeKey(String typeKey) {
+        this.typeKey = typeKey;
+    }
+
     public Dashboard widgets(Set<Widget> widgets) {
         this.widgets = widgets;
         return this;
@@ -197,6 +218,7 @@ public class Dashboard implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", owner='" + getOwner() + "'" +
+            ", typeKey='" + getTypeKey() + "'" +
             ", layout='" + getLayout() + "'" +
             ", config='" + getConfig() + "'" +
             ", isPublic='" + isIsPublic() + "'" +

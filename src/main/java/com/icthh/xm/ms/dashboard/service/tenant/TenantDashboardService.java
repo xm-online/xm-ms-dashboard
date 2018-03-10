@@ -2,8 +2,8 @@ package com.icthh.xm.ms.dashboard.service.tenant;
 
 import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.logging.aop.IgnoreLogginAspect;
-import com.icthh.xm.ms.dashboard.config.tenant.TenantContext;
-import com.icthh.xm.ms.dashboard.config.tenant.TenantInfo;
+import com.icthh.xm.commons.tenant.TenantContextHolder;
+import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.service.DashboardService;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 @IgnoreLogginAspect
 public class TenantDashboardService {
 
+    private static final String DEFAULT_TYPE_KEY = "DASHBOARD";
+
     private final DashboardService dashboardService;
+    private final TenantContextHolder tenantContextHolder;
 
     /**
      * Create default dashboard.
@@ -26,16 +29,17 @@ public class TenantDashboardService {
     public void create(Tenant tenant) {
         final StopWatch stopWatch = StopWatch.createStarted();
         final String tenantKey = tenant.getTenantKey();
-        TenantInfo info = TenantContext.getCurrent();
+        String oldTenantKey = TenantContextUtils.getRequiredTenantKeyValue(tenantContextHolder);
         try {
             log.info("START - SETUP:CreateTenant:dashboard tenantKey: {}", tenantKey);
 
-            TenantContext.setCurrentQuite(tenantKey);
+            TenantContextUtils.setTenant(tenantContextHolder, tenant.getTenantKey());
 
             Dashboard dashboard = new Dashboard();
             dashboard.setName(tenantKey.toLowerCase());
             dashboard.setOwner(tenantKey.toLowerCase());
             dashboard.setIsPublic(false);
+            dashboard.setTypeKey(DEFAULT_TYPE_KEY);
             dashboardService.save(dashboard);
 
             log.info("STOP  - SETUP:CreateTenant:dashboard tenantKey: {}, result: OK, time = {} ms", tenantKey,
@@ -45,7 +49,8 @@ public class TenantDashboardService {
                 tenantKey, e.getMessage(), stopWatch.getTime());
             throw e;
         } finally {
-            TenantContext.setCurrentQuite(info);
+            tenantContextHolder.getPrivilegedContext().destroyCurrentContext();
+            TenantContextUtils.setTenant(tenantContextHolder, oldTenantKey);
         }
     }
 }

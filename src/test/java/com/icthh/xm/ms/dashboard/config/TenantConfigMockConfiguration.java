@@ -3,8 +3,10 @@ package com.icthh.xm.ms.dashboard.config;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
+import com.icthh.xm.commons.config.client.config.XmConfigProperties;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
 import com.icthh.xm.commons.config.client.repository.TenantListRepository;
+import com.icthh.xm.commons.web.spring.TenantVerifyInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,6 +20,7 @@ public class TenantConfigMockConfiguration {
 
     {
         tenants.add("XM");
+        tenants.add("TEST");
         tenants.add("DEMO");
     }
 
@@ -36,4 +39,13 @@ public class TenantConfigMockConfiguration {
         return  tenantConfigRepository;
     }
 
+    @Bean
+    public XmConfigProperties xmConfigProperties() {
+        return new XmConfigProperties();
+    }
+
+    @Bean
+    public TenantVerifyInterceptor tenantVerifyInterceptor() {
+        return mock(TenantVerifyInterceptor.class);
+    }
 }

@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +25,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
-import com.icthh.xm.commons.errors.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -43,6 +44,7 @@ import com.icthh.xm.ms.dashboard.service.WidgetService;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
+@WithMockUser(authorities = "SUPER-ADMIN")
 public class WidgetResourceIntTest {
 
     private static final String DEFAULT_SELECTOR = "AAAAAAAAAA";
@@ -58,6 +60,9 @@ public class WidgetResourceIntTest {
 
     private static final Boolean DEFAULT_IS_PUBLIC = false;
     private static final Boolean UPDATED_IS_PUBLIC = true;
+
+    @Autowired
+    private WidgetResource widgetResource;
 
     @Autowired
     private WidgetService widgetService;
@@ -81,8 +86,8 @@ public class WidgetResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        WidgetResource widgetResource = new WidgetResource(widgetService);
-        this.restWidgetMockMvc = MockMvcBuilders.standaloneSetup(widgetResource)
+        WidgetResource widgetResourceMock = new WidgetResource(widgetService, widgetResource);
+        this.restWidgetMockMvc = MockMvcBuilders.standaloneSetup(widgetResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -111,7 +116,7 @@ public class WidgetResourceIntTest {
     @Test
     @Transactional
     public void createWidget() throws Exception {
-        int databaseSizeBeforeCreate = widgetService.findAll().size();
+        int databaseSizeBeforeCreate = widgetService.findAll(null).size();
 
         // Create the Widget
         restWidgetMockMvc.perform(post("/api/widgets")
@@ -120,7 +125,7 @@ public class WidgetResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Widget in the database
-        List<Widget> widgetList = widgetService.findAll();
+        List<Widget> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeCreate + 1);
         Widget testWidget = widgetList.get(widgetList.size() - 1);
         assertThat(testWidget.getSelector()).isEqualTo(DEFAULT_SELECTOR);
@@ -132,7 +137,7 @@ public class WidgetResourceIntTest {
     @Test
     @Transactional
     public void createWidgetWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = widgetService.findAll().size();
+        int databaseSizeBeforeCreate = widgetService.findAll(null).size();
 
         // Create the Widget with an existing ID
         widget.setId(1L);
@@ -144,14 +149,14 @@ public class WidgetResourceIntTest {
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
-        List<Widget> widgetList = widgetService.findAll();
+        List<Widget> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
     public void checkSelectorIsRequired() throws Exception {
-        int databaseSizeBeforeTest = widgetService.findAll().size();
+        int databaseSizeBeforeTest = widgetService.findAll(null).size();
         // set the field null
         widget.setSelector(null);
 
@@ -162,14 +167,14 @@ public class WidgetResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(widget)))
             .andExpect(status().isBadRequest());
 
-        List<Widget> widgetList = widgetService.findAll();
+        List<Widget> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
     @Transactional
     public void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = widgetService.findAll().size();
+        int databaseSizeBeforeTest = widgetService.findAll(null).size();
         // set the field null
         widget.setName(null);
 
@@ -180,7 +185,7 @@ public class WidgetResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(widget)))
             .andExpect(status().isBadRequest());
 
-        List<Widget> widgetList = widgetService.findAll();
+        List<Widget> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeTest);
     }
 
@@ -232,7 +237,7 @@ public class WidgetResourceIntTest {
         // Initialize the database
         widgetService.save(widget);
 
-        int databaseSizeBeforeUpdate = widgetService.findAll().size();
+        int databaseSizeBeforeUpdate = widgetService.findAll(null).size();
 
         // Update the widget
         Widget updatedWidget = widgetService.findOne(widget.getId());
@@ -248,7 +253,7 @@ public class WidgetResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the Widget in the database
-        List<Widget> widgetList = widgetService.findAll();
+        List<Widget> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeUpdate);
         Widget testWidget = widgetList.get(widgetList.size() - 1);
         assertThat(testWidget.getSelector()).isEqualTo(UPDATED_SELECTOR);
@@ -260,7 +265,7 @@ public class WidgetResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingWidget() throws Exception {
-        int databaseSizeBeforeUpdate = widgetService.findAll().size();
+        int databaseSizeBeforeUpdate = widgetService.findAll(null).size();
 
         // Create the Widget
 
@@ -271,7 +276,7 @@ public class WidgetResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Widget in the database
-        List<Widget> widgetList = widgetService.findAll();
+        List<Widget> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -281,7 +286,7 @@ public class WidgetResourceIntTest {
         // Initialize the database
         widgetService.save(widget);
 
-        int databaseSizeBeforeDelete = widgetService.findAll().size();
+        int databaseSizeBeforeDelete = widgetService.findAll(null).size();
 
         // Get the widget
         restWidgetMockMvc.perform(delete("/api/widgets/{id}", widget.getId())
@@ -289,7 +294,7 @@ public class WidgetResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Widget> widgetList = widgetService.findAll();
+        List<Widget> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeDelete - 1);
     }
 

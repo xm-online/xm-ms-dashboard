@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest.util;
 
-import com.icthh.xm.commons.errors.exception.EntityNotFoundException;
+import com.icthh.xm.commons.exceptions.EntityNotFoundException;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
