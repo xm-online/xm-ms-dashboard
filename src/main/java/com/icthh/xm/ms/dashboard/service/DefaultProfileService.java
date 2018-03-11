@@ -1,9 +1,10 @@
 package com.icthh.xm.ms.dashboard.service;
 
+import com.icthh.xm.commons.permission.annotation.FindWithPermission;
+import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.repository.DefaultProfileRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +15,11 @@ import java.util.List;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class DefaultProfileService {
 
-    private final Logger log = LoggerFactory.getLogger(DefaultProfileService.class);
-
     private final DefaultProfileRepository defaultProfileRepository;
-
-    public DefaultProfileService(DefaultProfileRepository defaultProfileRepository) {
-        this.defaultProfileRepository = defaultProfileRepository;
-    }
+    private final PermittedRepository permittedRepository;
 
     /**
      * Save a defaultProfile.
@@ -31,7 +28,6 @@ public class DefaultProfileService {
      * @return the persisted entity
      */
     public DefaultProfile save(DefaultProfile defaultProfile) {
-        log.debug("Request to save DefaultProfile : {}", defaultProfile);
         return defaultProfileRepository.save(defaultProfile);
     }
 
@@ -42,7 +38,6 @@ public class DefaultProfileService {
      * @return the persisted entity
      */
     public DefaultProfile saveAndFlush(DefaultProfile defaultProfile) {
-        log.debug("Request to save DefaultProfile : {}", defaultProfile);
         return defaultProfileRepository.saveAndFlush(defaultProfile);
     }
 
@@ -52,9 +47,9 @@ public class DefaultProfileService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<DefaultProfile> findAll() {
-        log.debug("Request to get all DefaultProfiles");
-        return defaultProfileRepository.findAll();
+    @FindWithPermission("DEFAULT_PROFILE.GET_LIST")
+    public List<DefaultProfile> findAll(String privilegeKey) {
+        return permittedRepository.findAll(DefaultProfile.class, privilegeKey);
     }
 
     /**
@@ -65,7 +60,6 @@ public class DefaultProfileService {
      */
     @Transactional(readOnly = true)
     public DefaultProfile findOne(Long id) {
-        log.debug("Request to get DefaultProfile : {}", id);
         return defaultProfileRepository.findOne(id);
     }
 
@@ -75,7 +69,6 @@ public class DefaultProfileService {
      *  @param id the id of the entity
      */
     public void delete(Long id) {
-        log.debug("Request to delete DefaultProfile : {}", id);
         defaultProfileRepository.delete(id);
     }
 
@@ -87,7 +80,6 @@ public class DefaultProfileService {
      */
     @Transactional(readOnly = true)
     public List<DefaultProfile> findAllByRoleKey(String roleKey) {
-        log.debug("Request to get DefaultProfile by roleKey: {}", roleKey);
         return defaultProfileRepository.findByRoleKey(roleKey);
     }
 }

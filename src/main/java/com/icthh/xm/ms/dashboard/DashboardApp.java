@@ -1,5 +1,9 @@
 package com.icthh.xm.ms.dashboard;
 
+import com.icthh.xm.commons.logging.util.MdcUtils;
+import com.icthh.xm.commons.tenant.TenantContextHolder;
+import com.icthh.xm.commons.tenant.TenantContextUtils;
+import com.icthh.xm.commons.tenant.TenantKey;
 import com.icthh.xm.ms.dashboard.client.OAuth2InterceptedFeignConfiguration;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.config.DefaultProfileUtil;
@@ -26,8 +30,9 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @ComponentScan(
-    value="com.icthh.xm",
-    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = OAuth2InterceptedFeignConfiguration.class)
+    value = "com.icthh.xm",
+    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+        classes = OAuth2InterceptedFeignConfiguration.class)
 )
 @EnableAutoConfiguration(exclude = {MetricFilterAutoConfiguration.class, MetricRepositoryAutoConfiguration.class})
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
@@ -38,13 +43,20 @@ public class DashboardApp {
 
     private final Environment env;
 
-    public DashboardApp(Environment env) {
+    private final TenantContextHolder tenantContextHolder;
+
+    public DashboardApp(Environment env, TenantContextHolder tenantContextHolder) {
         this.env = env;
+        this.tenantContextHolder = tenantContextHolder;
     }
 
     /**
-     * Initializes dashboard. <p> Spring profiles can be configured with a program arguments
-     * --spring.profiles.active=your-active-profile <p> You can find more information on how profiles work with JHipster
+     * Initializes dashboard.
+     *
+     * <p>Spring profiles can be configured with a program arguments
+     * --spring.profiles.active=your-active-profile
+     *
+     * <p>You can find more information on how profiles work with JHipster
      * on <a href="http://jhipster.github.io/profiles/">http://jhipster.github.io/profiles/</a>.
      */
     @PostConstruct
@@ -52,14 +64,24 @@ public class DashboardApp {
         Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
         if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles
             .contains(JHipsterConstants.SPRING_PROFILE_PRODUCTION)) {
-            log.error("You have misconfigured your application! It should not run " +
-                "with both the 'dev' and 'prod' profiles at the same time.");
+            log.error("You have misconfigured your application! It should not run "
+                + "with both the 'dev' and 'prod' profiles at the same time.");
         }
         if (activeProfiles.contains(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT) && activeProfiles
             .contains(JHipsterConstants.SPRING_PROFILE_CLOUD)) {
-            log.error("You have misconfigured your application! It should not" +
-                "run with both the 'dev' and 'cloud' profiles at the same time.");
+            log.error("You have misconfigured your application! It should not"
+                + "run with both the 'dev' and 'cloud' profiles at the same time.");
         }
+
+        initContexts();
+    }
+
+    private void initContexts() {
+        // init tenant context, by default this is XM super tenant
+        TenantContextUtils.setTenant(tenantContextHolder, TenantKey.SUPER);
+
+        // init logger MDC context
+        MdcUtils.putRid(MdcUtils.getRid() + "::" + TenantKey.SUPER.getValue());
     }
 
     @PreDestroy
@@ -77,6 +99,9 @@ public class DashboardApp {
      * @throws UnknownHostException if the local host name could not be resolved into an address
      */
     public static void main(String[] args) throws UnknownHostException {
+
+        MdcUtils.putRid();
+
         SpringApplication app = new SpringApplication(DashboardApp.class);
         DefaultProfileUtil.addDefaultProfile(app);
         Environment env = app.run(args).getEnvironment();
@@ -84,11 +109,11 @@ public class DashboardApp {
         if (env.getProperty("server.ssl.key-store") != null) {
             protocol = "https";
         }
-        log.info("\n----------------------------------------------------------\n\t" +
-                "Application '{}' is running! Access URLs:\n\t" +
-                "Local: \t\t{}://localhost:{}\n\t" +
-                "External: \t{}://{}:{}\n\t" +
-                "Profile(s): \t{}\n----------------------------------------------------------",
+        log.info("\n----------------------------------------------------------\n\t"
+                + "Application '{}' is running! Access URLs:\n\t"
+                + "Local: \t\t{}://localhost:{}\n\t"
+                + "External: \t{}://{}:{}\n\t"
+                + "Profile(s): \t{}\n----------------------------------------------------------",
             env.getProperty("spring.application.name"),
             protocol,
             env.getProperty("server.port"),
@@ -98,8 +123,8 @@ public class DashboardApp {
             env.getActiveProfiles());
 
         String configServerStatus = env.getProperty("configserver.status");
-        log.info("\n----------------------------------------------------------\n\t" +
-                "Config Server: \t{}\n----------------------------------------------------------",
+        log.info("\n----------------------------------------------------------\n\t"
+                + "Config Server: \t{}\n----------------------------------------------------------",
             configServerStatus == null ? "Not found or not setup for this application" : configServerStatus);
     }
 }

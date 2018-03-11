@@ -25,8 +25,6 @@ plugins {
     id 'net.saliman.properties' version '1.4.6'
 }
 
-apply from: rootProject.file('gradle/mvnartifactory.gradle')
-
 apply from: 'gradle/git.gradle'
 
 apply plugin: 'java'
@@ -268,12 +266,12 @@ dependencies {
         exclude group: 'com.vaadin.external.google', module: 'android-json'
     }
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
-    compile "com.icthh.xm.commons:xm-commons-logging:0.0.4-RELEASE"
-    compile "com.icthh.xm.commons:xm-commons-tenant:0.0.54-RELEASE"
-    compile "com.icthh.xm.commons:xm-commons-config:0.0.9-RELEASE"
-    compile "com.icthh.xm.commons:xm-commons-timeline:0.0.7-RELEASE"
-    compile "com.icthh.xm.commons:xm-commons-exceptions:0.0.4-RELEASE"
-    compile "com.icthh.xm.commons:xm-commons-db-migration:0.0.3-RELEASE"
+    compile "com.icthh.xm.commons:xm-commons-ms-web:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-timeline:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-migration-db:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-permission:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-tenant-endpoint:${xm_commons_version}"
+
     compile 'org.bitsofinfo:hazelcast-consul-discovery-spi:1.0-RC7'
 }
 

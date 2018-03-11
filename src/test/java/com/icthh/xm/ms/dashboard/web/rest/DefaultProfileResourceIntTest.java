@@ -10,10 +10,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
+import com.icthh.xm.ms.dashboard.DashboardApp;
+import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
+import com.icthh.xm.ms.dashboard.domain.Dashboard;
+import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
+import com.icthh.xm.ms.dashboard.service.DefaultProfileService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,17 +26,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.icthh.xm.commons.errors.ExceptionTranslator;
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
-import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
-import com.icthh.xm.ms.dashboard.service.DefaultProfileService;
+import java.util.List;
+import javax.persistence.EntityManager;
 
 /**
  * Test class for the DefaultProfileResource REST controller.
@@ -43,10 +42,14 @@ import com.icthh.xm.ms.dashboard.service.DefaultProfileService;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
+@WithMockUser(authorities = "SUPER-ADMIN")
 public class DefaultProfileResourceIntTest {
 
     private static final String DEFAULT_ROLE_KEY = "AAAAAAAAAA";
     private static final String UPDATED_ROLE_KEY = "BBBBBBBBBB";
+
+    @Autowired
+    private DefaultProfileResource defaultProfileResource;
 
     @Autowired
     private DefaultProfileService defaultProfileService;
@@ -70,8 +73,8 @@ public class DefaultProfileResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DefaultProfileResource defaultProfileResource = new DefaultProfileResource(defaultProfileService);
-        this.restDefaultProfileMockMvc = MockMvcBuilders.standaloneSetup(defaultProfileResource)
+        DefaultProfileResource resource = new DefaultProfileResource(defaultProfileService, defaultProfileResource);
+        this.restDefaultProfileMockMvc = MockMvcBuilders.standaloneSetup(resource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -102,7 +105,7 @@ public class DefaultProfileResourceIntTest {
     @Test
     @Transactional
     public void createDefaultProfile() throws Exception {
-        int databaseSizeBeforeCreate = defaultProfileService.findAll().size();
+        int databaseSizeBeforeCreate = defaultProfileService.findAll(null).size();
 
         // Create the DefaultProfile
         restDefaultProfileMockMvc.perform(post("/api/default-profiles")
@@ -111,7 +114,7 @@ public class DefaultProfileResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the DefaultProfile in the database
-        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll();
+        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll(null);
         assertThat(defaultProfileList).hasSize(databaseSizeBeforeCreate + 1);
         DefaultProfile testDefaultProfile = defaultProfileList.get(defaultProfileList.size() - 1);
         assertThat(testDefaultProfile.getRoleKey()).isEqualTo(DEFAULT_ROLE_KEY);
@@ -120,7 +123,7 @@ public class DefaultProfileResourceIntTest {
     @Test
     @Transactional
     public void createDefaultProfileWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = defaultProfileService.findAll().size();
+        int databaseSizeBeforeCreate = defaultProfileService.findAll(null).size();
 
         // Create the DefaultProfile with an existing ID
         defaultProfile.setId(1L);
@@ -132,14 +135,14 @@ public class DefaultProfileResourceIntTest {
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
-        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll();
+        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll(null);
         assertThat(defaultProfileList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
     public void checkRoleKeyIsRequired() throws Exception {
-        int databaseSizeBeforeTest = defaultProfileService.findAll().size();
+        int databaseSizeBeforeTest = defaultProfileService.findAll(null).size();
         // set the field null
         defaultProfile.setRoleKey(null);
 
@@ -150,7 +153,7 @@ public class DefaultProfileResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(defaultProfile)))
             .andExpect(status().isBadRequest());
 
-        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll();
+        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll(null);
         assertThat(defaultProfileList).hasSize(databaseSizeBeforeTest);
     }
 
@@ -212,7 +215,7 @@ public class DefaultProfileResourceIntTest {
         // Initialize the database
         defaultProfileService.save(defaultProfile);
 
-        int databaseSizeBeforeUpdate = defaultProfileService.findAll().size();
+        int databaseSizeBeforeUpdate = defaultProfileService.findAll(null).size();
 
         // Update the defaultProfile
         DefaultProfile updatedDefaultProfile = defaultProfileService.findOne(defaultProfile.getId());
@@ -225,7 +228,7 @@ public class DefaultProfileResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the DefaultProfile in the database
-        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll();
+        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll(null);
         assertThat(defaultProfileList).hasSize(databaseSizeBeforeUpdate);
         DefaultProfile testDefaultProfile = defaultProfileList.get(defaultProfileList.size() - 1);
         assertThat(testDefaultProfile.getRoleKey()).isEqualTo(UPDATED_ROLE_KEY);
@@ -234,7 +237,7 @@ public class DefaultProfileResourceIntTest {
     @Test
     @Transactional
     public void updateNonExistingDefaultProfile() throws Exception {
-        int databaseSizeBeforeUpdate = defaultProfileService.findAll().size();
+        int databaseSizeBeforeUpdate = defaultProfileService.findAll(null).size();
 
         // Create the DefaultProfile
 
@@ -245,7 +248,7 @@ public class DefaultProfileResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the DefaultProfile in the database
-        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll();
+        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll(null);
         assertThat(defaultProfileList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -255,7 +258,7 @@ public class DefaultProfileResourceIntTest {
         // Initialize the database
         defaultProfileService.save(defaultProfile);
 
-        int databaseSizeBeforeDelete = defaultProfileService.findAll().size();
+        int databaseSizeBeforeDelete = defaultProfileService.findAll(null).size();
 
         // Get the defaultProfile
         restDefaultProfileMockMvc.perform(delete("/api/default-profiles/{id}", defaultProfile.getId())
@@ -263,7 +266,7 @@ public class DefaultProfileResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll();
+        List<DefaultProfile> defaultProfileList = defaultProfileService.findAll(null);
         assertThat(defaultProfileList).hasSize(databaseSizeBeforeDelete - 1);
     }
 

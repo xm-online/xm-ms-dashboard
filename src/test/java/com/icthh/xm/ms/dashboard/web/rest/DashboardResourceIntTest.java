@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
+import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,13 +25,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
-import com.icthh.xm.commons.errors.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
@@ -45,6 +46,7 @@ import com.icthh.xm.ms.dashboard.service.WidgetService;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
+@WithMockUser(authorities = "SUPER-ADMIN")
 public class DashboardResourceIntTest {
 
     private static final String DEFAULT_SELECTOR = "AAAAAAAAAA";
@@ -54,6 +56,9 @@ public class DashboardResourceIntTest {
 
     private static final String DEFAULT_OWNER = "AAAAAAAAAA";
     private static final String UPDATED_OWNER = "BBBBBBBBBB";
+
+    private static final String DEFAULT_TYPE_KEY = "AAAAAAAAAA";
+    private static final String UPDATED_TYPE_KEY = "BBBBBBBBBB";
 
     private static final Map<String, Object> DEFAULT_LAYOUT = ImmutableMap.<String, Object>builder()
         .put("AAAAAAAAAA", "BBBBBBBBBB").build();
@@ -67,6 +72,9 @@ public class DashboardResourceIntTest {
 
     private static final Boolean DEFAULT_IS_PUBLIC = false;
     private static final Boolean UPDATED_IS_PUBLIC = true;
+
+    @Autowired
+    private DashboardResource dashboardResource;
 
     @Autowired
     private DashboardService dashboardService;
@@ -93,8 +101,9 @@ public class DashboardResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DashboardResource dashboardResource = new DashboardResource(dashboardService, widgetService);
-        this.restDashboardMockMvc = MockMvcBuilders.standaloneSetup(dashboardResource)
+        DashboardResource dashboardResourceMock = new DashboardResource(dashboardService,
+                        widgetService, dashboardResource);
+        this.restDashboardMockMvc = MockMvcBuilders.standaloneSetup(dashboardResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
@@ -107,13 +116,13 @@ public class DashboardResourceIntTest {
      * if they test an entity which requires the current entity.
      */
     public static Dashboard createEntity(EntityManager em) {
-        Dashboard dashboard = new Dashboard()
+        return new Dashboard()
             .name(DEFAULT_NAME)
             .owner(DEFAULT_OWNER)
             .layout(DEFAULT_LAYOUT)
             .config(DEFAULT_CONFIG)
-            .isPublic(DEFAULT_IS_PUBLIC);
-        return dashboard;
+            .isPublic(DEFAULT_IS_PUBLIC)
+            .typeKey(DEFAULT_TYPE_KEY);
     }
 
     @Before
@@ -124,7 +133,7 @@ public class DashboardResourceIntTest {
     @Test
     @Transactional
     public void createDashboard() throws Exception {
-        int databaseSizeBeforeCreate = dashboardService.findAll().size();
+        int databaseSizeBeforeCreate = dashboardService.findAll(null).size();
 
         // Create the Dashboard
         restDashboardMockMvc.perform(post("/api/dashboards")
@@ -133,7 +142,7 @@ public class DashboardResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Dashboard in the database
-        List<Dashboard> dashboardList = dashboardService.findAll();
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeCreate + 1);
         Dashboard testDashboard = dashboardList.get(dashboardList.size() - 1);
         assertThat(testDashboard.getName()).isEqualTo(DEFAULT_NAME);
@@ -141,12 +150,13 @@ public class DashboardResourceIntTest {
         assertThat(testDashboard.getLayout()).isEqualTo(DEFAULT_LAYOUT);
         assertThat(testDashboard.getConfig()).isEqualTo(DEFAULT_CONFIG);
         assertThat(testDashboard.isIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
+        assertThat(testDashboard.getTypeKey()).isEqualTo(DEFAULT_TYPE_KEY);
     }
 
     @Test
     @Transactional
     public void createDashboardWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = dashboardService.findAll().size();
+        int databaseSizeBeforeCreate = dashboardService.findAll(null).size();
 
         // Create the Dashboard with an existing ID
         dashboard.setId(1L);
@@ -158,14 +168,14 @@ public class DashboardResourceIntTest {
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
-        List<Dashboard> dashboardList = dashboardService.findAll();
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeCreate);
     }
 
     @Test
     @Transactional
     public void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = dashboardService.findAll().size();
+        int databaseSizeBeforeTest = dashboardService.findAll(null).size();
         // set the field null
         dashboard.setName(null);
 
@@ -176,14 +186,14 @@ public class DashboardResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(dashboard)))
             .andExpect(status().isBadRequest());
 
-        List<Dashboard> dashboardList = dashboardService.findAll();
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
     @Transactional
     public void checkOwnerIsRequired() throws Exception {
-        int databaseSizeBeforeTest = dashboardService.findAll().size();
+        int databaseSizeBeforeTest = dashboardService.findAll(null).size();
         // set the field null
         dashboard.setOwner(null);
 
@@ -194,7 +204,25 @@ public class DashboardResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(dashboard)))
             .andExpect(status().isBadRequest());
 
-        List<Dashboard> dashboardList = dashboardService.findAll();
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
+        assertThat(dashboardList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkTypeKeyIsRequired() throws Exception {
+        int databaseSizeBeforeTest = dashboardService.findAll(null).size();
+        // set the field null
+        dashboard.setTypeKey(null);
+
+        // Create the Dashboard, which fails.
+
+        restDashboardMockMvc.perform(post("/api/dashboards")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dashboard)))
+            .andExpect(status().isBadRequest());
+
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeTest);
     }
 
@@ -210,11 +238,12 @@ public class DashboardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(dashboard.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].owner").value(hasItem(DEFAULT_OWNER.toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].owner").value(hasItem(DEFAULT_OWNER)))
             .andExpect(jsonPath("$.[*].layout").value(hasItem(DEFAULT_LAYOUT)))
             .andExpect(jsonPath("$.[*].config").value(hasItem(DEFAULT_CONFIG)))
-            .andExpect(jsonPath("$.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC.booleanValue())));
+            .andExpect(jsonPath("$.[*].typeKey").value(hasItem(DEFAULT_TYPE_KEY)))
+            .andExpect(jsonPath("$.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC)));
     }
 
     @Test
@@ -238,9 +267,9 @@ public class DashboardResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(widget.getId().intValue())))
             .andExpect(jsonPath("$.[*].selector").value(hasItem(DEFAULT_SELECTOR)))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].config").value(hasItem(DEFAULT_CONFIG)))
-            .andExpect(jsonPath("$.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC.booleanValue())))
+            .andExpect(jsonPath("$.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC)))
             .andExpect(jsonPath("$.[*].dashboard.id").value(hasItem(dashboard.getId().intValue())));
     }
 
@@ -255,11 +284,12 @@ public class DashboardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(dashboard.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.owner").value(DEFAULT_OWNER.toString()))
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.owner").value(DEFAULT_OWNER))
+            .andExpect(jsonPath("$.typeKey").value(DEFAULT_TYPE_KEY))
             .andExpect(jsonPath("$.layout.AAAAAAAAAA").value("BBBBBBBBBB"))
             .andExpect(jsonPath("$.config.AAAAAAAAAA").value("BBBBBBBBBB"))
-            .andExpect(jsonPath("$.isPublic").value(DEFAULT_IS_PUBLIC.booleanValue()));
+            .andExpect(jsonPath("$.isPublic").value(DEFAULT_IS_PUBLIC));
     }
 
     @Test
@@ -276,7 +306,7 @@ public class DashboardResourceIntTest {
         // Initialize the database
         dashboardService.save(dashboard);
 
-        int databaseSizeBeforeUpdate = dashboardService.findAll().size();
+        int databaseSizeBeforeUpdate = dashboardService.findAll(null).size();
 
         // Update the dashboard
         Dashboard updatedDashboard = dashboardService.findOne(dashboard.getId());
@@ -285,7 +315,8 @@ public class DashboardResourceIntTest {
             .owner(UPDATED_OWNER)
             .layout(UPDATED_LAYOUT)
             .config(UPDATED_CONFIG)
-            .isPublic(UPDATED_IS_PUBLIC);
+            .isPublic(UPDATED_IS_PUBLIC)
+            .typeKey(UPDATED_TYPE_KEY);
 
         restDashboardMockMvc.perform(put("/api/dashboards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -293,7 +324,7 @@ public class DashboardResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the Dashboard in the database
-        List<Dashboard> dashboardList = dashboardService.findAll();
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeUpdate);
         Dashboard testDashboard = dashboardList.get(dashboardList.size() - 1);
         assertThat(testDashboard.getName()).isEqualTo(UPDATED_NAME);
@@ -301,12 +332,13 @@ public class DashboardResourceIntTest {
         assertThat(testDashboard.getLayout()).isEqualTo(UPDATED_LAYOUT);
         assertThat(testDashboard.getConfig()).isEqualTo(UPDATED_CONFIG);
         assertThat(testDashboard.isIsPublic()).isEqualTo(UPDATED_IS_PUBLIC);
+        assertThat(testDashboard.getTypeKey()).isEqualTo(UPDATED_TYPE_KEY);
     }
 
     @Test
     @Transactional
     public void updateNonExistingDashboard() throws Exception {
-        int databaseSizeBeforeUpdate = dashboardService.findAll().size();
+        int databaseSizeBeforeUpdate = dashboardService.findAll(null).size();
 
         // Create the Dashboard
 
@@ -317,7 +349,7 @@ public class DashboardResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Dashboard in the database
-        List<Dashboard> dashboardList = dashboardService.findAll();
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -327,7 +359,7 @@ public class DashboardResourceIntTest {
         // Initialize the database
         dashboardService.save(dashboard);
 
-        int databaseSizeBeforeDelete = dashboardService.findAll().size();
+        int databaseSizeBeforeDelete = dashboardService.findAll(null).size();
 
         // Get the dashboard
         restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboard.getId())
@@ -335,7 +367,7 @@ public class DashboardResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Dashboard> dashboardList = dashboardService.findAll();
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeDelete - 1);
     }
 

@@ -11,6 +11,7 @@ import com.icthh.xm.commons.config.client.repository.TenantListRepository;
 import com.icthh.xm.commons.gen.api.TenantsApi;
 import com.icthh.xm.commons.gen.api.TenantsApiController;
 import com.icthh.xm.commons.gen.model.Tenant;
+import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.service.tenant.TenantService;
@@ -44,6 +45,9 @@ public class TenantsApiIntTest {
 
     @Autowired
     private MultiTenantConnectionProvider connectionProvider;
+
+    @Autowired
+    private TenantContextHolder tenantContextHolder;
 
     @Before
     public void setup() {

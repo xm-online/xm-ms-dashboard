@@ -5,33 +5,45 @@ import com.icthh.xm.ms.dashboard.domain.Profile;
 import com.icthh.xm.ms.dashboard.service.ProfileService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
+import javax.validation.Valid;
 
 /**
  * REST controller for managing Profile.
+ *
+ * TODO add get profile by user_key from token, to retrieve dashboards for current user.
  */
 @RestController
 @RequestMapping("/api")
 public class ProfileResource {
 
-    private final Logger log = LoggerFactory.getLogger(ProfileResource.class);
-
     private static final String ENTITY_NAME = "profile";
 
     private final ProfileService profileService;
 
-    public ProfileResource(ProfileService profileService) {
+    private final ProfileResource profileResource;
+
+    public ProfileResource(
+                    ProfileService profileService,
+                    @Lazy ProfileResource profileResource) {
         this.profileService = profileService;
+        this.profileResource = profileResource;
     }
 
     /**
@@ -43,8 +55,8 @@ public class ProfileResource {
      */
     @PostMapping("/profiles")
     @Timed
+    @PreAuthorize("hasPermission({'profile': #profile}, 'PROFILE.CREATE')")
     public ResponseEntity<Profile> createProfile(@Valid @RequestBody Profile profile) throws URISyntaxException {
-        log.debug("REST request to save Profile : {}", profile);
         if (profile.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new profile cannot already have an ID")).body(null);
         }
@@ -65,10 +77,11 @@ public class ProfileResource {
      */
     @PutMapping("/profiles")
     @Timed
+    @PreAuthorize("hasPermission({'id': #profile.id, 'newProfile': #profile}, 'profile', 'PROFILE.UPDATE')")
     public ResponseEntity<Profile> updateProfile(@Valid @RequestBody Profile profile) throws URISyntaxException {
-        log.debug("REST request to update Profile : {}", profile);
         if (profile.getId() == null) {
-            return createProfile(profile);
+            //in order to call method with permissions check
+            return this.profileResource.createProfile(profile);
         }
         Profile result = profileService.save(profile);
         return ResponseEntity.ok()
@@ -83,9 +96,9 @@ public class ProfileResource {
      */
     @GetMapping("/profiles")
     @Timed
+
     public List<Profile> getAllProfiles() {
-        log.debug("REST request to get all Profiles");
-        return profileService.findAll();
+        return profileService.findAll(null);
     }
 
     /**
@@ -96,8 +109,8 @@ public class ProfileResource {
      */
     @GetMapping("/profiles/{id}")
     @Timed
+    @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'PROFILE.GET_LIST.ITEM')")
     public ResponseEntity<Profile> getProfile(@PathVariable Long id) {
-        log.debug("REST request to get Profile : {}", id);
         Profile profile = profileService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(profile));
     }
@@ -110,8 +123,8 @@ public class ProfileResource {
      */
     @DeleteMapping("/profiles/{id}")
     @Timed
+    @PreAuthorize("hasPermission({'id': #id}, 'profile', 'PROFILE.DELETE')")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
-        log.debug("REST request to delete Profile : {}", id);
         profileService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
