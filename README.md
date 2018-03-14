@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/xm-online/xm-ms-dashboard.svg?branch=master)](https://travis-ci.org/xm-online/xm-ms-dashboard)
+
 # XM MS Dashboard
 
 This application was generated using JHipster 4.6.1, you can find documentation and help at 
