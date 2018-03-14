@@ -1,4 +1,4 @@
-FROM docker-hub.jbs.com.ua/jbs/oracle-jre:8.131
+FROM jbsukraine/oracle-jre:8
 
 ENV XMX=312m
 ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
