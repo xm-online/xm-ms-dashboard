@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/xm-online/xm-ms-dashboard.svg?branch=master)](https://travis-ci.org/xm-online/xm-ms-dashboard)
+[![Build Status](https://travis-ci.org/xm-online/xm-ms-dashboard.svg?branch=master)](https://travis-ci.org/xm-online/xm-ms-dashboard) [![Quality Gate](https://sonarcloud.io/api/badges/gate?key=xm-online:xm-ms-dashboard)](https://sonarcloud.io/dashboard/index/xm-online:xm-ms-dashboard) [![Quality Gate](https://sonarcloud.io/api/badges/measure?key=xm-online:xm-ms-dashboard&metric=lines)](https://sonarcloud.io/dashboard/index/xm-online:xm-ms-dashboard) [![Quality Gate](https://sonarcloud.io/api/badges/measure?key=xm-online:xm-ms-dashboard&metric=coverage)](https://sonarcloud.io/dashboard/index/xm-online:xm-ms-dashboard)
 
 # XM MS Dashboard
 
