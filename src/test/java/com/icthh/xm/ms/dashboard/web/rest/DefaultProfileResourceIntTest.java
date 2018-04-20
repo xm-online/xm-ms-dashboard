@@ -90,7 +90,7 @@ public class DefaultProfileResourceIntTest {
         DefaultProfile defaultProfile = new DefaultProfile()
             .roleKey(DEFAULT_ROLE_KEY);
         // Add required entity
-        Dashboard dashboard = DashboardResourceIntTest.createEntity(em);
+        Dashboard dashboard = DashboardResourceIntTest.createDashboard();
         em.persist(dashboard);
         em.flush();
         defaultProfile.setDashboard(dashboard);
