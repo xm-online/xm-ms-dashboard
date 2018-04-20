@@ -95,7 +95,7 @@ public class ProfileResourceIntTest {
             .userKey(DEFAULT_USER_KEY);
 
         // Add required entity
-        Dashboard dashboard = DashboardResourceIntTest.createEntity(em);
+        Dashboard dashboard = DashboardResourceIntTest.createDashboard();
         em.persist(dashboard);
         em.flush();
         profile.setDashboards(new HashSet<>(Collections.singletonList(dashboard)));

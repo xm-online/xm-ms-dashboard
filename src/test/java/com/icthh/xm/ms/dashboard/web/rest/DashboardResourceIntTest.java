@@ -6,16 +6,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-
 import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
+import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,7 @@ import com.icthh.xm.ms.dashboard.service.WidgetService;
 public class DashboardResourceIntTest {
 
     private static final String DEFAULT_SELECTOR = "AAAAAAAAAA";
+    private static final String UPDATED_SELECTOR = "BBBBBBBBBB";
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -91,9 +93,6 @@ public class DashboardResourceIntTest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
 
-    @Autowired
-    private EntityManager em;
-
     private MockMvc restDashboardMockMvc;
 
     private Dashboard dashboard;
@@ -115,7 +114,7 @@ public class DashboardResourceIntTest {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Dashboard createEntity(EntityManager em) {
+    public static Dashboard createDashboard() {
         return new Dashboard()
             .name(DEFAULT_NAME)
             .owner(DEFAULT_OWNER)
@@ -125,15 +124,23 @@ public class DashboardResourceIntTest {
             .typeKey(DEFAULT_TYPE_KEY);
     }
 
+    public static Widget createWidget() {
+        return new Widget()
+            .name(DEFAULT_NAME)
+            .selector(DEFAULT_SELECTOR)
+            .config(DEFAULT_CONFIG)
+            .isPublic(DEFAULT_IS_PUBLIC);
+    }
+
     @Before
     public void initTest() {
-        dashboard = createEntity(em);
+        dashboard = createDashboard();
     }
 
     @Test
     @Transactional
-    public void createDashboard() throws Exception {
-        int databaseSizeBeforeCreate = dashboardService.findAll(null).size();
+    public void testDashboardCreated() throws Exception {
+        int dashboardListInitial = dashboardService.findAll(null).size();
 
         // Create the Dashboard
         restDashboardMockMvc.perform(post("/api/dashboards")
@@ -143,7 +150,8 @@ public class DashboardResourceIntTest {
 
         // Validate the Dashboard in the database
         List<Dashboard> dashboardList = dashboardService.findAll(null);
-        assertThat(dashboardList).hasSize(databaseSizeBeforeCreate + 1);
+        assertThat(dashboardList).hasSize(dashboardListInitial + 1);
+
         Dashboard testDashboard = dashboardList.get(dashboardList.size() - 1);
         assertThat(testDashboard.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testDashboard.getOwner()).isEqualTo(DEFAULT_OWNER);
@@ -151,6 +159,34 @@ public class DashboardResourceIntTest {
         assertThat(testDashboard.getConfig()).isEqualTo(DEFAULT_CONFIG);
         assertThat(testDashboard.isIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
         assertThat(testDashboard.getTypeKey()).isEqualTo(DEFAULT_TYPE_KEY);
+    }
+
+    @Test
+    @Transactional
+    public void testDashboardCreatedWithWidgets() throws Exception {
+        int dashboardListInitial = dashboardService.findAll(null).size();
+        int widgetListInitial = widgetService.findAll(null).size();
+
+        Widget widget = createWidget();
+        dashboard.widgets(Collections.singleton(widget));
+        // Create the Dashboard
+        restDashboardMockMvc.perform(post("/api/dashboards")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(dashboard)))
+            .andExpect(status().isCreated());
+
+        // Validate the Dashboard in the database
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
+        assertThat(dashboardList).hasSize(dashboardListInitial + 1);
+        List<Widget> widgetList = widgetService.findAll(null);
+        assertThat(widgetList).hasSize(widgetListInitial + 1);
+
+        Dashboard testDashboard = dashboardList.get(dashboardList.size() - 1);
+        Widget testWidget = testDashboard.getWidgets().iterator().next();
+        assertThat(testWidget.getName()).isEqualTo(DEFAULT_NAME);
+        assertThat(testWidget.getSelector()).isEqualTo(DEFAULT_SELECTOR);
+        assertThat(testWidget.getConfig()).isEqualTo(DEFAULT_CONFIG);
+        assertThat(testWidget.isIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
     }
 
     @Test
@@ -264,13 +300,14 @@ public class DashboardResourceIntTest {
         // Get the widgetList
         restDashboardMockMvc.perform(get("/api/dashboards/{id}/widgets", dashboard.getId()))
             .andExpect(status().isOk())
+            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(widget.getId().intValue())))
             .andExpect(jsonPath("$.[*].selector").value(hasItem(DEFAULT_SELECTOR)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].config").value(hasItem(DEFAULT_CONFIG)))
             .andExpect(jsonPath("$.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC)))
-            .andExpect(jsonPath("$.[*].dashboard.id").value(hasItem(dashboard.getId().intValue())));
+            .andExpect(jsonPath("$.[*].dashboard").value(hasItem(dashboard.getId().intValue())));
     }
 
     @Test

@@ -1,9 +1,14 @@
 package com.icthh.xm.ms.dashboard.domain;
 
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REMOVE;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.icthh.xm.ms.dashboard.domain.converter.MapToStringConverter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -11,6 +16,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * Dashboard is a user web page which collates information about a business via set of widgets.
@@ -19,6 +25,10 @@ import java.util.*;
 @Entity
 @Table(name = "dashboard")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@NamedEntityGraph(name = "dashboardGraph",
+    attributeNodes = {
+        @NamedAttributeNode("widgets")
+    })
 public class Dashboard implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -76,8 +86,7 @@ public class Dashboard implements Serializable {
     @Column(name = "is_public")
     private Boolean isPublic;
 
-    @OneToMany(mappedBy = "dashboard")
-    @JsonIgnore
+    @OneToMany(mappedBy = "dashboard", cascade = {PERSIST, MERGE, REMOVE}, orphanRemoval = true)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Widget> widgets = new HashSet<>();
 
@@ -190,6 +199,12 @@ public class Dashboard implements Serializable {
 
     public void setWidgets(Set<Widget> widgets) {
         this.widgets = widgets;
+    }
+
+    public <T> void updateDashboardReference(Collection<T> objects, BiConsumer<T, Dashboard> dashboardSetter) {
+        if (CollectionUtils.isNotEmpty(objects)) {
+            objects.forEach(object -> dashboardSetter.accept(object, this));
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.icthh.xm.ms.dashboard.service;
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
+import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class DashboardService {
      * @return the persisted entity
      */
     public Dashboard save(Dashboard dashboard) {
+        dashboard.updateDashboardReference(dashboard.getWidgets(), Widget::setDashboard);
         return dashboardRepository.save(dashboard);
     }
 
@@ -60,7 +62,7 @@ public class DashboardService {
      */
     @Transactional(readOnly = true)
     public Dashboard findOne(Long id) {
-        return dashboardRepository.findOne(id);
+        return dashboardRepository.findOneById(id);
     }
 
     /**

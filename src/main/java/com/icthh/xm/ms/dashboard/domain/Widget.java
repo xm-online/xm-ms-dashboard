@@ -1,6 +1,10 @@
 package com.icthh.xm.ms.dashboard.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.icthh.xm.ms.dashboard.domain.converter.MapToStringConverter;
+import com.icthh.xm.ms.dashboard.domain.idresolver.DashboardIdResolver;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
@@ -62,6 +66,9 @@ public class Widget implements Serializable {
     private Boolean isPublic;
 
     @ManyToOne
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", resolver =
+        DashboardIdResolver.class)
+    @JsonIdentityReference(alwaysAsId = true)
     private Dashboard dashboard;
 
     public Long getId() {
