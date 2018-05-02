@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
+import com.icthh.xm.ms.dashboard.web.rest.vm.DashboardVM;
 import com.icthh.xm.ms.dashboard.web.rest.vm.WidgetVM;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
@@ -366,14 +367,14 @@ public class DashboardResourceIntTest {
         int databaseSizeBeforeUpdate = dashboardService.findAll(null).size();
 
         // Update the dashboard
-        Dashboard updatedDashboard = dashboardService.findOne(dashboard.getId());
-        updatedDashboard
-            .name(UPDATED_NAME)
-            .owner(UPDATED_OWNER)
-            .layout(UPDATED_LAYOUT)
-            .config(UPDATED_CONFIG)
-            .isPublic(UPDATED_IS_PUBLIC)
-            .typeKey(UPDATED_TYPE_KEY);
+        DashboardVM updatedDashboard = dashboardService.findOne(dashboard.getId());
+
+        updatedDashboard.setName(UPDATED_NAME);
+        updatedDashboard.setOwner(UPDATED_OWNER);
+        updatedDashboard.setLayout(UPDATED_LAYOUT);
+        updatedDashboard.setConfig(UPDATED_CONFIG);
+        updatedDashboard.setIsPublic(UPDATED_IS_PUBLIC);
+        updatedDashboard.setTypeKey(UPDATED_TYPE_KEY);
 
         restDashboardMockMvc.perform(put("/api/dashboards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

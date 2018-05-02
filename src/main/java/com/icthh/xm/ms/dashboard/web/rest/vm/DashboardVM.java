@@ -6,10 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -30,7 +32,7 @@ public class DashboardVM {
 
     private Map<String, Object> config = new HashMap<>();
 
-    private Set<Widget> widgets = new HashSet<>();
+    private Set<WidgetVM> widgets = new HashSet<>();
 
     public DashboardVM (Dashboard dashboard) {
         super();
@@ -41,7 +43,11 @@ public class DashboardVM {
         this.isPublic = dashboard.isIsPublic();
         this.layout = dashboard.getLayout() == null ? this.layout : dashboard.getLayout();
         this.config = dashboard.getConfig() == null ? this.config : dashboard.getConfig();
-        this.widgets = dashboard.getWidgets() == null ? this.widgets : dashboard.getWidgets();
+        this.widgets = dashboard.getWidgets() == null ? this.widgets : toWidgetsVM(dashboard.getWidgets());
+    }
+
+    public static Set<WidgetVM> toWidgetsVM(Collection<Widget> widgets) {
+        return widgets.stream().map(WidgetVM::new).collect(Collectors.toSet());
     }
 
 }
