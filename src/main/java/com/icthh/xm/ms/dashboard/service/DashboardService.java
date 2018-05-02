@@ -57,7 +57,7 @@ public class DashboardService {
     }
 
     /**
-     *  Get one dashboard by id.
+     *  Get one dashboard by id. Returned widgets filtered by addition permission.
      *
      *  @param id the id of the entity
      *  @return the entity
