@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service Implementation for managing Dashboard.
@@ -21,6 +22,7 @@ public class DashboardService {
 
     private final DashboardRepository dashboardRepository;
     private final PermittedRepository permittedRepository;
+    private final WidgetService widgetService;
 
     /**
      * Save a dashboard.
@@ -62,7 +64,13 @@ public class DashboardService {
      */
     @Transactional(readOnly = true)
     public Dashboard findOne(Long id) {
-        return dashboardRepository.findOneById(id);
+        Dashboard dashboard = dashboardRepository.findOneById(id);
+
+        Optional.ofNullable(dashboard)
+                .map(d -> widgetService.findByDashboardId(d.getId(), null))
+                .ifPresent(w -> w.forEach(dashboard::addWidgets));
+
+        return dashboard;
     }
 
     /**
