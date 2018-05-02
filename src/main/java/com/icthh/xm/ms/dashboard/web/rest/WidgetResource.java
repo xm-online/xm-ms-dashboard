@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
+import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
@@ -94,7 +95,7 @@ public class WidgetResource {
      */
     @GetMapping("/widgets")
     @Timed
-    public List<Widget> getAllWidgets() {
+    public List<WidgetDto> getAllWidgets() {
         return widgetService.findAll(null);
     }
 
@@ -107,9 +108,8 @@ public class WidgetResource {
     @GetMapping("/widgets/{id}")
     @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'WIDGET.GET_LIST.ITEM')")
-    public ResponseEntity<Widget> getWidget(@PathVariable Long id) {
-        Widget widget = widgetService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(widget));
+    public ResponseEntity<WidgetDto> getWidget(@PathVariable Long id) {
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(widgetService.findOne(id)));
     }
 
     /**

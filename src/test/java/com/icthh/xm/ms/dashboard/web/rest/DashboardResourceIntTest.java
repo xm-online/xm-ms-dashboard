@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
-import org.assertj.core.api.Condition;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -178,7 +179,7 @@ public class DashboardResourceIntTest {
         // Validate the Dashboard in the database
         List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(dashboardListInitial + 1);
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetDto> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(widgetListInitial + 1);
 
         Dashboard testDashboard = dashboardList.get(dashboardList.size() - 1);
@@ -365,14 +366,14 @@ public class DashboardResourceIntTest {
         int databaseSizeBeforeUpdate = dashboardService.findAll(null).size();
 
         // Update the dashboard
-        Dashboard updatedDashboard = dashboardService.findOne(dashboard.getId());
-        updatedDashboard
-            .name(UPDATED_NAME)
-            .owner(UPDATED_OWNER)
-            .layout(UPDATED_LAYOUT)
-            .config(UPDATED_CONFIG)
-            .isPublic(UPDATED_IS_PUBLIC)
-            .typeKey(UPDATED_TYPE_KEY);
+        DashboardDto updatedDashboard = dashboardService.findOne(dashboard.getId());
+
+        updatedDashboard.setName(UPDATED_NAME);
+        updatedDashboard.setOwner(UPDATED_OWNER);
+        updatedDashboard.setLayout(UPDATED_LAYOUT);
+        updatedDashboard.setConfig(UPDATED_CONFIG);
+        updatedDashboard.setIsPublic(UPDATED_IS_PUBLIC);
+        updatedDashboard.setTypeKey(UPDATED_TYPE_KEY);
 
         restDashboardMockMvc.perform(put("/api/dashboards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

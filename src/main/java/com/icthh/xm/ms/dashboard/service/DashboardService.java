@@ -1,10 +1,13 @@
 package com.icthh.xm.ms.dashboard.service;
 
+import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
+
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,14 +66,19 @@ public class DashboardService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public Dashboard findOne(Long id) {
+    public DashboardDto findOne(Long id) {
         Dashboard dashboard = dashboardRepository.findOneById(id);
 
-        Optional.ofNullable(dashboard)
-                .map(d -> widgetService.findByDashboardId(d.getId(), null))
-                .ifPresent(w -> w.forEach(dashboard::addWidgets));
+        return Optional.ofNullable(dashboard)
+                       .map(DashboardDto::new)
+                       .map(this::addWidgetsToDashboard)
+                       .orElse(null);
+    }
 
-        return dashboard;
+    private DashboardDto addWidgetsToDashboard(final DashboardDto dashboardDto) {
+        Optional.ofNullable(widgetService.findByDashboardId(dashboardDto.getId(), null))
+                .ifPresent(widgets -> dashboardDto.setWidgets(toWidgetsDto(widgets)));
+        return dashboardDto;
     }
 
     /**
