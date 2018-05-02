@@ -171,9 +171,9 @@ public class DashboardResourceIntTest {
         dashboard.widgets(Collections.singleton(widget));
         // Create the Dashboard
         restDashboardMockMvc.perform(post("/api/dashboards")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(dashboard)))
-            .andExpect(status().isCreated());
+                                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                                         .content(TestUtil.convertObjectToJsonBytes(dashboard)))
+                            .andExpect(status().isCreated());
 
         // Validate the Dashboard in the database
         List<Dashboard> dashboardList = dashboardService.findAll(null);
@@ -187,6 +187,25 @@ public class DashboardResourceIntTest {
         assertThat(testWidget.getSelector()).isEqualTo(DEFAULT_SELECTOR);
         assertThat(testWidget.getConfig()).isEqualTo(DEFAULT_CONFIG);
         assertThat(testWidget.isIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
+
+        // Get the dashboard with widgets
+        restDashboardMockMvc.perform(get("/api/dashboards/{id}", testDashboard.getId()))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andDo(print())
+                            .andExpect(jsonPath("$.id").value(testDashboard.getId()))
+                            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+                            .andExpect(jsonPath("$.owner").value(DEFAULT_OWNER))
+                            .andExpect(jsonPath("$.typeKey").value(DEFAULT_TYPE_KEY))
+                            .andExpect(jsonPath("$.layout.AAAAAAAAAA").value("BBBBBBBBBB"))
+                            .andExpect(jsonPath("$.config.AAAAAAAAAA").value("BBBBBBBBBB"))
+                            .andExpect(jsonPath("$.isPublic").value(DEFAULT_IS_PUBLIC))
+                            .andExpect(jsonPath("$.widgets.[*].id").value(hasItem(testWidget.getId().intValue())))
+                            .andExpect(jsonPath("$.widgets.[*].selector").value(hasItem(DEFAULT_SELECTOR)))
+                            .andExpect(jsonPath("$.widgets.[*].name").value(hasItem(DEFAULT_NAME)))
+                            .andExpect(jsonPath("$.widgets.[*].config").value(hasItem(DEFAULT_CONFIG)))
+                            .andExpect(jsonPath("$.widgets.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC)))
+                            .andExpect(jsonPath("$.widgets.[*].dashboard").value(hasItem(testDashboard.getId().intValue())));
     }
 
     @Test

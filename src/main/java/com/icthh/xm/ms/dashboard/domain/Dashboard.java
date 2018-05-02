@@ -4,7 +4,6 @@ import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.CascadeType.REMOVE;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.icthh.xm.ms.dashboard.domain.converter.MapToStringConverter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,10 +24,6 @@ import java.util.function.BiConsumer;
 @Entity
 @Table(name = "dashboard")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@NamedEntityGraph(name = "dashboardGraph",
-    attributeNodes = {
-        @NamedAttributeNode("widgets")
-    })
 public class Dashboard implements Serializable {
 
     private static final long serialVersionUID = 1L;
