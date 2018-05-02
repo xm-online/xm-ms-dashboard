@@ -75,10 +75,10 @@ public class DashboardService {
                        .orElse(null);
     }
 
-    private DashboardDto addWidgetsToDashboard(final DashboardDto dashboardVM) {
-        Optional.ofNullable(widgetService.findByDashboardId(dashboardVM.getId(), null))
-                .ifPresent(widgets -> dashboardVM.setWidgets(toWidgetsDto(widgets)));
-        return dashboardVM;
+    private DashboardDto addWidgetsToDashboard(final DashboardDto dashboardDto) {
+        Optional.ofNullable(widgetService.findByDashboardId(dashboardDto.getId(), null))
+                .ifPresent(widgets -> dashboardDto.setWidgets(toWidgetsDto(widgets)));
+        return dashboardDto;
     }
 
     /**
