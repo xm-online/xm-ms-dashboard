@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
+import com.icthh.xm.ms.dashboard.web.rest.vm.WidgetVM;
 import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
@@ -178,7 +179,7 @@ public class DashboardResourceIntTest {
         // Validate the Dashboard in the database
         List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(dashboardListInitial + 1);
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(widgetListInitial + 1);
 
         Dashboard testDashboard = dashboardList.get(dashboardList.size() - 1);

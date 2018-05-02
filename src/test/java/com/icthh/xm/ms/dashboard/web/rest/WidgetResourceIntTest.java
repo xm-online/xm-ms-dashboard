@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 
 import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
+import com.icthh.xm.ms.dashboard.web.rest.vm.WidgetVM;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -125,13 +126,13 @@ public class WidgetResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Widget in the database
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeCreate + 1);
-        Widget testWidget = widgetList.get(widgetList.size() - 1);
+        WidgetVM testWidget = widgetList.get(widgetList.size() - 1);
         assertThat(testWidget.getSelector()).isEqualTo(DEFAULT_SELECTOR);
         assertThat(testWidget.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testWidget.getConfig()).isEqualTo(DEFAULT_CONFIG);
-        assertThat(testWidget.isIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
+        assertThat(testWidget.getIsPublic()).isEqualTo(DEFAULT_IS_PUBLIC);
     }
 
     @Test
@@ -149,7 +150,7 @@ public class WidgetResourceIntTest {
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeCreate);
     }
 
@@ -167,7 +168,7 @@ public class WidgetResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(widget)))
             .andExpect(status().isBadRequest());
 
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeTest);
     }
 
@@ -185,7 +186,7 @@ public class WidgetResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(widget)))
             .andExpect(status().isBadRequest());
 
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeTest);
     }
 
@@ -240,12 +241,11 @@ public class WidgetResourceIntTest {
         int databaseSizeBeforeUpdate = widgetService.findAll(null).size();
 
         // Update the widget
-        Widget updatedWidget = widgetService.findOne(widget.getId());
-        updatedWidget
-            .selector(UPDATED_SELECTOR)
-            .name(UPDATED_NAME)
-            .config(UPDATED_CONFIG)
-            .isPublic(UPDATED_IS_PUBLIC);
+        WidgetVM updatedWidget = widgetService.findOne(widget.getId());
+        updatedWidget.setSelector(UPDATED_SELECTOR);
+        updatedWidget.setName(UPDATED_NAME);
+        updatedWidget.setConfig(UPDATED_CONFIG);
+        updatedWidget.setIsPublic(UPDATED_IS_PUBLIC);
 
         restWidgetMockMvc.perform(put("/api/widgets")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -253,13 +253,13 @@ public class WidgetResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the Widget in the database
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeUpdate);
-        Widget testWidget = widgetList.get(widgetList.size() - 1);
+        WidgetVM testWidget = widgetList.get(widgetList.size() - 1);
         assertThat(testWidget.getSelector()).isEqualTo(UPDATED_SELECTOR);
         assertThat(testWidget.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testWidget.getConfig()).isEqualTo(UPDATED_CONFIG);
-        assertThat(testWidget.isIsPublic()).isEqualTo(UPDATED_IS_PUBLIC);
+        assertThat(testWidget.getIsPublic()).isEqualTo(UPDATED_IS_PUBLIC);
     }
 
     @Test
@@ -276,7 +276,7 @@ public class WidgetResourceIntTest {
             .andExpect(status().isCreated());
 
         // Validate the Widget in the database
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeUpdate + 1);
     }
 
@@ -294,7 +294,7 @@ public class WidgetResourceIntTest {
             .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Widget> widgetList = widgetService.findAll(null);
+        List<WidgetVM> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(databaseSizeBeforeDelete - 1);
     }
 
