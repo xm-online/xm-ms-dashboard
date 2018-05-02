@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.service;
 
-import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsVM;
+import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsVm;
 
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
@@ -77,7 +77,7 @@ public class DashboardService {
 
     private DashboardDto addWidgetsToDashboard(final DashboardDto dashboardVM) {
         Optional.ofNullable(widgetService.findByDashboardId(dashboardVM.getId(), null))
-                .ifPresent(widgets -> dashboardVM.setWidgets(toWidgetsVM(widgets)));
+                .ifPresent(widgets -> dashboardVM.setWidgets(toWidgetsVm(widgets)));
         return dashboardVM;
     }
 

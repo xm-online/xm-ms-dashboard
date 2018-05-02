@@ -43,10 +43,10 @@ public class DashboardDto {
         this.isPublic = dashboard.isIsPublic();
         this.layout = dashboard.getLayout() == null ? this.layout : dashboard.getLayout();
         this.config = dashboard.getConfig() == null ? this.config : dashboard.getConfig();
-        this.widgets = dashboard.getWidgets() == null ? this.widgets : toWidgetsVM(dashboard.getWidgets());
+        this.widgets = dashboard.getWidgets() == null ? this.widgets : toWidgetsVm(dashboard.getWidgets());
     }
 
-    public static Set<WidgetDto> toWidgetsVM(Collection<Widget> widgets) {
+    public static Set<WidgetDto> toWidgetsVm(Collection<Widget> widgets) {
         return widgets.stream().map(WidgetDto::new).collect(Collectors.toSet());
     }
 
