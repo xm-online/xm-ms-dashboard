@@ -1,4 +1,4 @@
-package com.icthh.xm.ms.dashboard.web.rest.vm;
+package com.icthh.xm.ms.dashboard.service.dto;
 
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -13,7 +13,7 @@ import java.util.Optional;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WidgetVM {
+public class WidgetDto {
 
     private Long id;
 
@@ -27,7 +27,7 @@ public class WidgetVM {
 
     private Long dashboard;
 
-    public WidgetVM (Widget widget) {
+    public WidgetDto(Widget widget) {
         super();
         this.id = widget.getId();
         this.selector = widget.getSelector();

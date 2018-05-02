@@ -7,7 +7,7 @@ import com.icthh.xm.ms.dashboard.service.DashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
-import com.icthh.xm.ms.dashboard.web.rest.vm.DashboardVM;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -113,8 +113,8 @@ public class DashboardResource {
     @GetMapping("/dashboards/{id}")
     @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'DASHBOARD.GET_LIST.ITEM')")
-    public ResponseEntity<DashboardVM> getDashboard(@PathVariable Long id) {
-        DashboardVM dashboard = dashboardService.findOne(id);
+    public ResponseEntity<DashboardDto> getDashboard(@PathVariable Long id) {
+        DashboardDto dashboard = dashboardService.findOne(id);
         return RespContentUtil.wrapOrNotFound(Optional.ofNullable(dashboard));
     }
 

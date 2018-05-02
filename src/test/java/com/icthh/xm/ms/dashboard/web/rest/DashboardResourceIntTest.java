@@ -16,9 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.icthh.xm.commons.exceptions.spring.web.ExceptionTranslator;
-import com.icthh.xm.ms.dashboard.web.rest.vm.DashboardVM;
-import com.icthh.xm.ms.dashboard.web.rest.vm.WidgetVM;
-import org.assertj.core.api.Condition;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -180,7 +179,7 @@ public class DashboardResourceIntTest {
         // Validate the Dashboard in the database
         List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(dashboardListInitial + 1);
-        List<WidgetVM> widgetList = widgetService.findAll(null);
+        List<WidgetDto> widgetList = widgetService.findAll(null);
         assertThat(widgetList).hasSize(widgetListInitial + 1);
 
         Dashboard testDashboard = dashboardList.get(dashboardList.size() - 1);
@@ -367,7 +366,7 @@ public class DashboardResourceIntTest {
         int databaseSizeBeforeUpdate = dashboardService.findAll(null).size();
 
         // Update the dashboard
-        DashboardVM updatedDashboard = dashboardService.findOne(dashboard.getId());
+        DashboardDto updatedDashboard = dashboardService.findOne(dashboard.getId());
 
         updatedDashboard.setName(UPDATED_NAME);
         updatedDashboard.setOwner(UPDATED_OWNER);

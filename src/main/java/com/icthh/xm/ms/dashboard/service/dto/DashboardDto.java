@@ -1,4 +1,4 @@
-package com.icthh.xm.ms.dashboard.web.rest.vm;
+package com.icthh.xm.ms.dashboard.service.dto;
 
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DashboardVM {
+public class DashboardDto {
 
     private Long id;
 
@@ -32,9 +32,9 @@ public class DashboardVM {
 
     private Map<String, Object> config = new HashMap<>();
 
-    private Set<WidgetVM> widgets = new HashSet<>();
+    private Set<WidgetDto> widgets = new HashSet<>();
 
-    public DashboardVM (Dashboard dashboard) {
+    public DashboardDto(Dashboard dashboard) {
         super();
         this.id = dashboard.getId();
         this.name = dashboard.getName();
@@ -46,8 +46,8 @@ public class DashboardVM {
         this.widgets = dashboard.getWidgets() == null ? this.widgets : toWidgetsVM(dashboard.getWidgets());
     }
 
-    public static Set<WidgetVM> toWidgetsVM(Collection<Widget> widgets) {
-        return widgets.stream().map(WidgetVM::new).collect(Collectors.toSet());
+    public static Set<WidgetDto> toWidgetsVM(Collection<Widget> widgets) {
+        return widgets.stream().map(WidgetDto::new).collect(Collectors.toSet());
     }
 
 }

@@ -1,11 +1,10 @@
 package com.icthh.xm.ms.dashboard.service;
 
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
-import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.WidgetPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
-import com.icthh.xm.ms.dashboard.web.rest.vm.WidgetVM;
+import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,9 +50,9 @@ public class WidgetService {
      */
     @Transactional(readOnly = true)
     @FindWithPermission("WIDGET.GET_LIST")
-    public List<WidgetVM> findAll(String privilegeKey) {
+    public List<WidgetDto> findAll(String privilegeKey) {
         return widgetPermittedRepository.findAll(Widget.class, privilegeKey)
-            .stream().map(WidgetVM::new).collect(Collectors.toList());
+            .stream().map(WidgetDto::new).collect(Collectors.toList());
     }
 
     /**
@@ -62,9 +61,9 @@ public class WidgetService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public WidgetVM findOne(Long id) {
+    public WidgetDto findOne(Long id) {
         Widget widget = widgetRepository.findOne(id);
-        return widget != null ? new WidgetVM(widget) : null;
+        return widget != null ? new WidgetDto(widget) : null;
     }
 
     /**
