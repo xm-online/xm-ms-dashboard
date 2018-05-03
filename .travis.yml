@@ -10,22 +10,22 @@ addons:
     branches:
     - master
 script:
-  - set -e
-  - ./gradlew --no-daemon --refresh-dependencies clean check test
-  - ./gradlew -x test -Pprod --no-daemon bootRepackage
-  -  docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - export DOCKER_REPO=$(echo  -n $TRAVIS_REPO_SLUG | sed -e 's/^xm-online\//xmonline\//g')
-  - export IMAGE_BRANCH=$(echo -n $TRAVIS_BRANCH | sed -e 's/\//-/g')
-  - docker build -t $DOCKER_REPO:$IMAGE_BRANCH -t $DOCKER_REPO:$IMAGE_BRANCH-$TRAVIS_BUILD_NUMBER  
-    --label commit_id="$TRAVIS_COMMIT" --label commit_message="$TRAVIS_COMMIT_MESSAGE"
-    -f src/main/docker/Dockerfile .
-  - docker push $DOCKER_REPO:$IMAGE_BRANCH
-  - docker push $DOCKER_REPO:$IMAGE_BRANCH-$TRAVIS_BUILD_NUMBER
-  - if [ "$IMAGE_BRANCH" == "master" ]; then 
-    docker tag $DOCKER_REPO:$IMAGE_BRANCH $DOCKER_REPO:latest; 
-    docker push $DOCKER_REPO:latest; 
-    export SONAR_PK=$(echo  -n $TRAVIS_REPO_SLUG | sed -e 's/\//:/g');
-    ./gradlew -x test --no-daemon sonarqube -Dsonar.projectKey="$SONAR_PK" -Dsonar.projectName="$SONAR_PK" -Dsonar.java.binaries="." -Dsonar.projectVersion="$IMAGE_BRANCH"; fi
+- set -e
+- "./gradlew --no-daemon --refresh-dependencies clean check test"
+- "./gradlew -x test -Pprod --no-daemon bootRepackage"
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export DOCKER_REPO=$(echo  -n $TRAVIS_REPO_SLUG | sed -e 's/^xm-online\//xmonline\//g')
+- export IMAGE_BRANCH=$(echo -n $TRAVIS_BRANCH | sed -e 's/\//-/g')
+- docker build -t $DOCKER_REPO:$IMAGE_BRANCH -t $DOCKER_REPO:$IMAGE_BRANCH-$TRAVIS_BUILD_NUMBER
+  --label commit_id="$TRAVIS_COMMIT" --label commit_message="$TRAVIS_COMMIT_MESSAGE"
+  -f src/main/docker/Dockerfile .
+- docker push $DOCKER_REPO:$IMAGE_BRANCH
+- docker push $DOCKER_REPO:$IMAGE_BRANCH-$TRAVIS_BUILD_NUMBER
+- if [ "$IMAGE_BRANCH" == "master" ]; then docker tag $DOCKER_REPO:$IMAGE_BRANCH $DOCKER_REPO:latest;
+  docker push $DOCKER_REPO:latest; export SONAR_PK=$(echo  -n $TRAVIS_REPO_SLUG |
+  sed -e 's/\//:/g'); ./gradlew -x test --no-daemon sonarqube -Dsonar.projectKey="$SONAR_PK"
+  -Dsonar.projectName="$SONAR_PK" -Dsonar.java.binaries="." -Dsonar.projectVersion="$IMAGE_BRANCH";
+  fi
 cache:
   directories:
   - "~/.gradle/"
@@ -33,3 +33,7 @@ env:
   global:
   - secure: FIO3Rk1FRo/nEjj0DmAHxDTMtTH+PHRA/3I0ZZkcATsoi8nc2rmxGTttJVU34GAL5yhONZlYGUtj1+0oaqjOHZvDGplze/Pb/XT5U3yr56eRdXyRC7RFkTQ6Ev36lOj2lTpqa4e9tecu+FCpZjOzidLwZnJrdXl8olasJBcVy9jCppFBFqKq5UUez0ZE3MjQeskkf/I75KysTgojWden5+hPjOsw2V+g35HV/cdxjFqBo4HeiPTdNEfchzRKuhOKdfMt6uoIeKW7LoDQxjYi4VwXaW/ctra+TQOr0P+BBx0WkjpN/Mi0KP/+MZlVZYDbItgfDoIqTEni4Ci4GF0ffG9eung/Yo8K/xnbi+HSk9NjKCk7RdmqAcHKWw9en5RCjPEYczvYNrdJF3hL3Smcl+Uo/B9NPAVwKeRtAw58yznv7rd1o0X6rb7dKxdNPez1ZnhLeFk0ncLTrr5gUOtKQvC+Wf8M4JeYX6+3bwOFb0X1eiGSWIJbT8AztnxbNaHayEtsmaZmVNljj6qv0vdwGr5b7yeZi0/YXbsJVK3SCbZm/BHk9Q9q8BCAci+PTz8KLg0avzM2zf8n/Bissgk5wpXocsu0qkfhjgHoHAFP/n0/Q0uyocfWrTDCI/ihGuCRYmCjZ+opNd9F/FYqHHhASJySJSHBXBnvfhO/fyzEs38=
   - secure: VFNtyANbWzwBL3GkvWLah5NLPs9mcLhM4WTRIdKg8++i1oIpWUY7uzu3si+9oJLUQI5J7ZJPIP5zja9OJsVVEuRtw7iwYEVedLuF51smo3lHQGrIqTvrRakdRx12gjJ7n9m0T0H8HtycThARHuGbval5jD35yYn3ag/oI8BCHz7rrRcqmRMmGUan9DFCL57Y4fFyTVtHFrAplxA1UwPxAtIIcepQF0nfZVYhfqkWUK4CIEQWtnKd23+/mUjiO5BJAHsTfp8hgkDJ8vdjmR108Vihccl+4PZaEb/MRaznKGDmC+LuMh/2DSuUvTgYjui5H6nd10eM6PxSjoU0tgciDWXBr1Kf5L2zoBtDL3ljnLoPWfDqUi76kQlZcspL4l/pnGs6fqISdDIZ2NSdlIVQuLrKytZaZXKFOP+lZTXmLFNobHFF6CLm0Jq7yFjUhqDIyvcbcArbKvLCG1qDMuPHlTLZezyQXwbQuRCDKdCIJGB7A8lxYlrLb4x+hNGLNDYjM74nEnf3sitHorJrpIoZBDL5lL/tY3Eme06mYhqn/89h9I/vuMVMRnSM28EHZPlr3/mleuTCQu6LSOFE5pAROOjTQn6c27hxpAqZhm42hB35azKtSyETixPKsuan8aDdYudgMDQArl+sdENbkJIed+3U34J8IF42jHVfqfDoEds=
+notifications:
+  slack:
+    rooms:
+      secure: wQ3QLsThCv4YcIpQHvVstyqc43rqG5gXwxU3FYp0mta4tZDcAod9FWGVe5n6DcrrpsJSKsNCOEs9XTKtWbt7SOXMTUkKLE8tQf8AF8ekvmoPYvDDAFZtH1HJlY7+jQeiIo+XcdbP1hP3CSduJvjNhlz1f7WAEEuSleTUigg2oK98Yd+RKeW8fSoMuvTU5mbXO+NcPuOQjIU+MdWC2MR8N6gtJeFimmdlcVhoAf01oI0Tq4eKsLlKc3QeW7oAymycfD3P+MEKN0xxreCRctda4fJMYP179UD5aOcZrIIAMG//LIUK6ThqD14qy2sqbxOkQ4oWDZv8V34b9xI0cA3m4KpvArQP5kg218wLoB9HdsNptR+1AkyuLi4bw6PbbGKzRj+mS1R5AWPfx4VLoPVAEGdZ9W7TRl/DSiTTzBzRY8606v0Cac76OOdS+LMhdJToBE2+kiOCM70z12t7VfGZadytkglJ7aaEFCS9X7wXgfqjRHA4C3OWVq+WauF2t7+IIWCBlxxae+zDvRZJZ5XlmmUoBhS8clqt38qAtpbLElRf5lEQ0kNKSaIkMiKom5QVRvnHHLx+GLWGL2lcpcDu8EBd5h/7BfTdNxDRzl91+c1YSJoeaxRFY51vSs/jUr7AqeMFpH4KG9X76TDkmioZAXsu3MKvNwml5mY3qWwF150=
