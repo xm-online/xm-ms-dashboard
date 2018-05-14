@@ -26,7 +26,6 @@ public class ApplicationProperties {
     private boolean timelinesEnabled;
     private boolean kafkaEnabled;
     private String kafkaSystemQueue;
-    private String kafkaSystemTopic;
 
     @Getter
     @Setter
