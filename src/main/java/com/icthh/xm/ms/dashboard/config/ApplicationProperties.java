@@ -13,13 +13,13 @@ import java.util.List;
  *
  * <p> Properties are configured in the application.yml file. </p>
  */
-@Component
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
 @Getter
 @Setter
 public class ApplicationProperties {
 
     private final Amazon amazon = new Amazon();
+    private final Retry retry = new Retry();
 
     private String xmEndpoint;
     private List<String> tenantIgnoredPathList = Collections.emptyList();
@@ -49,5 +49,14 @@ public class ApplicationProperties {
 
             private String defaultBucket;
         }
+    }
+
+    @Getter
+    @Setter
+    private static class Retry {
+
+        private int maxAttempts;
+        private long delay;
+        private int multiplier;
     }
 }
