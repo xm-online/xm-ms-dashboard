@@ -2,6 +2,7 @@ package com.icthh.xm.ms.dashboard.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -207,6 +208,73 @@ public class DashboardResourceIntTest {
                             .andExpect(jsonPath("$.widgets.[*].config").value(hasItem(DEFAULT_CONFIG)))
                             .andExpect(jsonPath("$.widgets.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC)))
                             .andExpect(jsonPath("$.widgets.[*].dashboard").value(hasItem(testDashboard.getId().intValue())));
+    }
+
+    @Test
+    @Transactional
+    public void testDashboardUpdateWithWidgets() throws Exception {
+
+        Widget widget = createWidget();
+        dashboard.getWidgets().add(widget);
+        dashboardService.save(dashboard);
+
+        // Get the dashboard with widgets
+        restDashboardMockMvc.perform(get("/api/dashboards/{id}", dashboard.getId()))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andDo(print())
+                            .andExpect(jsonPath("$.id").value(dashboard.getId()))
+                            .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
+                            .andExpect(jsonPath("$.owner").value(DEFAULT_OWNER))
+                            .andExpect(jsonPath("$.typeKey").value(DEFAULT_TYPE_KEY))
+                            .andExpect(jsonPath("$.layout.AAAAAAAAAA").value("BBBBBBBBBB"))
+                            .andExpect(jsonPath("$.config.AAAAAAAAAA").value("BBBBBBBBBB"))
+                            .andExpect(jsonPath("$.isPublic").value(DEFAULT_IS_PUBLIC))
+                            .andExpect(jsonPath("$.widgets").value(hasSize(1)))
+                            .andExpect(jsonPath("$.widgets.[*].id").value(hasItem(widget.getId().intValue())))
+                            .andExpect(jsonPath("$.widgets.[*].selector").value(hasItem(DEFAULT_SELECTOR)))
+                            .andExpect(jsonPath("$.widgets.[*].name").value(hasItem(DEFAULT_NAME)))
+                            .andExpect(jsonPath("$.widgets.[*].config").value(hasItem(DEFAULT_CONFIG)))
+                            .andExpect(jsonPath("$.widgets.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC)))
+                            .andExpect(jsonPath("$.widgets.[*].dashboard").value(hasItem(dashboard.getId().intValue())));
+
+
+        // Update the dashboard
+        DashboardDto updatedDashboard = dashboardService.findOne(dashboard.getId());
+
+        updatedDashboard.setName(UPDATED_NAME);
+        updatedDashboard.setOwner(UPDATED_OWNER);
+        updatedDashboard.setLayout(UPDATED_LAYOUT);
+        updatedDashboard.setConfig(UPDATED_CONFIG);
+        updatedDashboard.setIsPublic(UPDATED_IS_PUBLIC);
+        updatedDashboard.setTypeKey(UPDATED_TYPE_KEY);
+        updatedDashboard.setWidgets(null);
+
+        restDashboardMockMvc.perform(put("/api/dashboards")
+                                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                                         .content(TestUtil.convertObjectToJsonBytes(updatedDashboard)))
+                            .andExpect(status().isOk());
+
+        // Get the dashboard with widgets
+        restDashboardMockMvc.perform(get("/api/dashboards/{id}", dashboard.getId()))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andDo(print())
+                            .andExpect(jsonPath("$.id").value(dashboard.getId()))
+                            .andExpect(jsonPath("$.name").value(UPDATED_NAME))
+                            .andExpect(jsonPath("$.owner").value(UPDATED_OWNER))
+                            .andExpect(jsonPath("$.typeKey").value(UPDATED_TYPE_KEY))
+                            .andExpect(jsonPath("$.layout.AAAAAAAAAA").value("CCCCCCCCCC"))
+                            .andExpect(jsonPath("$.config.AAAAAAAAAA").value("CCCCCCCCCC"))
+                            .andExpect(jsonPath("$.isPublic").value(UPDATED_IS_PUBLIC))
+                            .andExpect(jsonPath("$.widgets").value(hasSize(1)))
+                            .andExpect(jsonPath("$.widgets.[*].id").value(hasItem(widget.getId().intValue())))
+                            .andExpect(jsonPath("$.widgets.[*].selector").value(hasItem(DEFAULT_SELECTOR)))
+                            .andExpect(jsonPath("$.widgets.[*].name").value(hasItem(DEFAULT_NAME)))
+                            .andExpect(jsonPath("$.widgets.[*].config").value(hasItem(DEFAULT_CONFIG)))
+                            .andExpect(jsonPath("$.widgets.[*].isPublic").value(hasItem(DEFAULT_IS_PUBLIC)))
+                            .andExpect(jsonPath("$.widgets.[*].dashboard").value(hasItem(dashboard.getId().intValue())));
+
     }
 
     @Test
@@ -426,6 +494,30 @@ public class DashboardResourceIntTest {
         // Validate the database is empty
         List<Dashboard> dashboardList = dashboardService.findAll(null);
         assertThat(dashboardList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    @Test
+    @Transactional
+    public void deleteDashboardWithWidgets() throws Exception {
+        // Initialize the database
+        dashboard.getWidgets().add(createWidget());
+        dashboardService.save(dashboard);
+
+        int databaseSizeBeforeDelete = dashboardService.findAll(null).size();
+        int databaseSizeWidgetsBeforeDelete = widgetService.findAll(null).size();
+
+        // Get the dashboard
+        restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboard.getId())
+                                         .accept(TestUtil.APPLICATION_JSON_UTF8))
+                            .andExpect(status().isOk());
+
+        // Validate the Dashboards is empty
+        List<Dashboard> dashboardList = dashboardService.findAll(null);
+        assertThat(dashboardList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Widgets is empty
+        List<WidgetDto> widgetList = widgetService.findAll(null);
+        assertThat(dashboardList).hasSize(databaseSizeWidgetsBeforeDelete - 1);
     }
 
     @Test
