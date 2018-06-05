@@ -81,7 +81,7 @@ public class Dashboard implements Serializable {
     @Column(name = "is_public")
     private Boolean isPublic;
 
-    @OneToMany(mappedBy = "dashboard", cascade = {PERSIST, MERGE, REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "dashboard", cascade = {PERSIST, MERGE, REMOVE})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Widget> widgets = new HashSet<>();
 
