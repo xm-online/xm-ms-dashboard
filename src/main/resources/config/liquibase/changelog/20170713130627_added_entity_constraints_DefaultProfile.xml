@@ -7,10 +7,10 @@
         Added the constraints for entity DefaultProfile.
     -->
     <changeSet id="20170713130627-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="dashboard_id"
                                  baseTableName="default_profile"
-                                 constraintName="fk_default_profile_dashboard_id"
+                                 constraintName="fk_dp_dashboard_id"
                                  referencedColumnNames="id"
                                  referencedTableName="dashboard"/>
 

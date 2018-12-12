@@ -19,6 +19,7 @@ public class SchemaChangeResolver {
 
     static {
         DBCOMMANDS.put("POSTGRESQL", "SET search_path TO %s");
+        DBCOMMANDS.put("ORACLE", "ALTER SESSION SET CURRENT_SCHEMA = %s");
         DBCOMMANDS.put("H2", DEFAULT_COMMAND);
     }
 
