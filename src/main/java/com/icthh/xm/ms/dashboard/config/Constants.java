@@ -20,6 +20,7 @@ public final class Constants {
     public static final String AUTH_XM_LOCALE = "xmLocale";
     public static final String HEADER_TENANT = "x-tenant";
     public static final String DDL_CREATE_SCHEMA = "CREATE SCHEMA IF NOT EXISTS %s";
+    public static final String DB_SCHEMA_CREATION_ENABLED = "db.schema.creation.enabled";
     public static final String CHANGE_LOG_PATH = "classpath:config/liquibase/master.xml";
     public static final MediaType MEDIATYPE_MULTIPART_MIXED = MediaType.valueOf("multipart/mixed");
     public static final String HEADER_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";

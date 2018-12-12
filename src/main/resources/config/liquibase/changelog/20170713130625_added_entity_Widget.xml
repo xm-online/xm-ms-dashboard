@@ -29,7 +29,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="config" type="varchar">
+            <column name="config" type="text">
                 <constraints nullable="true" />
             </column>
 

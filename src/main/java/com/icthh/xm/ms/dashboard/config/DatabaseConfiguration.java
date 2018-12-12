@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.config;
 
 import static com.icthh.xm.ms.dashboard.config.Constants.CHANGE_LOG_PATH;
+import static com.icthh.xm.ms.dashboard.config.Constants.DB_SCHEMA_CREATION_ENABLED;
 
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.icthh.xm.commons.config.client.repository.TenantListRepository;
@@ -108,6 +109,11 @@ public class DatabaseConfiguration {
     }
 
     private void createSchemas(DataSource dataSource) {
+        if (jpaProperties.getProperties().containsKey(DB_SCHEMA_CREATION_ENABLED)
+            && !Boolean.valueOf(jpaProperties.getProperties().get(DB_SCHEMA_CREATION_ENABLED))) {
+            log.info("Schema creation for {} jpa provider is disabled", jpaProperties.getDatabase());
+            return;
+        }
         for (String schema : getSchemas()) {
             try {
                 DatabaseUtil.createSchema(dataSource, schema);

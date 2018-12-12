@@ -29,11 +29,11 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="layout" type="varchar">
+            <column name="layout" type="text">
                 <constraints nullable="true" />
             </column>
 
-            <column name="config" type="varchar">
+            <column name="config" type="text">
                 <constraints nullable="true" />
             </column>
 
