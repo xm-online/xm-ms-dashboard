@@ -13,6 +13,9 @@
     <property name="floatType" value="float4" dbms="postgresql, h2"/>
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
+    <property name="textType" value="varchar" dbms="postgresql, h2"/>
+    <property name="textType" value="text" dbms="oracle"/>
+
     <!--
         Added the entity Dashboard.
     -->
@@ -29,11 +32,11 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="layout" type="text">
+            <column name="layout" type="${textType}">
                 <constraints nullable="true" />
             </column>
 
-            <column name="config" type="text">
+            <column name="config" type="${textType}">
                 <constraints nullable="true" />
             </column>
 
