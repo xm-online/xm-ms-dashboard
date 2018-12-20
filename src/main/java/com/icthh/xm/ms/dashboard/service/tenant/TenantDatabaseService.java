@@ -5,12 +5,14 @@ import static org.apache.commons.lang3.time.StopWatch.createStarted;
 
 import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.logging.aop.IgnoreLogginAspect;
-import com.icthh.xm.ms.dashboard.config.tenant.DropSchemaResolver;
-import com.icthh.xm.ms.dashboard.util.DatabaseUtil;
+import com.icthh.xm.commons.migration.db.tenant.DropSchemaResolver;
+
 
 import java.sql.Connection;
 import java.sql.Statement;
 import javax.sql.DataSource;
+
+import com.icthh.xm.commons.migration.db.util.DatabaseUtil;
 import liquibase.exception.LiquibaseException;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.AllArgsConstructor;
