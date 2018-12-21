@@ -1,21 +1,20 @@
 package com.icthh.xm.ms.dashboard.config;
 
 import static com.icthh.xm.ms.dashboard.config.Constants.CHANGE_LOG_PATH;
-import static com.icthh.xm.ms.dashboard.config.Constants.DB_SCHEMA_CREATION_ENABLED;
 
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.icthh.xm.commons.config.client.repository.TenantListRepository;
 import com.icthh.xm.commons.migration.db.XmMultiTenantSpringLiquibase;
 import com.icthh.xm.commons.migration.db.XmSpringLiquibase;
-import com.icthh.xm.ms.dashboard.util.DatabaseUtil;
+import com.icthh.xm.commons.migration.db.tenant.SchemaResolver;
 import io.github.jhipster.config.JHipsterConstants;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import liquibase.integration.spring.MultiTenantSpringLiquibase;
 import liquibase.integration.spring.SpringLiquibase;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.Server;
 import org.hibernate.MultiTenancyStrategy;
@@ -43,6 +42,7 @@ import java.sql.SQLException;
 @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
 @EnableTransactionManagement
 @Slf4j
+@RequiredArgsConstructor
 public class DatabaseConfiguration {
 
     private static final String JPA_PACKAGES = "com.icthh.xm.ms.dashboard.domain";
@@ -50,12 +50,7 @@ public class DatabaseConfiguration {
     private final Environment env;
     private final JpaProperties jpaProperties;
     private final TenantListRepository tenantListRepository;
-
-    public DatabaseConfiguration(Environment env, JpaProperties jpaProperties, TenantListRepository tenantListRepository) {
-        this.env = env;
-        this.jpaProperties = jpaProperties;
-        this.tenantListRepository = tenantListRepository;
-    }
+    private final SchemaResolver schemaResolver;
 
     /**
      * Open the TCP port for the H2 database, so it is available remotely.
@@ -71,7 +66,7 @@ public class DatabaseConfiguration {
 
     @Bean
     public SpringLiquibase liquibase(DataSource dataSource, LiquibaseProperties liquibaseProperties) {
-        createSchemas(dataSource);
+        schemaResolver.createSchemas(dataSource);
         SpringLiquibase liquibase = new XmSpringLiquibase();
         liquibase.setDataSource(dataSource);
         liquibase.setChangeLog(CHANGE_LOG_PATH);
@@ -98,7 +93,7 @@ public class DatabaseConfiguration {
         liquibase.setContexts(liquibaseProperties.getContexts());
         liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
         liquibase.setDropFirst(liquibaseProperties.isDropFirst());
-        liquibase.setSchemas(getSchemas());
+        liquibase.setSchemas(schemaResolver.getSchemas());
         if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_NO_LIQUIBASE)) {
             liquibase.setShouldRun(false);
         } else {
@@ -106,25 +101,6 @@ public class DatabaseConfiguration {
             log.debug("Configuring Liquibase");
         }
         return liquibase;
-    }
-
-    private void createSchemas(DataSource dataSource) {
-        if (jpaProperties.getProperties().containsKey(DB_SCHEMA_CREATION_ENABLED)
-            && !Boolean.valueOf(jpaProperties.getProperties().get(DB_SCHEMA_CREATION_ENABLED))) {
-            log.info("Schema creation for {} jpa provider is disabled", jpaProperties.getDatabase());
-            return;
-        }
-        for (String schema : getSchemas()) {
-            try {
-                DatabaseUtil.createSchema(dataSource, schema);
-            } catch (Exception e) {
-                log.error("Failed to create schema '{}', error: {}", schema, e.getMessage(), e);
-            }
-        }
-    }
-
-    private List<String> getSchemas() {
-        return new ArrayList<>(tenantListRepository.getTenants());
     }
 
     @Bean
@@ -138,7 +114,8 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+        DataSource dataSource,
         MultiTenantConnectionProvider multiTenantConnectionProviderImpl,
         CurrentTenantIdentifierResolver currentTenantIdentifierResolverImpl) {
         Map<String, Object> properties = new HashMap<>();
