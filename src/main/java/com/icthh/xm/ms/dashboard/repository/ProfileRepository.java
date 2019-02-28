@@ -14,13 +14,11 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ProfileRepository extends JpaRepository<Profile,Long>, ResourceRepository {
+public interface ProfileRepository extends JpaRepository<Profile,Long> {
 
     List<Profile> findByUserKey(String userKey);
 
     @Query("select profile from Profile profile left join fetch profile.dashboards where profile.id =:id")
     Profile findOneWithEagerRelationships(@Param("id") Long id);
 
-    @Override
-    Object findById(Object id);
 }

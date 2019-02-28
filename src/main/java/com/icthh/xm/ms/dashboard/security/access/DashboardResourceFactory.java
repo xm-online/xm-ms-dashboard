@@ -6,6 +6,7 @@ import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.DefaultProfileRepository;
 import com.icthh.xm.ms.dashboard.repository.ProfileRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +16,7 @@ import java.util.Map;
 @Component
 public class DashboardResourceFactory implements ResourceFactory {
 
-    private Map<String, ResourceRepository> repositories = new HashMap<>();
+    private Map<String, JpaRepository> repositories = new HashMap<>();
 
     private final DashboardRepository dashboardRepository;
     private final DefaultProfileRepository defaultProfileRepository;
@@ -44,7 +45,7 @@ public class DashboardResourceFactory implements ResourceFactory {
     @Override
     public Object getResource(Object resourceId, String objectType) {
         Object result = null;
-        ResourceRepository resourceRepository = repositories.get(objectType);
+        JpaRepository resourceRepository = repositories.get(objectType);
         if (resourceRepository != null) {
             result = resourceRepository.findById(resourceId);
         }

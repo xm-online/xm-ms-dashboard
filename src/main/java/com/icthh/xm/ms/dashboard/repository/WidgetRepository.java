@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface WidgetRepository extends JpaRepository<Widget,Long>, ResourceRepository {
+public interface WidgetRepository extends JpaRepository<Widget,Long> {
 
-    @Override
-    Object findById(Object id);
 }

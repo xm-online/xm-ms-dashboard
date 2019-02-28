@@ -30,7 +30,7 @@ public class DashboardIdResolver extends SimpleObjectIdResolver {
 
     @Override
     public Object resolveId(final ObjectIdGenerator.IdKey id) {
-        Object entity = repository.findOne((Long) id.key);
+        Object entity = repository.findById((Long) id.key);
 
         if (entity == null) {
             throw new BusinessException(ErrorConstants.ERR_NOTFOUND, "Can not resolve Dashboard by ID: " + id.key);

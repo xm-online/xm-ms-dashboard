@@ -11,10 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DashboardRepository extends JpaRepository<Dashboard, Long>, ResourceRepository {
-
-    @Override
-    Object findById(Object id);
+public interface DashboardRepository extends JpaRepository<Dashboard, Long> {
 
     Dashboard findOneById(Long id);
 }

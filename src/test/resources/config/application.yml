@@ -53,12 +53,13 @@ spring:
     thymeleaf:
         mode: XHTML
 
-liquibase:
-    contexts: test
+    liquibase:
+        contexts: test
+        enabled: true
 
-security:
-    basic:
-        enabled: false
+    security:
+        basic:
+            enabled: false
 
 server:
     port: 10344

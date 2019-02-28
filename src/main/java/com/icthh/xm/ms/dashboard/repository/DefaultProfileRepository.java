@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -13,10 +14,8 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DefaultProfileRepository extends JpaRepository<DefaultProfile,Long>, ResourceRepository {
+public interface DefaultProfileRepository extends JpaRepository<DefaultProfile,Long> {
 
     List<DefaultProfile> findByRoleKey(String roleKey);
 
-    @Override
-    Object findById(Object id);
 }

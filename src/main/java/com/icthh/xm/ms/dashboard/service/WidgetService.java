@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -62,8 +63,8 @@ public class WidgetService {
      */
     @Transactional(readOnly = true)
     public WidgetDto findOne(Long id) {
-        Widget widget = widgetRepository.findOne(id);
-        return widget != null ? new WidgetDto(widget) : null;
+        Optional<Widget> byId = widgetRepository.findById(id);
+        return byId.map(WidgetDto::new).orElse(null);
     }
 
     /**
@@ -72,7 +73,7 @@ public class WidgetService {
      *  @param id the id of the entity
      */
     public void delete(Long id) {
-        widgetRepository.delete(id);
+        widgetRepository.deleteById(id);
     }
 
     /**
