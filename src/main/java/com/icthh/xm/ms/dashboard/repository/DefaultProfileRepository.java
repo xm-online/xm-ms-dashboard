@@ -16,7 +16,4 @@ import java.util.List;
 public interface DefaultProfileRepository extends JpaRepository<DefaultProfile,Long>, ResourceRepository {
 
     List<DefaultProfile> findByRoleKey(String roleKey);
-
-    @Override
-    Object findById(Object id);
 }

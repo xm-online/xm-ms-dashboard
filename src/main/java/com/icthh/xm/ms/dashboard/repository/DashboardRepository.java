@@ -13,8 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DashboardRepository extends JpaRepository<Dashboard, Long>, ResourceRepository {
 
-    @Override
-    Object findById(Object id);
-
     Dashboard findOneById(Long id);
 }

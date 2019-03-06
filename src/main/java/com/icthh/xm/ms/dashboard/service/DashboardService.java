@@ -87,6 +87,6 @@ public class DashboardService {
      *  @param id the id of the entity
      */
     public void delete(Long id) {
-        dashboardRepository.delete(id);
+        dashboardRepository.deleteById(id);
     }
 }

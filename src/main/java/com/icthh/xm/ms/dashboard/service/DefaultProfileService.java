@@ -60,7 +60,7 @@ public class DefaultProfileService {
      */
     @Transactional(readOnly = true)
     public DefaultProfile findOne(Long id) {
-        return defaultProfileRepository.findOne(id);
+        return defaultProfileRepository.findById(id).orElse(null);
     }
 
     /**
@@ -69,7 +69,7 @@ public class DefaultProfileService {
      *  @param id the id of the entity
      */
     public void delete(Long id) {
-        defaultProfileRepository.delete(id);
+        defaultProfileRepository.deleteById(id);
     }
 
     /**
