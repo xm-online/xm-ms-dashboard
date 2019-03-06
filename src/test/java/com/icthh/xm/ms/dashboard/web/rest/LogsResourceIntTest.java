@@ -1,6 +1,5 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.icthh.xm.commons.logging.web.rest.LogsResource;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.web.rest.vm.LoggerVM;

@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
-import com.icthh.xm.commons.exceptions.BusinessException;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -25,15 +25,15 @@ public class ExceptionTranslatorTestController {
 
     @GetMapping("/test/parameterized-error")
     public void parameterizedError() {
-        throw new BusinessException("test parameterized error" +  "param0_value" +  "param1_value"); // TODO ,
+        throw new CustomParameterizedException("test parameterized error", "param0_value", "param1_value");
     }
 
     @GetMapping("/test/parameterized-error2")
     public void parameterizedError2() {
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("foo", "foo_value");
         params.put("bar", "bar_value");
-        throw new BusinessException("test parameterized error", params);
+        throw new CustomParameterizedException("test parameterized error", params);
     }
 
     @GetMapping("/test/missing-servlet-request-part")

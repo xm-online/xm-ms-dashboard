@@ -50,7 +50,7 @@ spring:
             auto-commit: false
     h2:
         console:
-            enabled: true
+            enabled: false
     jpa:
         database-platform: io.github.jhipster.domain.util.FixedH2Dialect
         database: H2
@@ -61,11 +61,8 @@ spring:
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
-    kafka:
-        bootstrap-servers: localhost:9093
     liquibase:
         contexts: dev
-        enabled: true
     mail:
         host: localhost
         port: 25
@@ -99,13 +96,13 @@ jhipster:
         version: V_1_1 # To use HTTP/2 you will need to activate TLS (see application-tls.yml)
     # CORS is disabled by default on microservices, as you should access them through a gateway.
     # If you want to enable it, please uncomment the configuration below.
-    cors:
-        allowed-origins: "*"
-        allowed-methods: GET, PUT, POST, DELETE, OPTIONS
-        allowed-headers: "*"
-        exposed-headers:
-        allow-credentials: true
-        max-age: 1800
+    # cors:
+        # allowed-origins: "*"
+        # allowed-methods: "*"
+        # allowed-headers: "*"
+        # exposed-headers: "Authorization,Link,X-Total-Count"
+        # allow-credentials: true
+        # max-age: 1800
     security:
         client-authorization:
             access-token-uri: http://uaa/oauth/token
@@ -118,14 +115,8 @@ jhipster:
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx:
             enabled: true
-#        graphite: # Use the "graphite" Maven profile to have the Graphite dependencies
-#            enabled: false
-#            host: localhost
-#            port: 2003
-#            prefix: dashboard
         prometheus:
             enabled: false #expose metrics via prometheus
-            endpoint: /prometheusMetrics
         logs: # Reports Dropwizard metrics in the logs
             enabled: false
             report-frequency: 60 # in seconds
@@ -135,8 +126,6 @@ jhipster:
             host: localhost
             port: 5000
             queue-size: 512
-#        spectator-metrics: # Reports Spectator Circuit Breaker metrics in the logs
-#            enabled: false
 oauth2:
     signature-verification:
         public-key-endpoint-uri: http://uaa/oauth/token_key

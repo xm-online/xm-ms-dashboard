@@ -3,8 +3,8 @@
 #
 # This configuration overrides the application.yml file.
 #
-# More information on profiles: https://jhipster.github.io/profiles/
-# More information on configuration properties: https://jhipster.github.io/common-application-properties/
+# More information on profiles: https://www.jhipster.tech/profiles/
+# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
 # ===================================================================
@@ -13,10 +13,13 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
+logging:
+    level:
+        ROOT: INFO
+        com.icthh.xm.ms.dashboard: INFO
+        io.github.jhipster: INFO
+
 spring:
-    profiles:
-        active: prod
-        include: swagger
     devtools:
         restart:
             enabled: false
@@ -33,21 +36,20 @@ spring:
         url: jdbc:postgresql://localhost:5432/dashboard
         username: dashboard
         password:
+        hikari:
+            auto-commit: false
     jpa:
         database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         show-sql: false
         properties:
             hibernate.id.new_generator_mappings: true
+            hibernate.connection.provider_disables_autocommit: true
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: false
-            #hibernate.cache.region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
-            #hibernate.cache.hazelcast.instance_name: dashboard
-            hibernate.cache.use_minimal_puts: true
-            #hibernate.cache.hazelcast.use_lite_member: true
-    kafka:
-        bootstrap-servers: localhost
+    liquibase:
+        contexts: prod
     mail:
         host: localhost
         port: 25
@@ -55,6 +57,9 @@ spring:
         password:
     thymeleaf:
         cache: true
+    sleuth:
+        sampler:
+            probability: 1 # report 100% of traces
     zipkin: # Use the "zipkin" Maven profile to have the Spring Cloud Zipkin dependencies
         base-url: http://localhost:9411
         enabled: false
@@ -62,11 +67,8 @@ spring:
             discovery:
                 enabled: true
 
-liquibase:
-    contexts: prod
-
 # ===================================================================
-# To enable SSL, generate a certificate using:
+# To enable TLS in production, generate a certificate using:
 # keytool -genkey -alias dashboard -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
 #
 # You can also use Let's Encrypt:
@@ -77,10 +79,12 @@ liquibase:
 # server:
 #    port: 443
 #    ssl:
-#        key-store: keystore.p12
-#        key-store-password: <your-password>
-#        keyStoreType: PKCS12
-#        keyAlias: dashboard
+#        key-store: classpath:config/tls/keystore.p12
+#        key-store-password: password
+#        key-store-type: PKCS12
+#        key-alias: dashboard
+#        # The ciphers suite enforce the security by deactivating some old and deprecated SSL cipher, this list was tested against SSL Labs (https://www.ssllabs.com/ssltest/)
+#        ciphers: TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256 ,TLS_DHE_RSA_WITH_AES_256_GCM_SHA384 ,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,TLS_DHE_RSA_WITH_AES_256_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_CBC_SHA256,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_RSA_WITH_CAMELLIA_256_CBC_SHA,TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA,TLS_RSA_WITH_CAMELLIA_128_CBC_SHA
 # ===================================================================
 server:
     port: 8082
@@ -92,7 +96,7 @@ server:
 # ===================================================================
 # JHipster specific properties
 #
-# Full reference is available at: https://jhipster.github.io/common-application-properties/
+# Full reference is available at: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
 jhipster:
@@ -100,10 +104,6 @@ jhipster:
         version: V_1_1 # To use HTTP/2 you will need SSL support (see above the "server.ssl" configuration)
         cache: # Used by the CachingHttpHeadersFilter
             timeToLiveInDays: 1461
-    cache: # Cache configuration
-        hazelcast: # Hazelcast distributed cache
-            time-to-live-seconds: 3600
-            backup-count: 1
     security:
         client-authorization:
             access-token-uri: http://uaa/oauth/token
@@ -114,15 +114,10 @@ jhipster:
         from: dashboard@localhost
         base-url: http://my-server-url-to-change # Modify according to your server's URL
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
-        graphite:
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: dashboard
+        jmx:
+            enabled: true
         prometheus:
-            enabled: false
-            endpoint: /prometheusMetrics
+            enabled: false #expose metrics via prometheus
         logs: # Reports Dropwizard metrics in the logs
             enabled: false
             report-frequency: 60 # in seconds
@@ -132,9 +127,17 @@ jhipster:
             host: localhost
             port: 5000
             queue-size: 512
-        spectator-metrics: # Reports Spectator Circuit Breaker metrics in the logs
-            enabled: false
-            # edit spring.metrics.export.delay-millis to set report frequency
+oauth2:
+    signature-verification:
+        public-key-endpoint-uri: http://uaa/oauth/token_key
+        #ttl for public keys to verify JWT tokens (in ms)
+        ttl: 3600000
+        #max. rate at which public keys will be fetched (in ms)
+        public-key-refresh-rate-limit: 10000
+    web-client-configuration:
+        #change client secret in production, keep in sync with UAA configuration
+        client-id: web_app
+        secret: changeit
 
 # ===================================================================
 # Application specific properties
@@ -142,7 +145,7 @@ jhipster:
 # to have type-safe configuration, like in the JHipsterProperties above
 #
 # More documentation is available at:
-# https://jhipster.github.io/common-application-properties/
+# https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-application:
+# application:

@@ -1,7 +1,5 @@
 package com.icthh.xm.ms.dashboard.web.rest.errors;
 
-import com.icthh.xm.commons.exceptions.ErrorConstants;
-import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import org.junit.Before;
