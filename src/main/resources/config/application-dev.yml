@@ -46,23 +46,26 @@ spring:
         url: jdbc:h2:mem:dashboard;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
         username: dashboard
         password:
-        hikari:
-            auto-commit: false
     h2:
         console:
-            enabled: false
+            enabled: true
     jpa:
         database-platform: io.github.jhipster.domain.util.FixedH2Dialect
         database: H2
         show-sql: true
         properties:
             hibernate.id.new_generator_mappings: true
-            hibernate.connection.provider_disables_autocommit: true
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
+            #hibernate.cache.region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
+            #hibernate.cache.hazelcast.instance_name: dashboard
+            hibernate.cache.use_minimal_puts: true
+            #hibernate.cache.hazelcast.use_lite_member: true
     liquibase:
         contexts: dev
+    kafka:
+        bootstrap-servers: localhost:9093
     mail:
         host: localhost
         port: 25
@@ -93,16 +96,15 @@ server:
 
 jhipster:
     http:
-        version: V_1_1 # To use HTTP/2 you will need to activate TLS (see application-tls.yml)
-    # CORS is disabled by default on microservices, as you should access them through a gateway.
-    # If you want to enable it, please uncomment the configuration below.
-    # cors:
-        # allowed-origins: "*"
-        # allowed-methods: "*"
-        # allowed-headers: "*"
-        # exposed-headers: "Authorization,Link,X-Total-Count"
-        # allow-credentials: true
-        # max-age: 1800
+        version: V_1_1 # To use HTTP/2 you will need SSL support (see above the "server.ssl" configuration)
+    # CORS is only enabled by default with the "dev" profile, so BrowserSync can access the API
+    cors:
+        allowed-origins: "*"
+        allowed-methods: GET, PUT, POST, DELETE, OPTIONS
+        allowed-headers: "*"
+        exposed-headers:
+        allow-credentials: true
+        max-age: 1800
     security:
         client-authorization:
             access-token-uri: http://uaa/oauth/token
@@ -126,17 +128,7 @@ jhipster:
             host: localhost
             port: 5000
             queue-size: 512
-oauth2:
-    signature-verification:
-        public-key-endpoint-uri: http://uaa/oauth/token_key
-        #ttl for public keys to verify JWT tokens (in ms)
-        ttl: 3600000
-        #max. rate at which public keys will be fetched (in ms)
-        public-key-refresh-rate-limit: 10000
-    web-client-configuration:
-        #keep in sync with UAA configuration
-        client-id: web_app
-        secret: changeit
+
 
 # ===================================================================
 # Application specific properties
@@ -147,4 +139,4 @@ oauth2:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:

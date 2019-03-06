@@ -57,6 +57,10 @@ spring:
     application:
         name: dashboard
     cloud:
+        inetutils:
+            preferredNetworks:
+                - 192.168.
+                - 10.
         consul:
             discovery:
                 healthCheckPath: /management/health
@@ -64,22 +68,31 @@ spring:
             config:
                 watch:
                     enabled: false
+    jackson:
+        serialization.write_dates_as_timestamps: false
+        default-property-inclusion: NON_NULL
+        serialization.write_empty_json_arrays: false
     jpa:
         open-in-view: false
-        properties:
-            hibernate.jdbc.time_zone: UTC
         hibernate:
             ddl-auto: none
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    liquibase:
+        default-schema: XM
     messages:
         basename: i18n/messages
     mvc:
         favicon:
             enabled: false
     thymeleaf:
-        mode: HTML
+        mode: XHTML
+    kafka:
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 security:
     oauth2:
         resource:
@@ -138,4 +151,18 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+xm-config:
+    enabled: true
+    xm-config-url: http://config
+    kafka-config-topic: config_topic
+
+application:
+    tenant-ignored-path-list: /v2/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
+    timelines-enabled: true
+    kafka-enabled: true
+    kafka-system-queue: system_queue
+    db-schema-suffix:
+    retry:
+        max-attempts: 3
+        delay: 1000 #in milliseconds
+        multiplier: 2

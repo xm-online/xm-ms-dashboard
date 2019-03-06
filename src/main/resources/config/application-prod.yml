@@ -13,13 +13,10 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
-logging:
-    level:
-        ROOT: INFO
-        com.icthh.xm.ms.dashboard: INFO
-        io.github.jhipster: INFO
-
 spring:
+    profiles:
+        active: prod
+        include: swagger
     devtools:
         restart:
             enabled: false
@@ -36,20 +33,23 @@ spring:
         url: jdbc:postgresql://localhost:5432/dashboard
         username: dashboard
         password:
-        hikari:
-            auto-commit: false
     jpa:
         database-platform: io.github.jhipster.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
         show-sql: false
         properties:
             hibernate.id.new_generator_mappings: true
-            hibernate.connection.provider_disables_autocommit: true
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: false
+            #hibernate.cache.region.factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
+            #hibernate.cache.hazelcast.instance_name: dashboard
+            hibernate.cache.use_minimal_puts: true
+            #hibernate.cache.hazelcast.use_lite_member: true
     liquibase:
         contexts: prod
+    kafka:
+        bootstrap-servers: localhost
     mail:
         host: localhost
         port: 25
@@ -104,6 +104,10 @@ jhipster:
         version: V_1_1 # To use HTTP/2 you will need SSL support (see above the "server.ssl" configuration)
         cache: # Used by the CachingHttpHeadersFilter
             timeToLiveInDays: 1461
+    cache: # Cache configuration
+        hazelcast: # Hazelcast distributed cache
+            time-to-live-seconds: 3600
+            backup-count: 1
     security:
         client-authorization:
             access-token-uri: http://uaa/oauth/token
@@ -127,17 +131,7 @@ jhipster:
             host: localhost
             port: 5000
             queue-size: 512
-oauth2:
-    signature-verification:
-        public-key-endpoint-uri: http://uaa/oauth/token_key
-        #ttl for public keys to verify JWT tokens (in ms)
-        ttl: 3600000
-        #max. rate at which public keys will be fetched (in ms)
-        public-key-refresh-rate-limit: 10000
-    web-client-configuration:
-        #change client secret in production, keep in sync with UAA configuration
-        client-id: web_app
-        secret: changeit
+
 
 # ===================================================================
 # Application specific properties
@@ -148,4 +142,4 @@ oauth2:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
