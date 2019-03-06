@@ -1,4 +1,6 @@
-# dashboard
+[![Build Status](https://travis-ci.org/xm-online/xm-ms-dashboard.svg?branch=master)](https://travis-ci.org/xm-online/xm-ms-dashboard) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?&metric=sqale_index&branch=master&project=xm-online:xm-ms-dashboard)](https://sonarcloud.io/dashboard/index/xm-online:xm-ms-dashboard) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?&metric=ncloc&branch=master&project=xm-online:xm-ms-dashboard)](https://sonarcloud.io/dashboard/index/xm-online:xm-ms-dashboard) [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?&metric=coverage&branch=master&project=xm-online:xm-ms-dashboard)](https://sonarcloud.io/dashboard/index/xm-online:xm-ms-dashboard)
+
+# XM MS Dashboard
 
 This application was generated using JHipster 5.7.2, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v5.7.2](https://www.jhipster.tech/documentation-archive/v5.7.2).
 

@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
+import com.icthh.xm.commons.logging.web.rest.LogsResource;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.web.rest.vm.LoggerVM;
@@ -8,6 +9,7 @@ import ch.qos.logback.classic.LoggerContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -27,13 +29,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see LogsResource
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SecurityBeanOverrideConfiguration.class, DashboardApp.class})
+@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
 public class LogsResourceIntTest {
 
     private MockMvc restLogsMockMvc;
 
     @Before
     public void setup() {
+        MockitoAnnotations.initMocks(this);
+
         LogsResource logsResource = new LogsResource();
         this.restLogsMockMvc = MockMvcBuilders
             .standaloneSetup(logsResource)
@@ -41,14 +45,14 @@ public class LogsResourceIntTest {
     }
 
     @Test
-    public void getAllLogs() throws Exception {
+    public void getAllLogs()throws Exception {
         restLogsMockMvc.perform(get("/management/logs"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
     }
 
     @Test
-    public void changeLogs() throws Exception {
+    public void changeLogs()throws Exception {
         LoggerVM logger = new LoggerVM();
         logger.setLevel("INFO");
         logger.setName("ROOT");

@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest.util;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -8,15 +9,13 @@ import org.springframework.web.util.UriComponentsBuilder;
  * Utility class for handling pagination.
  *
  * <p>
- * Pagination uses the same principles as the <a href="https://developer.github.com/v3/#pagination">GitHub API</a>,
+ * Pagination uses the same principles as the <a href="https://developer.github.com/v3/#pagination">Github API</a>,
  * and follow <a href="http://tools.ietf.org/html/rfc5988">RFC 5988 (Link header)</a>.
  */
+@UtilityClass
 public final class PaginationUtil {
 
-    private PaginationUtil() {
-    }
-
-    public static <T> HttpHeaders generatePaginationHttpHeaders(Page<T> page, String baseUrl) {
+    public static HttpHeaders generatePaginationHttpHeaders(Page page, String baseUrl) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Total-Count", Long.toString(page.getTotalElements()));

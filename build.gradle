@@ -25,6 +25,8 @@ plugins {
     //jhipster-needle-gradle-plugins - JHipster will add additional gradle plugins here
 }
 
+apply from: 'gradle/git.gradle'
+
 apply plugin: 'java'
 sourceCompatibility=1.8
 targetCompatibility=1.8
@@ -37,7 +39,9 @@ apply plugin: 'war'
 apply plugin: 'propdeps'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'idea'
-
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
 dependencyManagement {
   imports {
     mavenBom 'io.github.jhipster:jhipster-dependencies:' + jhipster_dependencies_version
@@ -57,13 +61,19 @@ bootWar {
 }
 
 war {
-    enabled = true
-    classifier = 'original'
+
 }
 
 springBoot {
     mainClassName = 'com.icthh.xm.ms.dashboard.DashboardApp'
-    buildInfo()
+    buildInfo() {
+        properties {
+            additional = [
+                currentBranch: gitInfo.currentBranch,
+                hashCommit   : gitInfo.hashCommit
+            ]
+        }
+    }
 }
 
 if (OperatingSystem.current().isWindows()) {
@@ -90,12 +100,19 @@ if (OperatingSystem.current().isWindows()) {
 }
 
 test {
-    exclude '**/CucumberTest*'
+    systemProperty "spring.profiles.active", "test"
+    mkdir("src/test/features")
+    include '**/*UnitTest*'
+    include '**/*IntTest*'
 
     // uncomment if the tests reports are not generated
     // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
     // ignoreFailures true
-    reports.html.enabled = false
+    reports.html.enabled = true
+    testLogging {
+        exceptionFormat = 'full'
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
 }
 
 task cucumberTest(type: Test) {
@@ -169,16 +186,29 @@ liquibase {
     runList = project.ext.runList
 }
 
+group = 'com.icthh.xm.ms.dashboard'
+version = '0.0.1-SNAPSHOT'
+
+description = ''
+
 configurations {
     providedRuntime
     compile.exclude module: "spring-boot-starter-tomcat"
+    // netty's native is pulled by spring-cloud-starter-ribbon, but is useless unless you explicitly add the native binary dependency.
+    // Having it in the classpath without the binary can cause warnings
+    all*.exclude group: 'io.netty', module: 'netty-transport-native-epoll'
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-    //jhipster-needle-gradle-repositories - JHipster will add additional repositories
+    maven { url 'http://repo.spring.io/milestone' }
+    maven { url 'http://repo.spring.io/snapshot' }
+    maven { url 'https://repository.jboss.org/nexus/content/repositories/releases' }
+    maven { url 'https://oss.sonatype.org/content/repositories/releases' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'http://repo.maven.apache.org/maven2' }
 }
 
 dependencies {
@@ -248,6 +278,7 @@ dependencies {
     compile "org.postgresql:postgresql"
     liquibaseRuntime "org.postgresql:postgresql"
     compile "org.mapstruct:mapstruct-jdk8:${mapstruct_version}"
+    annotationProcessor "org.projectlombok:lombok:${lombok_version}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstruct_version}"
     annotationProcessor "org.hibernate:hibernate-jpamodelgen"
     annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor") {
@@ -268,7 +299,38 @@ dependencies {
     testCompile "org.hamcrest:hamcrest-library"
     testCompile "com.h2database:h2"
     liquibaseRuntime "com.h2database:h2"
+    testCompileOnly "org.projectlombok:lombok:${lombok_version}"
+
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
+    compileOnly "org.projectlombok:lombok:${lombok_version}"
+    compile "com.icthh.xm.commons:xm-commons-ms-web:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-timeline:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-migration-db:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-permission:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-tenant-endpoint:${xm_commons_version}"
+    compile "com.icthh.xm.commons:xm-commons-i18n:${xm_commons_version}"
+}
+
+checkstyle {
+    toolVersion = "7.6.1"
+    ignoreFailures = true
+    configFile = rootProject.file('./qa/checkstyle.xml')
+}
+
+findbugs {
+    toolVersion = '3.0.1'
+    ignoreFailures = true
+}
+
+pmd {
+    rulePriority = 3
+    toolVersion = '5.5.4'
+    ignoreFailures = true
+    ruleSetFiles = files("./qa/pmd.xml")
+}
+
+clean {
+    delete "target"
 }
 
 task cleanResources(type: Delete) {
