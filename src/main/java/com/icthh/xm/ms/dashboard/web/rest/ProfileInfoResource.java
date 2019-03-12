@@ -26,7 +26,7 @@ public class ProfileInfoResource {
     }
 
     @GetMapping("/profile-info")
-    @PostAuthorize("hasPermission({'returnObject': returnObject}, 'BALANCE.PROFILE.GET_LIST.ITEM')")
+    @PostAuthorize("hasPermission({'returnObject': returnObject}, 'PROFILE_INFO.GET_LIST.ITEM')")
     public ProfileInfoVM getActiveProfiles() {
         String[] activeProfiles = DefaultProfileUtil.getActiveProfiles(env);
 
