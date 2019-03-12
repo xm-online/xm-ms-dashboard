@@ -20,7 +20,4 @@ public interface ProfileRepository extends JpaRepository<Profile,Long>, Resource
 
     @Query("select profile from Profile profile left join fetch profile.dashboards where profile.id =:id")
     Profile findOneWithEagerRelationships(@Param("id") Long id);
-
-    @Override
-    Object findById(Object id);
 }

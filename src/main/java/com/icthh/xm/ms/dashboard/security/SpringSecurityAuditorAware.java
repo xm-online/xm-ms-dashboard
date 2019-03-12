@@ -2,6 +2,9 @@ package com.icthh.xm.ms.dashboard.security;
 
 import com.icthh.xm.commons.security.XmAuthenticationContextHolder;
 import com.icthh.xm.ms.dashboard.config.Constants;
+
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
@@ -16,7 +19,7 @@ public class SpringSecurityAuditorAware implements AuditorAware<String> {
     private final XmAuthenticationContextHolder authenticationContextHolder;
 
     @Override
-    public String getCurrentAuditor() {
-        return authenticationContextHolder.getContext().getLogin().orElse(Constants.SYSTEM_ACCOUNT);
+    public Optional<String> getCurrentAuditor() {
+        return Optional.of(authenticationContextHolder.getContext().getLogin().orElse(Constants.SYSTEM_ACCOUNT));
     }
 }

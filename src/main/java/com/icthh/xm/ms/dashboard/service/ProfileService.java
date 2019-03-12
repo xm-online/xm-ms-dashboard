@@ -69,7 +69,7 @@ public class ProfileService {
      *  @param id the id of the entity
      */
     public void delete(Long id) {
-        profileRepository.delete(id);
+        profileRepository.deleteById(id);
     }
 
     /**

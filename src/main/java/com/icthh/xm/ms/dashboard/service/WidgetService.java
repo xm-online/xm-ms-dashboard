@@ -62,7 +62,7 @@ public class WidgetService {
      */
     @Transactional(readOnly = true)
     public WidgetDto findOne(Long id) {
-        Widget widget = widgetRepository.findOne(id);
+        Widget widget = widgetRepository.findById(id).orElse(null);
         return widget != null ? new WidgetDto(widget) : null;
     }
 
@@ -72,7 +72,7 @@ public class WidgetService {
      *  @param id the id of the entity
      */
     public void delete(Long id) {
-        widgetRepository.delete(id);
+        widgetRepository.deleteById(id);
     }
 
     /**

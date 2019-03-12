@@ -1,14 +1,17 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "4.6.1",
+    "promptValues": {
+      "packageName": "com.icthh.xm.ms.dashboard"
+    },
+    "jhipsterVersion": "5.7.2",
+    "applicationType": "microservice",
     "baseName": "dashboard",
     "packageName": "com.icthh.xm.ms.dashboard",
     "packageFolder": "com/icthh/xm/ms/dashboard",
     "serverPort": "8082",
     "authenticationType": "uaa",
     "uaaBaseName": "uaa",
-    "hibernateCache": "hazelcast",
-    "clusteredHttpSession": false,
+    "cacheProvider": "no",
     "websocket": false,
     "databaseType": "sql",
     "devDatabaseType": "h2Memory",
@@ -17,22 +20,17 @@
     "messageBroker": false,
     "serviceDiscoveryType": "consul",
     "buildTool": "gradle",
-    "enableSocialSignIn": false,
-    "jwtSecretKey": "ae82b9bc3a1142c211212838861488c40e9ae111",
-    "enableTranslation": true,
-    "applicationType": "microservice",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "ZTcyZDZiNmI3M2NlZWRiYTE4ODg2OTU5YTJjNWI1ZDI5OWY3NWY5MDc5MzZiNGVmNzkzYzdiNWVhMGU0YmI5NjI2MWIwOTdkOTQ1YTZmMGIzNjg2YmQ0MmY4ZjE3NjRjNGM0ZjlkYWZhMTFkOWRkNmRlZmU1MzI2ODQyM2I5Mjc=",
     "testFrameworks": [
       "gatling",
       "cucumber"
     ],
     "jhiPrefix": "jhi",
+    "otherModules": [],
+    "enableTranslation": false,
+    "clientPackageManager": "npm",
     "skipClient": true,
-    "skipUserManagement": true,
-    "nativeLanguage": "en",
-    "languages": [
-      "en",
-      "ru"
-    ],
-    "clientPackageManager": "yarn"
+    "skipUserManagement": true
   }
 }

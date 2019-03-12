@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.config;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.icthh.xm.commons.config.client.config.XmConfigProperties;

@@ -1,16 +1,14 @@
 package com.icthh.xm.ms.dashboard.client;
 
+import feign.RequestInterceptor;
 import io.github.jhipster.security.uaa.LoadBalancedResourceDetails;
 
-import feign.RequestInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import java.io.IOException;
+
 import org.springframework.cloud.security.oauth2.client.feign.OAuth2FeignRequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
-
-import java.io.IOException;
 
 @Configuration
 public class OAuth2InterceptedFeignConfiguration {

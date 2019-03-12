@@ -1,10 +1,14 @@
 package com.icthh.xm.ms.dashboard.client;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
-import org.springframework.cloud.netflix.feign.FeignClientsConfiguration;
-import org.springframework.core.annotation.AliasFor;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClientsConfiguration;
+import org.springframework.core.annotation.AliasFor;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -17,7 +21,7 @@ public @interface AuthorizedFeignClient {
 
     /**
      * A custom <code>@Configuration</code> for the feign client.
-     *
+     * <p>
      * Can contain override <code>@Bean</code> definition for the pieces that
      * make up the client, for instance {@link feign.codec.Decoder},
      * {@link feign.codec.Encoder}, {@link feign.Contract}.

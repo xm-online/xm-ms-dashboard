@@ -46,7 +46,7 @@ public class DashboardResourceFactory implements ResourceFactory {
         Object result = null;
         ResourceRepository resourceRepository = repositories.get(objectType);
         if (resourceRepository != null) {
-            result = resourceRepository.findById(resourceId);
+            result = resourceRepository.findResourceById(resourceId);
         }
         return result;
     }

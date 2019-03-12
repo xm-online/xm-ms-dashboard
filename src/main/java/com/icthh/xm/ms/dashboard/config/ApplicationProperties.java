@@ -1,15 +1,15 @@
 package com.icthh.xm.ms.dashboard.config;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
 import java.util.Collections;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
  * Properties specific to JHipster.
- *
  * <p> Properties are configured in the application.yml file. </p>
  */
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = false)
