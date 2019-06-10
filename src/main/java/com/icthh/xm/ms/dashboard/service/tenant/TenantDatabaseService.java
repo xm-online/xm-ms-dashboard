@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.service.tenant;
 
+import static com.icthh.xm.commons.tenant.TenantContextUtils.assertTenantKeyValid;
 import static com.icthh.xm.ms.dashboard.config.Constants.CHANGE_LOG_PATH;
 import static org.apache.commons.lang3.time.StopWatch.createStarted;
 
@@ -78,6 +79,7 @@ public class TenantDatabaseService {
     public void drop(String tenantKey) {
         StopWatch stopWatch = createStarted();
         log.info("START - SETUP:DeleteTenant:schema tenantKey: {}", tenantKey);
+        assertTenantKeyValid(tenantKey);
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate(String.format(schemaDropResolver.getSchemaDropCommand(), tenantKey));
