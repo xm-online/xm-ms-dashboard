@@ -81,6 +81,7 @@ spring:
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
     liquibase:
         default-schema: XM
+        change-log: classpath:config/liquibase/master.xml
     messages:
         basename: i18n/messages
     mvc:

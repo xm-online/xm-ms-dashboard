@@ -12,9 +12,10 @@ import com.icthh.xm.commons.gen.api.TenantsApi;
 import com.icthh.xm.commons.gen.api.TenantsApiController;
 import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
+import com.icthh.xm.commons.tenant.TenantContextUtils;
+import com.icthh.xm.commons.tenantendpoint.TenantManager;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
-import com.icthh.xm.ms.dashboard.service.tenant.TenantService;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class TenantsApiIntTest {
     private MockMvc mvc;
 
     @Autowired
-    private TenantService service;
+    private TenantManager tenantManager;
 
     @Autowired
     private TenantListRepository tenantListRepository;
@@ -53,7 +54,9 @@ public class TenantsApiIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        TenantsApi controller = new TenantsApiController(new TenantResource(service, tenantListRepository));
+        TenantContextUtils.setTenant(tenantContextHolder, "XM");
+
+        TenantsApi controller = new TenantsApiController(new TenantResource(tenantManager));
         this.mvc = MockMvcBuilders
             .standaloneSetup(controller)
             .build();
