@@ -1,9 +1,8 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.icthh.xm.commons.config.client.repository.TenantListRepository;
 import com.icthh.xm.commons.gen.api.TenantsApiDelegate;
 import com.icthh.xm.commons.gen.model.Tenant;
-import com.icthh.xm.ms.dashboard.service.tenant.TenantService;
+import com.icthh.xm.commons.tenantendpoint.TenantManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,23 +17,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TenantResource implements TenantsApiDelegate {
 
-    private final TenantService service;
-
-    private final TenantListRepository tenantListRepository;
+    private final TenantManager tenantManager;
 
     @Override
     @PreAuthorize("hasPermission({'tenant':#tenant}, 'DASHBOARD.TENANT.CREATE')")
     public ResponseEntity<Void> addTenant(Tenant tenant) {
-        tenantListRepository.addTenant(tenant.getTenantKey().toLowerCase());
-        service.createTenant(tenant);
+        tenantManager.createTenant(tenant);
         return ResponseEntity.ok().build();
     }
 
     @Override
     @PreAuthorize("hasPermission({'tenantKey':#tenantKey}, 'DASHBOARD.TENANT.DELETE')")
     public ResponseEntity<Void> deleteTenant(String tenantKey) {
-        service.deleteTenant(tenantKey);
-        tenantListRepository.deleteTenant(tenantKey.toLowerCase());
+        tenantManager.deleteTenant(tenantKey);
         return ResponseEntity.ok().build();
     }
 
@@ -52,8 +47,8 @@ public class TenantResource implements TenantsApiDelegate {
 
     @Override
     @PreAuthorize("hasPermission({'tenant':#tenant, 'status':#status}, 'DASHBOARD.TENANT.UPDATE')")
-    public ResponseEntity<Void> manageTenant(String tenant, String state) {
-        tenantListRepository.updateTenant(tenant.toLowerCase(), state.toUpperCase());
+    public ResponseEntity<Void> manageTenant(String tenant, String status) {
+        tenantManager.manageTenant(tenant, status);
         return ResponseEntity.ok().build();
     }
 }
