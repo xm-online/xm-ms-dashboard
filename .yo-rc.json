@@ -3,9 +3,9 @@
     "promptValues": {
       "packageName": "com.icthh.xm.ms.dashboard"
     },
-    "jhipsterVersion": "5.7.2",
+    "jhipsterVersion": "6.5.1",
     "applicationType": "microservice",
-    "baseName": "dashboard",
+    "baseName": "gate",
     "packageName": "com.icthh.xm.ms.dashboard",
     "packageFolder": "com/icthh/xm/ms/dashboard",
     "serverPort": "8082",
@@ -21,15 +21,19 @@
     "serviceDiscoveryType": "consul",
     "buildTool": "gradle",
     "enableSwaggerCodegen": false,
-    "jwtSecretKey": "ZTcyZDZiNmI3M2NlZWRiYTE4ODg2OTU5YTJjNWI1ZDI5OWY3NWY5MDc5MzZiNGVmNzkzYzdiNWVhMGU0YmI5NjI2MWIwOTdkOTQ1YTZmMGIzNjg2YmQ0MmY4ZjE3NjRjNGM0ZjlkYWZhMTFkOWRkNmRlZmU1MzI2ODQyM2I5Mjc=",
+    "jwtSecretKey": "OTVkODMyMTYwZTAwNDUyY2RiYzU1ZmQ2ZDQwMmZmZjA0ZWUxZmQwYjY0OGE5ZTRjMWVlMDE1N2RjMDA3YjE1MTgyMGVlMjYwMTc3NjQyYzQ1MzNkODM2M2JjNDYxYzFjZTdlYTgyNzJhYmQ3ZWQ0YjVkMGZmNDUzY2Y0OWJhNjc=",
+    "embeddableLaunchScript": false,
     "testFrameworks": [
       "gatling",
       "cucumber"
     ],
     "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
     "otherModules": [],
     "enableTranslation": false,
     "clientPackageManager": "npm",
+    "blueprints": [],
     "skipClient": true,
     "skipUserManagement": true
   }
