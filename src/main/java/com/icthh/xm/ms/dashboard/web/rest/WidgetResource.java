@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
@@ -55,6 +56,7 @@ public class WidgetResource {
     @PostMapping("/widgets")
     @Timed
     @PreAuthorize("hasPermission({'widget': #widget}, 'WIDGET.CREATE')")
+    @PrivilegeDescription("Privilege to create a new widget")
     public ResponseEntity<Widget> createWidget(@Valid @RequestBody Widget widget) throws URISyntaxException {
         if (widget.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new widget cannot already have an ID")).body(null);
@@ -77,6 +79,7 @@ public class WidgetResource {
     @PutMapping("/widgets")
     @Timed
     @PreAuthorize("hasPermission({'id': #widget.id, 'newWidget': #widget}, 'widget', 'WIDGET.UPDATE')")
+    @PrivilegeDescription("Privilege to updates an existing widget")
     public ResponseEntity<Widget> updateWidget(@Valid @RequestBody Widget widget) throws URISyntaxException {
         if (widget.getId() == null) {
             //in order to call method with permissions check
@@ -108,6 +111,7 @@ public class WidgetResource {
     @GetMapping("/widgets/{id}")
     @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'WIDGET.GET_LIST.ITEM')")
+    @PrivilegeDescription("Privilege to get the widget by id")
     public ResponseEntity<WidgetDto> getWidget(@PathVariable Long id) {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(widgetService.findOne(id)));
     }
@@ -121,6 +125,7 @@ public class WidgetResource {
     @DeleteMapping("/widgets/{id}")
     @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'widget', 'WIDGET.DELETE')")
+    @PrivilegeDescription("Privilege to delete the widget by id")
     public ResponseEntity<Void> deleteWidget(@PathVariable Long id) {
         widgetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
