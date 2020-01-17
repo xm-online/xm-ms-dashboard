@@ -49,7 +49,7 @@ public class DefaultProfileService {
      */
     @Transactional(readOnly = true)
     @FindWithPermission("DEFAULT_PROFILE.GET_LIST")
-    @PrivilegeDescription("Privilege to get all the defaultProfiles")
+    @PrivilegeDescription("Privilege to get all the default dashboards per role configuration. Tenant admin can configure default dashboard")
     public List<DefaultProfile> findAll(String privilegeKey) {
         return permittedRepository.findAll(DefaultProfile.class, privilegeKey);
     }
