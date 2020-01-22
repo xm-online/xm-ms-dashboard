@@ -7,15 +7,27 @@ import static javax.persistence.CascadeType.REMOVE;
 import com.icthh.xm.ms.dashboard.domain.converter.MapToStringConverter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.*;
-import java.util.function.BiConsumer;
 
 /**
  * Dashboard is a user web page which collates information about a business via set of widgets.
@@ -183,6 +195,12 @@ public class Dashboard implements Serializable {
     public Dashboard addWidgets(Widget widget) {
         this.widgets.add(widget);
         widget.setDashboard(this);
+        return this;
+    }
+
+    public Dashboard addWidgets(Set<Widget> widgets) {
+        this.widgets.addAll(widgets);
+        widgets.forEach(widget -> widget.setDashboard(this));
         return this;
     }
 
