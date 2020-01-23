@@ -16,28 +16,28 @@ public class BulkDashboardResult {
 
     public void created(DashboardDto dashboardDto) {
         itemStatuses.add(BulkDashboardItemStatus.builder()
-            .dashboardDto(dashboardDto)
+            .dashboardItem(dashboardDto)
             .status(CREATED).build()
         );
     }
 
     public void updated(DashboardDto dashboardDto) {
         itemStatuses.add(BulkDashboardItemStatus.builder()
-            .dashboardDto(dashboardDto)
+            .dashboardItem(dashboardDto)
             .status(UPDATED).build()
         );
     }
 
     public void deleted(DashboardDto dashboardDto) {
         itemStatuses.add(BulkDashboardItemStatus.builder()
-            .dashboardDto(dashboardDto)
+            .dashboardItem(dashboardDto)
             .status(DELETED).build()
         );
     }
 
     public void failed(DashboardDto dashboardDto) {
         itemStatuses.add(BulkDashboardItemStatus.builder()
-            .dashboardDto(dashboardDto)
+            .dashboardItem(dashboardDto)
             .status(FAILED).build()
         );
     }

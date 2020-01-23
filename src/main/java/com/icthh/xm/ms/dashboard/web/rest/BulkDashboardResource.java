@@ -35,7 +35,7 @@ public class BulkDashboardResource implements AtomicBulkDashboardResource {
      */
     @Timed
     @PostMapping("/dashboards")
-    @PreAuthorize("hasPermission('DASHBOARD.CREATE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE')")
     public BulkDashboardResult createDashboards(@Valid @RequestBody BulkDashboard bulkDashboard) {
         return bulkDashboardService.create(bulkDashboard);
     }
@@ -48,7 +48,7 @@ public class BulkDashboardResource implements AtomicBulkDashboardResource {
      */
     @Timed
     @PutMapping("/dashboards")
-    @PreAuthorize("hasPermission('DASHBOARD.UPDATE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE')")
     public BulkDashboardResult updateDashboards(@Valid @RequestBody BulkDashboard bulkDashboard) {
         return bulkDashboardService.update(bulkDashboard);
     }
@@ -61,7 +61,7 @@ public class BulkDashboardResource implements AtomicBulkDashboardResource {
      */
     @Timed
     @DeleteMapping("/dashboards")
-    @PreAuthorize("hasPermission('DASHBOARD.DELETE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE')")
     public BulkDashboardResult deleteDashboards(@Valid @RequestBody BulkDashboard bulkDashboard) {
         return bulkDashboardService.delete(bulkDashboard);
     }

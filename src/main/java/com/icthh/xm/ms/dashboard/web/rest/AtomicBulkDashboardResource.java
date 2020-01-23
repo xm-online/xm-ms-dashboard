@@ -22,7 +22,7 @@ public interface AtomicBulkDashboardResource {
      */
     @Timed
     @PostMapping("/dashboards/atomic")
-    @PreAuthorize("hasPermission('DASHBOARD.CREATE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE')")
     default void atomicCreateDashboards(@Valid @RequestBody BulkDashboard bulkDashboard) {
         getAtomicBulkDashboardService().create(bulkDashboard);
     }
@@ -35,7 +35,7 @@ public interface AtomicBulkDashboardResource {
      */
     @Timed
     @PutMapping("/dashboards/atomic")
-    @PreAuthorize("hasPermission('DASHBOARD.UPDATE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE')")
     default void atomicUpdateDashboards(@Valid @RequestBody BulkDashboard bulkDashboard) {
         getAtomicBulkDashboardService().update(bulkDashboard);
     }
@@ -48,7 +48,7 @@ public interface AtomicBulkDashboardResource {
      */
     @Timed
     @DeleteMapping("/dashboards/atomic")
-    @PreAuthorize("hasPermission('DASHBOARD.DELETE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE')")
     default void atomicDeleteDashboards(@Valid @RequestBody BulkDashboard bulkDashboard) {
         getAtomicBulkDashboardService().delete(bulkDashboard);
     }

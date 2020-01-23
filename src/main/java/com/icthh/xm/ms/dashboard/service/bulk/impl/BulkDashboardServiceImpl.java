@@ -1,7 +1,7 @@
 package com.icthh.xm.ms.dashboard.service.bulk.impl;
 
+import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.exception.ResourceNotFoundException;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.BulkDashboardService;
@@ -26,9 +26,8 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
 
         BulkDashboardResult saveResult = new BulkDashboardResult();
 
-        bulkDashboard.getDashboardItems().stream()
-            .map(dashboardMapper::toEntity)
-            .forEach(dashboardEntity -> saveEntity(dashboardEntity, saveResult));
+        bulkDashboard.getDashboardItems()
+            .forEach(dashboardEntity -> create(dashboardEntity, saveResult));
 
         return saveResult;
     }
@@ -40,7 +39,6 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
         bulkDashboard.getDashboardItems()
             .forEach(dashboardDto -> update(dashboardDto, bulkDashboardResult));
 
-
         return bulkDashboardResult;
     }
 
@@ -49,37 +47,43 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
 
         BulkDashboardResult deleteResult = new BulkDashboardResult();
 
-        bulkDashboard.getDashboardItems().stream()
-            .map(dashboardMapper::toEntity)
-            .forEach(dashboardEntity -> deleteEntity(dashboardEntity, deleteResult));
+        bulkDashboard.getDashboardItems()
+            .forEach(dashboardEntity -> delete(dashboardEntity, deleteResult));
 
         return deleteResult;
     }
 
-    private void update(DashboardDto dashboardDto, BulkDashboardResult bulkDashboardResult) {
-        Dashboard dashboard = dashboardRepository.findById(dashboardDto.getId())
-            .orElseThrow(() -> new ResourceNotFoundException(
-                "Could not find dashboard with id = " + dashboardDto.getId()));
-
-        saveEntity(dashboardMapper.merge(dashboardDto, dashboard), bulkDashboardResult);
-    }
-
-    private void saveEntity(Dashboard dashboardEntity, BulkDashboardResult saveResult) {
+    void update(DashboardDto dashboardDto, BulkDashboardResult saveResult) {
         try {
-            persist(dashboardEntity);
-            saveResult.created(dashboardMapper.toDto(dashboardEntity));
+            Dashboard dashboardEntity = dashboardRepository.findById(dashboardDto.getId())
+                .orElseThrow(() -> new BusinessException(
+                    "Could not find dashboard with id = " + dashboardDto.getId()));
+
+            persist(dashboardMapper.merge(dashboardDto, dashboardEntity));
+
+            saveResult.updated(dashboardDto);
         } catch (Exception ex) {
-            saveResult.failed(dashboardMapper.toDto(dashboardEntity));
+            saveResult.failed(dashboardDto);
             log.error("Could not save dashboard entity ", ex);
         }
     }
 
-    private void deleteEntity(Dashboard dashboardEntity, BulkDashboardResult saveResult) {
+    private void create(DashboardDto dashboardDto, BulkDashboardResult saveResult) {
         try {
-            delete(dashboardEntity);
-            saveResult.deleted(dashboardMapper.toDto(dashboardEntity));
+            persist(dashboardMapper.toEntity(dashboardDto));
+            saveResult.created(dashboardDto);
         } catch (Exception ex) {
-            saveResult.failed(dashboardMapper.toDto(dashboardEntity));
+            saveResult.failed(dashboardDto);
+            log.error("Could not save dashboard entity ", ex);
+        }
+    }
+
+    private void delete(DashboardDto dashboardDto, BulkDashboardResult saveResult) {
+        try {
+            delete(dashboardDto.getId());
+            saveResult.deleted(dashboardDto);
+        } catch (Exception ex) {
+            saveResult.failed(dashboardDto);
             log.error("Could not delete dashboard entity ", ex);
         }
     }
@@ -89,8 +93,7 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
         dashboardRepository.save(dashboardEntity);
     }
 
-    @Transactional
-    void delete(Dashboard dashboardEntity) {
-        dashboardRepository.delete(dashboardEntity);
+    void delete(Long id) {
+        dashboardRepository.deleteById(id);
     }
 }

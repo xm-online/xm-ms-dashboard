@@ -2,8 +2,8 @@ package com.icthh.xm.ms.dashboard.service.bulk.impl;
 
 import static java.util.stream.Collectors.toList;
 
+import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.exception.ResourceNotFoundException;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
@@ -22,41 +22,60 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     private final DashboardRepository dashboardRepository;
 
     @Override
-    @Transactional
     public void create(BulkDashboard bulkDashboard) {
-        Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
-            .map(dashboardMapper::toEntity)
-            .collect(toList());
+        try {
+            Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
+                .map(dashboardMapper::toEntity)
+                .collect(toList());
 
-        dashboardRepository.saveAll(dashboardEntities);
+            save(dashboardEntities);
+        } catch (Exception ex) {
+            throw new BusinessException("Could not perform bulk create : " + ex.getMessage());
+        }
     }
 
     @Override
-    @Transactional
     public void update(BulkDashboard bulkDashboard) {
-        Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
-            .map(this::update)
-            .collect(toList());
+        try {
+            Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
+                .map(this::update)
+                .collect(toList());
 
+            save(dashboardEntities);
+        } catch (Exception ex) {
+            throw new BusinessException("Could not perform bulk update : " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(BulkDashboard bulkDashboard) {
+        try {
+
+            Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
+                .map(dashboardMapper::toEntity)
+                .collect(toList());
+
+            delete(dashboardEntities);
+        } catch (Exception ex) {
+            throw new BusinessException("Could not perform bulk delete dashboards : " + ex.getMessage());
+        }
+    }
+
+    @Transactional
+    void save(Collection<Dashboard> dashboardEntities) {
         dashboardRepository.saveAll(dashboardEntities);
+    }
+
+    @Transactional
+    void delete(Collection<Dashboard> dashboardEntities) {
+        dashboardRepository.deleteAll(dashboardEntities);
     }
 
     private Dashboard update(DashboardDto dashboardDto) {
         Dashboard dashboard = dashboardRepository.findById(dashboardDto.getId())
-            .orElseThrow(() -> new ResourceNotFoundException(
+            .orElseThrow(() -> new BusinessException(
                 "Could not find dashboard with id = " + dashboardDto.getId()));
 
         return dashboardMapper.merge(dashboardDto, dashboard);
     }
-
-    @Override
-    @Transactional
-    public void delete(BulkDashboard bulkDashboard) {
-        Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
-            .map(dashboardMapper::toEntity)
-            .collect(toList());
-
-        dashboardRepository.deleteAll(dashboardEntities);
-    }
-
 }

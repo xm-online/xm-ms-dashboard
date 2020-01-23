@@ -1,0 +1,78 @@
+{
+    "dashboardItems": [
+        {
+            "id": 951,
+            "name": "Port-out request details",
+            "owner": "xm_uaa",
+            "typeKey": "PORTOUT-REQUEST-DETAILS",
+            "isPublic": false,
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Port-out request",
+                    "ru": "Port-out запрос",
+                    "uk": "Port-out запит"
+                },
+                "icon": "no-icon",
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "NUMBER-PORTABILITY",
+                        "name": {
+                            "en": "Number Portability",
+                            "ru": "Портация номера",
+                            "uk": "Портація номера"
+                        },
+                        "orderIndex": 1,
+                        "icon": "swap_horizontal_circle"
+                    }
+                },
+                "slug": "port-out-request"
+            },
+            "widgets": [
+                {
+                    "selector": "ext-tenant-mnp/request-details-widget",
+                    "name": "Port-out request details",
+                    "isPublic": false
+                }
+            ]
+        },
+        {
+            "id": 952,
+            "name": "Port-out request details",
+            "owner": "xm_uaa",
+            "typeKey": "PORTOUT-REQUEST-DETAILS",
+            "isPublic": false,
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Port-out request",
+                    "ru": "Port-out запрос",
+                    "uk": "Port-out запит"
+                },
+                "icon": "no-icon",
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "NUMBER-PORTABILITY",
+                        "name": {
+                            "en": "Number Portability",
+                            "ru": "Портация номера",
+                            "uk": "Портація номера"
+                        },
+                        "orderIndex": 1,
+                        "icon": "swap_horizontal_circle"
+                    }
+                },
+                "slug": "port-out-request"
+            },
+            "widgets": [
+                {
+                    "selector": "ext-tenant-mnp/request-details-widget",
+                    "name": "Port-out request details",
+                    "isPublic": false
+                }
+            ]
+        }
+    ]
+}

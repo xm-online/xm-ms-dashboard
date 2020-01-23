@@ -49,7 +49,7 @@ public class DashboardMapper {
         entity.setLayout(dto.getLayout());
         entity.setTypeKey(dto.getTypeKey());
         entity.setIsPublic(dto.getIsPublic());
-        entity.addWidgets(toEntities(dto.getWidgets()));
+        entity.setWidgets(toEntities(dto.getWidgets()));
 
         return entity;
     }

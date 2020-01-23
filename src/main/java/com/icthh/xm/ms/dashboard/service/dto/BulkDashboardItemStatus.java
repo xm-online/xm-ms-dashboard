@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BulkDashboardItemStatus {
 
-    private DashboardDto dashboardDto;
     private BulkOperationStatus status;
+    private DashboardDto dashboardItem;
 
 }
