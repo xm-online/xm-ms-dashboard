@@ -1,74 +1,74 @@
 [
     {
         "id": 953,
-        "name": "Port-out request details",
-        "owner": "xm_uaa",
-        "typeKey": "PORTOUT-REQUEST-DETAILS",
+        "name": "Name of dashboard",
+        "owner": "me",
+        "typeKey": "TYPE_KEY",
         "isPublic": false,
         "config": {
             "hidden": true,
             "name": {
-                "en": "Port-out request",
-                "ru": "Port-out запрос",
-                "uk": "Port-out запит"
+                "en": "Config 1",
+                "ru": "Config 1",
+                "uk": "Config 1"
             },
             "icon": "no-icon",
             "orderIndex": 5,
             "menu": {
                 "group": {
-                    "key": "NUMBER-PORTABILITY",
+                    "key": "MENU_KEY",
                     "name": {
-                        "en": "Number Portability",
-                        "ru": "Портация номера",
-                        "uk": "Портація номера"
+                        "en": "KEY",
+                        "uk": "KEY",
+                        "ru": "KEY"
                     },
                     "orderIndex": 1,
                     "icon": "swap_horizontal_circle"
                 }
             },
-            "slug": "port-out-request"
+            "slug": "slug"
         },
         "widgets": [
             {
                 "selector": "ext-tenant-mnp/request-details-widget",
-                "name": "Port-out request details",
+                "name": "Widget",
                 "isPublic": false
             }
         ]
     },
     {
         "id": 954,
-        "name": "Port-out request details",
-        "owner": "xm_uaa",
-        "typeKey": "PORTOUT-REQUEST-DETAILS",
+        "name": "Name of dashboard",
+        "owner": "me",
+        "typeKey": "TYPE_KEY",
         "isPublic": false,
         "config": {
             "hidden": true,
             "name": {
-                "en": "Port-out request",
-                "ru": "Port-out запрос",
-                "uk": "Port-out запит"
+                "en": "Config 1",
+                "ru": "Config 1",
+                "uk": "Config 1"
             },
             "icon": "no-icon",
             "orderIndex": 5,
             "menu": {
                 "group": {
-                    "key": "NUMBER-PORTABILITY",
+                    "key": "MENU_KEY",
                     "name": {
-                        "en": "Number Portability",
-                        "ru": "Портация номера",
-                        "uk": "Портація номера"
+                        "en": "KEY",
+                        "uk": "KEY",
+                        "ru": "KEY"
                     },
                     "orderIndex": 1,
                     "icon": "swap_horizontal_circle"
                 }
             },
-            "slug": "port-out-request"
+            "slug": "slug"
         },
         "widgets": [
             {
                 "selector": "ext-tenant-mnp/request-details-widget",
-                "name": "Port-out request details",
+                "name": "Widget",
                 "isPublic": false
             }
         ]
