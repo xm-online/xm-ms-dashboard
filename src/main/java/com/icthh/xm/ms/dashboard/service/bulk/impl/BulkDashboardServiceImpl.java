@@ -5,9 +5,9 @@ import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.BulkDashboardService;
-import com.icthh.xm.ms.dashboard.service.dto.BulkDashboard;
 import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import java.util.Collection;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,32 +22,32 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
     private final DashboardRepository dashboardRepository;
 
     @Override
-    public BulkDashboardResult create(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult create(Collection<DashboardDto> dashboardItems) {
 
         BulkDashboardResult saveResult = new BulkDashboardResult();
 
-        bulkDashboard.getDashboardItems()
+        dashboardItems
             .forEach(dashboardEntity -> create(dashboardEntity, saveResult));
 
         return saveResult;
     }
 
     @Override
-    public BulkDashboardResult update(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult update(Collection<DashboardDto> dashboardItems) {
         BulkDashboardResult bulkDashboardResult = new BulkDashboardResult();
 
-        bulkDashboard.getDashboardItems()
+        dashboardItems
             .forEach(dashboardDto -> update(dashboardDto, bulkDashboardResult));
 
         return bulkDashboardResult;
     }
 
     @Override
-    public BulkDashboardResult delete(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult delete(Collection<DashboardDto> dashboardItems) {
 
         BulkDashboardResult deleteResult = new BulkDashboardResult();
 
-        bulkDashboard.getDashboardItems()
+        dashboardItems
             .forEach(dashboardEntity -> delete(dashboardEntity, deleteResult));
 
         return deleteResult;
@@ -93,7 +93,9 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
         dashboardRepository.save(dashboardEntity);
     }
 
+    @Transactional
     void delete(Long id) {
-        dashboardRepository.deleteById(id);
+        dashboardRepository.findById(id)
+            .ifPresent(dashboardRepository::delete);
     }
 }

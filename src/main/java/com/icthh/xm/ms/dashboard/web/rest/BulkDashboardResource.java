@@ -3,8 +3,9 @@ package com.icthh.xm.ms.dashboard.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.bulk.BulkDashboardService;
-import com.icthh.xm.ms.dashboard.service.dto.BulkDashboard;
 import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import java.util.Collection;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,61 +31,61 @@ public class BulkDashboardResource {
     /**
      * Request for non atomic bulk save of dashboards
      *
-     * @param bulkDashboard request body with list of dashboards objects
-     * @param isAtomic makes bulk items been processed in all or nothing style
+     * @param dashboardItems     request body with list of dashboards objects
+     * @param isAtomicProcessing makes bulk items been processed in all or nothing style
      * @return result of each processed dashboard item
      */
     @Timed
     @PostMapping("/dashboards")
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE')")
     public BulkDashboardResult createDashboards(
-        @Valid @RequestBody BulkDashboard bulkDashboard,
-        @RequestParam(defaultValue = "false") boolean isAtomic
+        @Valid @RequestBody Collection<DashboardDto> dashboardItems,
+        @RequestParam(defaultValue = "false") boolean isAtomicProcessing
     ) {
-        if (isAtomic)
-            return atomicBulkDashboardService.create(bulkDashboard);
+        if (isAtomicProcessing)
+            return atomicBulkDashboardService.create(dashboardItems);
         else
-            return bulkDashboardService.create(bulkDashboard);
+            return bulkDashboardService.create(dashboardItems);
     }
 
     /**
      * Request for non atomic bulk update of dashboards
      *
-     * @param bulkDashboard request body with list of dashboards objects
-     * @param isAtomic makes bulk items been processed in all or nothing style
+     * @param dashboardItems     request body with list of dashboards objects
+     * @param isAtomicProcessing makes bulk items been processed in all or nothing style
      * @return result of each processed dashboard item
      */
     @Timed
     @PutMapping("/dashboards")
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE')")
     public BulkDashboardResult updateDashboards(
-        @Valid @RequestBody BulkDashboard bulkDashboard,
-        @RequestParam(defaultValue = "false") boolean isAtomic
+        @Valid @RequestBody Collection<DashboardDto> dashboardItems,
+        @RequestParam(defaultValue = "false") boolean isAtomicProcessing
     ) {
-        if (isAtomic)
-            return atomicBulkDashboardService.update(bulkDashboard);
+        if (isAtomicProcessing)
+            return atomicBulkDashboardService.update(dashboardItems);
         else
-            return bulkDashboardService.update(bulkDashboard);
+            return bulkDashboardService.update(dashboardItems);
     }
 
     /**
      * Request for non atomic bulk delete of dashboards
      *
-     * @param bulkDashboard request body with list of dashboards objects
-     * @param isAtomic makes bulk items been processed in all or nothing style
+     * @param dashboardItems     request body with list of dashboards objects
+     * @param isAtomicProcessing makes bulk items been processed in all or nothing style
      * @return result of each processed dashboard item
      */
     @Timed
     @DeleteMapping("/dashboards")
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE')")
     public BulkDashboardResult deleteDashboards(
-        @Valid @RequestBody BulkDashboard bulkDashboard,
-        @RequestParam(defaultValue = "false") boolean isAtomic
+        @Valid @RequestBody Collection<DashboardDto> dashboardItems,
+        @RequestParam(defaultValue = "false") boolean isAtomicProcessing
     ) {
-        if (isAtomic)
-            return atomicBulkDashboardService.delete(bulkDashboard);
+        if (isAtomicProcessing)
+            return atomicBulkDashboardService.delete(dashboardItems);
         else
-            return bulkDashboardService.delete(bulkDashboard);
+            return bulkDashboardService.delete(dashboardItems);
     }
 
 }

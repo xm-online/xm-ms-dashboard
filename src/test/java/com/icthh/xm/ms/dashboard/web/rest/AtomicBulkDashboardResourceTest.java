@@ -81,7 +81,7 @@ public class AtomicBulkDashboardResourceTest {
     public void shouldAtomicCreateDashboards() {
         httpMock.perform(post("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomic", "true")
+            .param("isAtomicProcessing", "true")
             .content(readAsString("bulkAtomicCreateDashboards.json")))
             .andExpect(status().isOk());
     }
@@ -91,7 +91,7 @@ public class AtomicBulkDashboardResourceTest {
     public void shouldAtomicUpdateDashboards() {
         httpMock.perform(put("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomic", "true")
+            .param("isAtomicProcessing", "true")
             .content(readAsString("bulkAtomicUpdateDashboards.json")))
             .andExpect(status().isOk());
     }
@@ -110,7 +110,7 @@ public class AtomicBulkDashboardResourceTest {
     public void shouldFailAtomicCreateDashboards() {
         httpMock.perform(post("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomic", "true")
+            .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicCreateDashboards.json")))
             .andExpect(status().isBadRequest());
     }
@@ -120,7 +120,7 @@ public class AtomicBulkDashboardResourceTest {
     public void shouldFailAtomicUpdateDashboards() {
         httpMock.perform(put("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomic", "true")
+            .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicUpdateDashboards.json")))
             .andExpect(status().isBadRequest());
     }
@@ -130,7 +130,7 @@ public class AtomicBulkDashboardResourceTest {
     public void shouldFailAtomicDeleteDashboards() {
         httpMock.perform(delete("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomic", "true")
+            .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicDeleteDashboards.json")))
             .andExpect(status().isBadRequest());
     }

@@ -7,7 +7,6 @@ import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
-import com.icthh.xm.ms.dashboard.service.dto.BulkDashboard;
 import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.Collection;
@@ -23,9 +22,9 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     private final DashboardRepository dashboardRepository;
 
     @Override
-    public BulkDashboardResult create(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult create(Collection<DashboardDto> dashboardItems) {
         try {
-            Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
+            Collection<Dashboard> dashboardEntities = dashboardItems.stream()
                 .map(dashboardMapper::toEntity)
                 .collect(toList());
 
@@ -37,9 +36,9 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     }
 
     @Override
-    public BulkDashboardResult update(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult update(Collection<DashboardDto> dashboardItems) {
         try {
-            Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
+            Collection<Dashboard> dashboardEntities = dashboardItems.stream()
                 .map(this::update)
                 .collect(toList());
 
@@ -51,14 +50,14 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     }
 
     @Override
-    public BulkDashboardResult delete(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult delete(Collection<DashboardDto> dashboardItems) {
         try {
 
-            Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
+            Collection<Dashboard> dashboardEntities = dashboardItems.stream()
                 .map(dashboardMapper::toEntity)
                 .collect(toList());
 
-            delete(dashboardEntities);
+            deleteAll(dashboardEntities);
             return new BulkDashboardResult();
         } catch (Exception ex) {
             throw new BusinessException("Could not perform bulk delete dashboards : " + ex.getMessage());
@@ -71,7 +70,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     }
 
     @Transactional
-    void delete(Collection<Dashboard> dashboardEntities) {
+    void deleteAll(Collection<Dashboard> dashboardEntities) {
         dashboardRepository.deleteAll(dashboardEntities);
     }
 

@@ -1,14 +1,15 @@
 package com.icthh.xm.ms.dashboard.service.bulk;
 
-import com.icthh.xm.ms.dashboard.service.dto.BulkDashboard;
 import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import java.util.Collection;
 
 public interface AtomicBulkDashboardService {
 
-    BulkDashboardResult create(BulkDashboard bulkDashboard);
+    BulkDashboardResult create(Collection<DashboardDto> dashboardItems);
 
-    BulkDashboardResult update(BulkDashboard bulkDashboard);
+    BulkDashboardResult update(Collection<DashboardDto> dashboardItems);
 
-    BulkDashboardResult delete(BulkDashboard bulkDashboard);
+    BulkDashboardResult delete(Collection<DashboardDto> dashboardItems);
 
 }
