@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST controller for managing bulk non atomic operations with Dashboard resource.
+ * REST controller for managing bulk atomic and non atomic operations with Dashboard resource.
  */
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class BulkDashboardResource {
     private final AtomicBulkDashboardService atomicBulkDashboardService;
 
     /**
-     * Request for non atomic bulk save of dashboards
+     * Request for atomic and non atomic bulk save of dashboards
      *
      * @param dashboardItems     request body with list of dashboards objects
      * @param isAtomicProcessing makes bulk items been processed in all or nothing style
@@ -49,7 +49,7 @@ public class BulkDashboardResource {
     }
 
     /**
-     * Request for non atomic bulk update of dashboards
+     * Request for atomic and non atomic bulk update of dashboards
      *
      * @param dashboardItems     request body with list of dashboards objects
      * @param isAtomicProcessing makes bulk items been processed in all or nothing style
@@ -69,7 +69,7 @@ public class BulkDashboardResource {
     }
 
     /**
-     * Request for non atomic bulk delete of dashboards
+     * Request for atomic and non atomic bulk delete of dashboards
      *
      * @param dashboardItems     request body with list of dashboards objects
      * @param isAtomicProcessing makes bulk items been processed in all or nothing style
