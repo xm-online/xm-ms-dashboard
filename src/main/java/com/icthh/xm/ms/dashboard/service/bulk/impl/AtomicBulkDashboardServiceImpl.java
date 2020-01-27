@@ -8,6 +8,7 @@ import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.BulkDashboard;
+import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.Collection;
 import javax.transaction.Transactional;
@@ -22,33 +23,35 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     private final DashboardRepository dashboardRepository;
 
     @Override
-    public void create(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult create(BulkDashboard bulkDashboard) {
         try {
             Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
                 .map(dashboardMapper::toEntity)
                 .collect(toList());
 
             save(dashboardEntities);
+            return new BulkDashboardResult();
         } catch (Exception ex) {
             throw new BusinessException("Could not perform bulk create : " + ex.getMessage());
         }
     }
 
     @Override
-    public void update(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult update(BulkDashboard bulkDashboard) {
         try {
             Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
                 .map(this::update)
                 .collect(toList());
 
             save(dashboardEntities);
+            return new BulkDashboardResult();
         } catch (Exception ex) {
             throw new BusinessException("Could not perform bulk update : " + ex.getMessage());
         }
     }
 
     @Override
-    public void delete(BulkDashboard bulkDashboard) {
+    public BulkDashboardResult delete(BulkDashboard bulkDashboard) {
         try {
 
             Collection<Dashboard> dashboardEntities = bulkDashboard.getDashboardItems().stream()
@@ -56,6 +59,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
                 .collect(toList());
 
             delete(dashboardEntities);
+            return new BulkDashboardResult();
         } catch (Exception ex) {
             throw new BusinessException("Could not perform bulk delete dashboards : " + ex.getMessage());
         }
