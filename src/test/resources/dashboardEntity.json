@@ -1,30 +1,30 @@
 {
     "name": "Old name",
-    "owner": "xm_uaa",
-    "typeKey": "PORTOUT-REQUEST-DETAILS",
+    "owner": "owner",
+    "typeKey": "TYPE_KEY",
     "isPublic": false,
     "config": {
         "hidden": true,
         "name": {
-            "en": "Port-out request",
-            "ru": "Port-out запрос",
-            "uk": "Port-out запит"
+            "en": "EN",
+            "ru": "RU",
+            "uk": "UK"
         },
         "icon": "no-icon",
         "orderIndex": 5,
         "menu": {
             "group": {
-                "key": "NUMBER-PORTABILITY",
+                "key": "KEY",
                 "name": {
-                    "en": "Number Portability",
-                    "ru": "Портация номера",
-                    "uk": "Портація номера"
+                    "en": "EN",
+                    "ru": "RU",
+                    "uk": "UK"
                 },
                 "orderIndex": 1,
                 "icon": "swap_horizontal_circle"
             }
         },
-        "slug": "port-out-request"
+        "slug": "slug"
     },
     "widgets": [
         {
