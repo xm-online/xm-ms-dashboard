@@ -1,15 +1,5 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
-import static java.util.Arrays.asList;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.DashboardApp;
@@ -27,6 +17,16 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
+import static java.util.Arrays.asList;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @RunWith(SpringRunner.class)
 @WithMockUser(authorities = "SUPER-ADMIN")
@@ -56,7 +56,6 @@ public class AtomicBulkDashboardResourceTest {
             .setMessageConverters(jacksonMessageConverter)
             .build();
     }
-
 
     @Before
     @SneakyThrows
@@ -112,7 +111,7 @@ public class AtomicBulkDashboardResourceTest {
             .contentType(APPLICATION_JSON)
             .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicCreateDashboards.json")))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -122,7 +121,7 @@ public class AtomicBulkDashboardResourceTest {
             .contentType(APPLICATION_JSON)
             .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicUpdateDashboards.json")))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -132,6 +131,6 @@ public class AtomicBulkDashboardResourceTest {
             .contentType(APPLICATION_JSON)
             .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicDeleteDashboards.json")))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isInternalServerError());
     }
 }

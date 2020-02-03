@@ -5,7 +5,7 @@ import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.BulkDashboardService;
-import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
+import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardItemStatus;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.LinkedList;
+
+import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.created;
+import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.deleted;
+import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.failed;
+import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.updated;
 
 @Slf4j
 @Service
@@ -23,38 +29,38 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
     private final DashboardRepository dashboardRepository;
 
     @Override
-    public BulkDashboardResult create(Collection<DashboardDto> dashboardItems) {
+    public Collection<BulkDashboardItemStatus> create(Collection<DashboardDto> dashboardItems) {
 
-        BulkDashboardResult saveResult = new BulkDashboardResult();
+        Collection<BulkDashboardItemStatus> itemStatuses = new LinkedList<>();
 
         dashboardItems
-            .forEach(dashboardEntity -> create(dashboardEntity, saveResult));
+            .forEach(dashboardEntity -> create(dashboardEntity, itemStatuses));
 
-        return saveResult;
+        return itemStatuses;
     }
 
     @Override
-    public BulkDashboardResult update(Collection<DashboardDto> dashboardItems) {
-        BulkDashboardResult bulkDashboardResult = new BulkDashboardResult();
+    public Collection<BulkDashboardItemStatus> update(Collection<DashboardDto> dashboardItems) {
+        Collection<BulkDashboardItemStatus> itemStatuses = new LinkedList<>();
 
         dashboardItems
-            .forEach(dashboardDto -> update(dashboardDto, bulkDashboardResult));
+            .forEach(dashboardDto -> update(dashboardDto, itemStatuses));
 
-        return bulkDashboardResult;
+        return itemStatuses;
     }
 
     @Override
-    public BulkDashboardResult delete(Collection<DashboardDto> dashboardItems) {
+    public Collection<BulkDashboardItemStatus> delete(Collection<DashboardDto> dashboardItems) {
 
-        BulkDashboardResult deleteResult = new BulkDashboardResult();
+        Collection<BulkDashboardItemStatus> itemStatuses = new LinkedList<>();
 
         dashboardItems
-            .forEach(dashboardEntity -> delete(dashboardEntity, deleteResult));
+            .forEach(dashboardEntity -> delete(dashboardEntity, itemStatuses));
 
-        return deleteResult;
+        return itemStatuses;
     }
 
-    void update(DashboardDto dashboardDto, BulkDashboardResult saveResult) {
+    void update(DashboardDto dashboardDto, Collection<BulkDashboardItemStatus> itemStatuses) {
         try {
             Dashboard dashboardEntity = dashboardRepository.findById(dashboardDto.getId())
                 .orElseThrow(() -> new BusinessException(
@@ -62,29 +68,30 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
 
             persist(dashboardMapper.merge(dashboardDto, dashboardEntity));
 
-            saveResult.updated(dashboardDto);
+            itemStatuses.add(updated(dashboardDto));
         } catch (Exception ex) {
-            saveResult.failed(dashboardDto);
-            log.error("Could not save dashboard entity ", ex);
+            itemStatuses.add(failed(dashboardDto));
+            log.error("Could not update dashboard entity ", ex);
         }
     }
 
-    private void create(DashboardDto dashboardDto, BulkDashboardResult saveResult) {
+    private void create(DashboardDto dashboardDto, Collection<BulkDashboardItemStatus> itemStatuses) {
         try {
             persist(dashboardMapper.toEntity(dashboardDto));
-            saveResult.created(dashboardDto);
+
+            itemStatuses.add(created(dashboardDto));
         } catch (Exception ex) {
-            saveResult.failed(dashboardDto);
-            log.error("Could not save dashboard entity ", ex);
+            itemStatuses.add(failed(dashboardDto));
+            log.error("Could not create dashboard entity ", ex);
         }
     }
 
-    private void delete(DashboardDto dashboardDto, BulkDashboardResult saveResult) {
+    private void delete(DashboardDto dashboardDto, Collection<BulkDashboardItemStatus> itemStatuses) {
         try {
             delete(dashboardDto.getId());
-            saveResult.deleted(dashboardDto);
+            itemStatuses.add(deleted(dashboardDto));
         } catch (Exception ex) {
-            saveResult.failed(dashboardDto);
+            itemStatuses.add(failed(dashboardDto));
             log.error("Could not delete dashboard entity ", ex);
         }
     }

@@ -1,92 +1,90 @@
-{
-    "itemStatuses": [
-        {
-            "status": "DELETED",
-            "dashboardItem": {
-                "id": 953,
-                "name": "Name of dashboard",
-                "owner": "me",
-                "typeKey": "TYPE_KEY",
-                "isPublic": false,
-                "layout": {},
-                "config": {
-                    "hidden": true,
-                    "name": {
-                        "en": "Config 1",
-                        "ru": "Config 1",
-                        "uk": "Config 1"
-                    },
-                    "icon": "no-icon",
-                    "orderIndex": 5,
-                    "menu": {
-                        "group": {
-                            "key": "MENU_KEY",
-                            "name": {
-                                "en": "KEY",
-                                "uk": "KEY",
-                                "ru": "KEY"
-                            },
-                            "orderIndex": 1,
-                            "icon": "swap_horizontal_circle"
-                        }
-                    },
-                    "slug": "slug"
+[
+    {
+        "status": "DELETED",
+        "dashboardItem": {
+            "id": 953,
+            "name": "Name of dashboard",
+            "owner": "me",
+            "typeKey": "TYPE_KEY",
+            "isPublic": false,
+            "layout": {},
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Config 1",
+                    "ru": "Config 1",
+                    "uk": "Config 1"
                 },
-                "widgets": [
-                    {
-                        "id": null,
-                        "selector": "ext-tenant-mnp/request-details-widget",
-                        "name": "Widget",
-                        "isPublic": false,
-                        "config": {},
-                        "dashboard": null
+                "icon": "no-icon",
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "MENU_KEY",
+                        "name": {
+                            "en": "KEY",
+                            "uk": "KEY",
+                            "ru": "KEY"
+                        },
+                        "orderIndex": 1,
+                        "icon": "swap_horizontal_circle"
                     }
-                ]
-            }
-        },
-        {
-            "status": "DELETED",
-            "dashboardItem": {
-                "id": 954,
-                "name": "Name of dashboard",
-                "owner": "me",
-                "typeKey": "TYPE_KEY",
-                "isPublic": false,
-                "layout": {},
-                "config": {
-                    "hidden": true,
-                    "name": {
-                        "en": "Config 1",
-                        "ru": "Config 1",
-                        "uk": "Config 1"
-                    },
-                    "icon": "no-icon",
-                    "orderIndex": 5,
-                    "menu": {
-                        "group": {
-                            "key": "MENU_KEY",
-                            "name": {
-                                "en": "KEY",
-                                "uk": "KEY",
-                                "ru": "KEY"
-                            },
-                            "orderIndex": 1,
-                            "icon": "swap_horizontal_circle"
-                        }
-                    },
-                    "slug": "slug"
                 },
-                "widgets": [
-                    {
-                        "id": null,
-                        "selector": "ext-tenant-mnp/request-details-widget",
-                        "name": "Widget",
-                        "isPublic": false,
-                        "config": {},
-                        "dashboard": null
-                    }
-                ]
-            }
+                "slug": "slug"
+            },
+            "widgets": [
+                {
+                    "id": null,
+                    "selector": "ext-tenant-mnp/request-details-widget",
+                    "name": "Widget",
+                    "isPublic": false,
+                    "config": {},
+                    "dashboard": null
+                }
+            ]
         }
-    ]
-}
+    },
+    {
+        "status": "DELETED",
+        "dashboardItem": {
+            "id": 954,
+            "name": "Name of dashboard",
+            "owner": "me",
+            "typeKey": "TYPE_KEY",
+            "isPublic": false,
+            "layout": {},
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Config 1",
+                    "ru": "Config 1",
+                    "uk": "Config 1"
+                },
+                "icon": "no-icon",
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "MENU_KEY",
+                        "name": {
+                            "en": "KEY",
+                            "uk": "KEY",
+                            "ru": "KEY"
+                        },
+                        "orderIndex": 1,
+                        "icon": "swap_horizontal_circle"
+                    }
+                },
+                "slug": "slug"
+            },
+            "widgets": [
+                {
+                    "id": null,
+                    "selector": "ext-tenant-mnp/request-details-widget",
+                    "name": "Widget",
+                    "isPublic": false,
+                    "config": {},
+                    "dashboard": null
+                }
+            ]
+        }
+    }
+]

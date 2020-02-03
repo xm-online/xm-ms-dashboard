@@ -3,10 +3,8 @@ package com.icthh.xm.ms.dashboard.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.bulk.BulkDashboardService;
-import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
+import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardItemStatus;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
-import java.util.Collection;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * REST controller for managing bulk atomic and non atomic operations with Dashboard resource.
@@ -38,14 +40,18 @@ public class BulkDashboardResource {
     @Timed
     @PostMapping("/dashboards")
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE')")
-    public BulkDashboardResult createDashboards(
+    public Collection<BulkDashboardItemStatus> createDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems,
         @RequestParam(defaultValue = "false") boolean isAtomicProcessing
     ) {
+        Collection<BulkDashboardItemStatus> result = new ArrayList<>();
+
         if (isAtomicProcessing)
-            return atomicBulkDashboardService.create(dashboardItems);
+            atomicBulkDashboardService.create(dashboardItems);
         else
-            return bulkDashboardService.create(dashboardItems);
+            result = bulkDashboardService.create(dashboardItems);
+
+        return result;
     }
 
     /**
@@ -58,14 +64,18 @@ public class BulkDashboardResource {
     @Timed
     @PutMapping("/dashboards")
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE')")
-    public BulkDashboardResult updateDashboards(
+    public Collection<BulkDashboardItemStatus> updateDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems,
         @RequestParam(defaultValue = "false") boolean isAtomicProcessing
     ) {
+        Collection<BulkDashboardItemStatus> result = new ArrayList<>();
+
         if (isAtomicProcessing)
-            return atomicBulkDashboardService.update(dashboardItems);
+            atomicBulkDashboardService.update(dashboardItems);
         else
-            return bulkDashboardService.update(dashboardItems);
+            result = bulkDashboardService.update(dashboardItems);
+
+        return result;
     }
 
     /**
@@ -78,14 +88,18 @@ public class BulkDashboardResource {
     @Timed
     @DeleteMapping("/dashboards")
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE')")
-    public BulkDashboardResult deleteDashboards(
+    public Collection<BulkDashboardItemStatus> deleteDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems,
         @RequestParam(defaultValue = "false") boolean isAtomicProcessing
     ) {
+        Collection<BulkDashboardItemStatus> result = new ArrayList<>();
+
         if (isAtomicProcessing)
-            return atomicBulkDashboardService.delete(dashboardItems);
+            atomicBulkDashboardService.delete(dashboardItems);
         else
-            return bulkDashboardService.delete(dashboardItems);
+            result = bulkDashboardService.delete(dashboardItems);
+
+        return result;
     }
 
 }

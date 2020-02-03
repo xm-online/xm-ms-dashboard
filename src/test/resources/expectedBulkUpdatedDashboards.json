@@ -1,84 +1,82 @@
-{
-    "itemStatuses": [
-        {
-            "status": "UPDATED",
-            "dashboardItem":  {
-                "id": 952,
-                "name": "Name of dashboard",
-                "owner": "me",
-                "typeKey": "TYPE_KEY",
-                "isPublic": false,
-                "config": {
-                    "hidden": true,
-                    "name": {
-                        "en": "Config 1",
-                        "ru": "Config 1",
-                        "uk": "Config 1"
-                    },
-                    "icon": "no-icon",
-                    "orderIndex": 5,
-                    "menu": {
-                        "group": {
-                            "key": "MENU_KEY",
-                            "name": {
-                                "en": "KEY",
-                        "uk": "KEY",
-                                "ru": "KEY"
-                            },
-                            "orderIndex": 1,
-                            "icon": "swap_horizontal_circle"
-                        }
-                    },
-                    "slug": "slug"
+[
+    {
+        "status": "UPDATED",
+        "dashboardItem":  {
+            "id": 952,
+            "name": "Name of dashboard",
+            "owner": "me",
+            "typeKey": "TYPE_KEY",
+            "isPublic": false,
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Config 1",
+                    "ru": "Config 1",
+                    "uk": "Config 1"
                 },
-                "widgets": [
-                    {
-                        "selector": "ext-tenant-mnp/request-details-widget",
-                        "name": "Widget",
-                        "isPublic": false
+                "icon": "no-icon",
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "MENU_KEY",
+                        "name": {
+                            "en": "KEY",
+                            "uk": "KEY",
+                            "ru": "KEY"
+                        },
+                        "orderIndex": 1,
+                        "icon": "swap_horizontal_circle"
                     }
-                ]
-            }
-        },
-        {
-            "status": "UPDATED",
-            "dashboardItem":  {
-                "id": 952,
-                "name": "Name of dashboard",
-                "owner": "me",
-                "typeKey": "TYPE_KEY",
-                "isPublic": false,
-                "config": {
-                    "hidden": true,
-                    "name": {
-                        "en": "Config 1",
-                        "ru": "Config 1",
-                        "uk": "Config 1"
-                    },
-                    "icon": "no-icon",
-                    "orderIndex": 5,
-                    "menu": {
-                        "group": {
-                            "key": "MENU_KEY",
-                            "name": {
-                                "en": "KEY",
-                        "uk": "KEY",
-                                "ru": "KEY"
-                            },
-                            "orderIndex": 1,
-                            "icon": "swap_horizontal_circle"
-                        }
-                    },
-                    "slug": "slug"
                 },
-                "widgets": [
-                    {
-                        "selector": "ext-tenant-mnp/request-details-widget",
-                        "name": "Widget",
-                        "isPublic": false
-                    }
-                ]
-            }
+                "slug": "slug"
+            },
+            "widgets": [
+                {
+                    "selector": "ext-tenant-mnp/request-details-widget",
+                    "name": "Widget",
+                    "isPublic": false
+                }
+            ]
         }
-    ]
-}
+    },
+    {
+        "status": "UPDATED",
+        "dashboardItem":  {
+            "id": 952,
+            "name": "Name of dashboard",
+            "owner": "me",
+            "typeKey": "TYPE_KEY",
+            "isPublic": false,
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Config 1",
+                    "ru": "Config 1",
+                    "uk": "Config 1"
+                },
+                "icon": "no-icon",
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "MENU_KEY",
+                        "name": {
+                            "en": "KEY",
+                            "uk": "KEY",
+                            "ru": "KEY"
+                        },
+                        "orderIndex": 1,
+                        "icon": "swap_horizontal_circle"
+                    }
+                },
+                "slug": "slug"
+            },
+            "widgets": [
+                {
+                    "selector": "ext-tenant-mnp/request-details-widget",
+                    "name": "Widget",
+                    "isPublic": false
+                }
+            ]
+        }
+    }
+]

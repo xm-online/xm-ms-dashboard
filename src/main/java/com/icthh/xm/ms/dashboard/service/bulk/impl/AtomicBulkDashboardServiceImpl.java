@@ -1,18 +1,18 @@
 package com.icthh.xm.ms.dashboard.service.bulk.impl;
 
-import static java.util.stream.Collectors.toList;
-
 import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
-import com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
-import java.util.Collection;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.Collection;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -22,46 +22,30 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     private final DashboardRepository dashboardRepository;
 
     @Override
-    public BulkDashboardResult create(Collection<DashboardDto> dashboardItems) {
-        try {
-            Collection<Dashboard> dashboardEntities = dashboardItems.stream()
-                .map(dashboardMapper::toEntity)
-                .collect(toList());
+    public void create(Collection<DashboardDto> dashboardItems) {
+        Collection<Dashboard> dashboardEntities = dashboardItems.stream()
+            .map(dashboardMapper::toEntity)
+            .collect(toList());
 
-            save(dashboardEntities);
-            return new BulkDashboardResult();
-        } catch (Exception ex) {
-            throw new BusinessException("Could not perform bulk create : " + ex.getMessage());
-        }
+        save(dashboardEntities);
     }
 
     @Override
-    public BulkDashboardResult update(Collection<DashboardDto> dashboardItems) {
-        try {
-            Collection<Dashboard> dashboardEntities = dashboardItems.stream()
-                .map(this::update)
-                .collect(toList());
+    public void update(Collection<DashboardDto> dashboardItems) {
+        Collection<Dashboard> dashboardEntities = dashboardItems.stream()
+            .map(this::update)
+            .collect(toList());
 
-            save(dashboardEntities);
-            return new BulkDashboardResult();
-        } catch (Exception ex) {
-            throw new BusinessException("Could not perform bulk update : " + ex.getMessage());
-        }
+        save(dashboardEntities);
     }
 
     @Override
-    public BulkDashboardResult delete(Collection<DashboardDto> dashboardItems) {
-        try {
+    public void delete(Collection<DashboardDto> dashboardItems) {
+        Collection<Dashboard> dashboardEntities = dashboardItems.stream()
+            .map(dashboardMapper::toEntity)
+            .collect(toList());
 
-            Collection<Dashboard> dashboardEntities = dashboardItems.stream()
-                .map(dashboardMapper::toEntity)
-                .collect(toList());
-
-            deleteAll(dashboardEntities);
-            return new BulkDashboardResult();
-        } catch (Exception ex) {
-            throw new BusinessException("Could not perform bulk delete dashboards : " + ex.getMessage());
-        }
+        deleteAll(dashboardEntities);
     }
 
     @Transactional
