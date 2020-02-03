@@ -1,13 +1,14 @@
 package com.icthh.xm.ms.dashboard.mapper;
 
-import static java.util.stream.Collectors.toSet;
-
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import java.util.Set;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 @Component
 public class DashboardMapper {
@@ -23,6 +24,12 @@ public class DashboardMapper {
         entity.setIsPublic(dto.getIsPublic());
         entity.setWidgets(toEntities(dto.getWidgets()));
 
+        return entity;
+    }
+
+    public Dashboard toFullEntity(DashboardDto dto) {
+        Dashboard entity = toEntity(dto);
+        entity.setId(dto.getId());
         return entity;
     }
 

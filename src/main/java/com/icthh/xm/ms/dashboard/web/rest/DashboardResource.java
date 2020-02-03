@@ -1,14 +1,13 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.DashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
-import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -22,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.Valid;
 
 /**
  * REST controller for managing Dashboard.
@@ -61,7 +60,6 @@ public class DashboardResource {
     @PostMapping("/dashboards")
     @Timed
     @PreAuthorize("hasPermission({'dashboard': #dashboard}, 'DASHBOARD.CREATE')")
-    @PrivilegeDescription("Privilege to create a new dashboard")
     public ResponseEntity<Dashboard> createDashboard(@Valid @RequestBody Dashboard dashboard) throws URISyntaxException {
         if (dashboard.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new dashboard cannot already have an ID")).body(null);
@@ -84,7 +82,6 @@ public class DashboardResource {
     @PutMapping("/dashboards")
     @Timed
     @PreAuthorize("hasPermission({'id': #dashboard.id, 'newDashboard': #dashboard}, 'dashboard', 'DASHBOARD.UPDATE')")
-    @PrivilegeDescription("Privilege to updates an existing dashboard")
     public ResponseEntity<Dashboard> updateDashboard(@Valid @RequestBody Dashboard dashboard) throws URISyntaxException {
         if (dashboard.getId() == null) {
             //in order to call method with permissions check
@@ -116,7 +113,6 @@ public class DashboardResource {
     @GetMapping("/dashboards/{id}")
     @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'DASHBOARD.GET_LIST.ITEM')")
-    @PrivilegeDescription("Privilege to get the dashboard by id")
     public ResponseEntity<DashboardDto> getDashboard(@PathVariable Long id) {
         DashboardDto dashboard = dashboardService.findOne(id);
         return RespContentUtil.wrapOrNotFound(Optional.ofNullable(dashboard));
@@ -143,7 +139,6 @@ public class DashboardResource {
     @DeleteMapping("/dashboards/{id}")
     @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'dashboard', 'DASHBOARD.DELETE')")
-    @PrivilegeDescription("Privilege to delete the dashboard by id")
     public ResponseEntity<Void> deleteDashboard(@PathVariable Long id) {
         dashboardService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();

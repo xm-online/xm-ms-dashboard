@@ -1,7 +1,6 @@
 package com.icthh.xm.ms.dashboard.service;
 
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
-import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Profile;
 import com.icthh.xm.ms.dashboard.repository.ProfilePermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.ProfileRepository;
@@ -49,7 +48,6 @@ public class ProfileService {
      */
     @Transactional(readOnly = true)
     @FindWithPermission("PROFILE.GET_LIST")
-    @PrivilegeDescription("Privilege to get all the profiles")
     public List<Profile> findAll(String privilegeKey) {
         return profilePermittedRepository.findAllWithEagerRelationships(privilegeKey);
     }

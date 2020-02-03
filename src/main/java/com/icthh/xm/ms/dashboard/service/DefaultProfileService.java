@@ -1,7 +1,6 @@
 package com.icthh.xm.ms.dashboard.service;
 
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
-import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.repository.DefaultProfileRepository;
@@ -49,7 +48,6 @@ public class DefaultProfileService {
      */
     @Transactional(readOnly = true)
     @FindWithPermission("DEFAULT_PROFILE.GET_LIST")
-    @PrivilegeDescription("Privilege to get all the default dashboards per role configuration. Tenant admin can configure default dashboard")
     public List<DefaultProfile> findAll(String privilegeKey) {
         return permittedRepository.findAll(DefaultProfile.class, privilegeKey);
     }

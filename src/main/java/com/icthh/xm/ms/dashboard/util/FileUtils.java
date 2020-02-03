@@ -1,13 +1,13 @@
 package com.icthh.xm.ms.dashboard.util;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.io.InputStream;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ClassPathResource;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.InputStream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 
 @UtilityClass
 public class FileUtils {
@@ -17,7 +17,6 @@ public class FileUtils {
     }
 
     @SneakyThrows
-    @SuppressFBWarnings("RR_NOT_CHECKED")
     public static byte[] readAsByteArray(final String path) {
         final InputStream resource = new ClassPathResource(path).getInputStream();
         final byte[] byteArray = new byte[resource.available()];

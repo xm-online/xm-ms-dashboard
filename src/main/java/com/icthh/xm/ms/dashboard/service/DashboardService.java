@@ -1,9 +1,6 @@
 package com.icthh.xm.ms.dashboard.service;
 
-import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
-
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
-import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -15,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
 
 /**
  * Service Implementation for managing Dashboard.
@@ -56,7 +55,6 @@ public class DashboardService {
      */
     @Transactional(readOnly = true)
     @FindWithPermission("DASHBOARD.GET_LIST")
-    @PrivilegeDescription("Privilege to get all the dashboards")
     public List<Dashboard> findAll(String privilegeKey) {
         return permittedRepository.findAll(Dashboard.class, privilegeKey);
     }

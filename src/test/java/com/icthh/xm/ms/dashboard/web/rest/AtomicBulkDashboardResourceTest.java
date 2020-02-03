@@ -18,8 +18,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.stream.Stream;
+
 import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
 import static java.util.Arrays.asList;
+import static junit.framework.TestCase.assertNull;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -102,6 +105,8 @@ public class AtomicBulkDashboardResourceTest {
             .contentType(APPLICATION_JSON)
             .content(readAsString("bulkAtomicDeleteDashboards.json")))
             .andExpect(status().isOk());
+
+        assertNulls(953L, 954L);
     }
 
     @Test
@@ -124,13 +129,9 @@ public class AtomicBulkDashboardResourceTest {
             .andExpect(status().isInternalServerError());
     }
 
-    @Test
-    @SneakyThrows
-    public void shouldFailAtomicDeleteDashboards() {
-        httpMock.perform(delete("/api/bulk/dashboards")
-            .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
-            .content(readAsString("failBulkAtomicDeleteDashboards.json")))
-            .andExpect(status().isInternalServerError());
+    void assertNulls(Long ...ids) {
+        Stream.of(ids)
+            .forEach(id-> assertNull(dashboardRepository.findOneById(id)));
     }
+
 }

@@ -1,7 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.service.DefaultProfileService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
@@ -54,7 +53,6 @@ public class DefaultProfileResource {
     @PostMapping("/default-profiles")
     @Timed
     @PreAuthorize("hasPermission({'defaultProfile': #defaultProfile}, 'DEFAULT_PROFILE.CREATE')")
-    @PrivilegeDescription("Privilege to create a new default dashboard per role configuration. Tenant admin can configure default dashboard")
     public ResponseEntity<DefaultProfile> createDefaultProfile(@Valid @RequestBody DefaultProfile defaultProfile) throws URISyntaxException {
         if (defaultProfile.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new defaultProfile cannot already have an ID")).body(null);
@@ -77,7 +75,6 @@ public class DefaultProfileResource {
     @PutMapping("/default-profiles")
     @Timed
     @PreAuthorize("hasPermission({'id': #defaultProfile.id, 'newDefaultProfile': #defaultProfile}, 'defaultProfile', 'DEFAULT_PROFILE.UPDATE')")
-    @PrivilegeDescription("Privilege to updates an existing default dashboard per role configuration. Tenant admin can configure default dashboard")
     public ResponseEntity<DefaultProfile> updateDefaultProfile(@Valid @RequestBody DefaultProfile defaultProfile) throws URISyntaxException {
         if (defaultProfile.getId() == null) {
             return defaultProfileResource.createDefaultProfile(defaultProfile);
@@ -108,7 +105,6 @@ public class DefaultProfileResource {
     @GetMapping("/default-profiles/{id}")
     @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'DEFAULT_PROFILE.GET_LIST.ITEM')")
-    @PrivilegeDescription("Privilege to get the default dashboard per role configuration by id. Tenant admin can configure default dashboard")
     public ResponseEntity<DefaultProfile> getDefaultProfile(@PathVariable Long id) {
         DefaultProfile defaultProfile = defaultProfileService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(defaultProfile));
@@ -123,7 +119,6 @@ public class DefaultProfileResource {
     @DeleteMapping("/default-profiles/{id}")
     @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'defaultProfile', 'DEFAULT_PROFILE.DELETE')")
-    @PrivilegeDescription("Privilege to delete the default dashboard per role configuration by id. Tenant admin can configure default dashboard")
     public ResponseEntity<Void> deleteDefaultProfile(@PathVariable Long id) {
         defaultProfileService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();

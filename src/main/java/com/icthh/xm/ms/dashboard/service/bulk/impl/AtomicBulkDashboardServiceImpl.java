@@ -42,7 +42,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     @Override
     public void delete(Collection<DashboardDto> dashboardItems) {
         Collection<Dashboard> dashboardEntities = dashboardItems.stream()
-            .map(dashboardMapper::toEntity)
+            .map(dashboardMapper::toFullEntity)
             .collect(toList());
 
         deleteAll(dashboardEntities);
@@ -53,7 +53,6 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
         dashboardRepository.saveAll(dashboardEntities);
     }
 
-    @Transactional
     void deleteAll(Collection<Dashboard> dashboardEntities) {
         dashboardRepository.deleteAll(dashboardEntities);
     }

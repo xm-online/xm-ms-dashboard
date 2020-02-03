@@ -37,6 +37,8 @@
         ]
     },
     {
+        "id": 1,
+        "name": "Name of dashboard",
         "owner": "me",
         "typeKey": "TYPE_KEY",
         "isPublic": false,
