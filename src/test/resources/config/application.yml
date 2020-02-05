@@ -104,7 +104,11 @@ jhipster:
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         logs: # Reports Dropwizard metrics in the logs
             enabled: false
-
+management:
+    metrics:
+        export:
+            prometheus:
+                enabled: true
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
