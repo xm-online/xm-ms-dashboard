@@ -17,6 +17,15 @@
 spring:
     application:
         name: dashboard
+    main:
+        allow-bean-definition-overriding: true
+    cloud:
+        bus:
+            enabled: false
+        discovery:
+            enabled: false
+        consul:
+            enabled: false
     jackson:
         serialization.write_dates_as_timestamps: false
     cache:
@@ -43,6 +52,8 @@ spring:
             hibernate.cache.use_query_cache: false
             hibernate.generate_statistics: true
             hibernate.hbm2ddl.auto: validate
+            # see org.hibernate.cfg.AvailableSettings.PREFER_GENERATOR_NAME_AS_DEFAULT_SEQUENCE_NAME
+            hibernate.model.generator_name_as_sequence_name: false
     liquibase:
         contexts: test
         change-log: classpath:config/liquibase/master.xml
@@ -91,11 +102,13 @@ jhipster:
             client-id: internal
             client-secret: internal
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
         logs: # Reports Dropwizard metrics in the logs
-            enabled: true
-            report-frequency: 60 # in seconds
-
+            enabled: false
+management:
+    metrics:
+        export:
+            prometheus:
+                enabled: true
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

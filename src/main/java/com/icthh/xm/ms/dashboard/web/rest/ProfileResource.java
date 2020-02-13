@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Profile;
 import com.icthh.xm.ms.dashboard.service.ProfileService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
@@ -56,6 +57,7 @@ public class ProfileResource {
     @PostMapping("/profiles")
     @Timed
     @PreAuthorize("hasPermission({'profile': #profile}, 'PROFILE.CREATE')")
+    @PrivilegeDescription("Privilege to create a new profile")
     public ResponseEntity<Profile> createProfile(@Valid @RequestBody Profile profile) throws URISyntaxException {
         if (profile.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new profile cannot already have an ID")).body(null);
@@ -78,6 +80,7 @@ public class ProfileResource {
     @PutMapping("/profiles")
     @Timed
     @PreAuthorize("hasPermission({'id': #profile.id, 'newProfile': #profile}, 'profile', 'PROFILE.UPDATE')")
+    @PrivilegeDescription("Privilege to updates an existing profile")
     public ResponseEntity<Profile> updateProfile(@Valid @RequestBody Profile profile) throws URISyntaxException {
         if (profile.getId() == null) {
             //in order to call method with permissions check
@@ -96,7 +99,6 @@ public class ProfileResource {
      */
     @GetMapping("/profiles")
     @Timed
-
     public List<Profile> getAllProfiles() {
         return profileService.findAll(null);
     }
@@ -110,6 +112,7 @@ public class ProfileResource {
     @GetMapping("/profiles/{id}")
     @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'PROFILE.GET_LIST.ITEM')")
+    @PrivilegeDescription("Privilege to get the profile by id")
     public ResponseEntity<Profile> getProfile(@PathVariable Long id) {
         Profile profile = profileService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(profile));
@@ -124,6 +127,7 @@ public class ProfileResource {
     @DeleteMapping("/profiles/{id}")
     @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'profile', 'PROFILE.DELETE')")
+    @PrivilegeDescription("Privilege to delete the profile by id")
     public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
         profileService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();

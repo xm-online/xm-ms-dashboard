@@ -1,4 +1,4 @@
-FROM openjdk:8-jre
+FROM adoptopenjdk:11-jre-hotspot
 
 ENTRYPOINT ["/entrypoint.sh"]
 

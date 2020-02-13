@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
+import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.config.DefaultProfileUtil;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class ProfileInfoResource {
 
     @GetMapping("/profile-info")
     @PostAuthorize("hasPermission({'returnObject': returnObject}, 'PROFILE_INFO.GET_LIST.ITEM')")
+    @PrivilegeDescription("Privilege to get dashboard Spring active profiles")
     public ProfileInfoVM getActiveProfiles() {
         String[] activeProfiles = DefaultProfileUtil.getActiveProfiles(env);
 
