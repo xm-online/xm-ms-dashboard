@@ -1,5 +1,16 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
+import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
+import static java.util.Arrays.asList;
+import static org.mockito.MockitoAnnotations.initMocks;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.DashboardApp;
@@ -18,27 +29,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.stream.Stream;
-
-import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
-import static java.util.Arrays.asList;
-import static junit.framework.TestCase.assertNull;
-import static org.mockito.MockitoAnnotations.initMocks;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
-
 @RunWith(SpringRunner.class)
 @WithMockUser(authorities = "SUPER-ADMIN")
 @SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
-public class AtomicBulkDashboardResourceTest {
+public class BulkDashboardResourceIntTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private MockMvc httpMock;
+    private MockMvc http;
     @Autowired
     private DashboardRepository dashboardRepository;
     @Autowired
@@ -53,7 +51,7 @@ public class AtomicBulkDashboardResourceTest {
     @Before
     public void setup() {
         initMocks(this);
-        httpMock = standaloneSetup(dashboardResource)
+        http = standaloneSetup(dashboardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter)
@@ -80,58 +78,61 @@ public class AtomicBulkDashboardResourceTest {
 
     @Test
     @SneakyThrows
-    public void shouldAtomicCreateDashboards() {
-        httpMock.perform(post("/api/bulk/dashboards")
+    public void shouldCreateDashboards() {
+        http.perform(post("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
-            .content(readAsString("bulkAtomicCreateDashboards.json")))
+            .content(readAsString("bulkCreateDashboards.json")))
+            .andExpect(content().json(readAsString("expectedBulkCreatedDashboards.json")))
             .andExpect(status().isOk());
     }
 
     @Test
     @SneakyThrows
-    public void shouldAtomicUpdateDashboards() {
-        httpMock.perform(put("/api/bulk/dashboards")
+    public void shouldUpdateDashboards() {
+        http.perform(put("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
-            .content(readAsString("bulkAtomicUpdateDashboards.json")))
+            .content(readAsString("bulkUpdateDashboards.json")))
+            .andExpect(content().json(readAsString("expectedBulkUpdatedDashboards.json")))
             .andExpect(status().isOk());
     }
 
     @Test
     @SneakyThrows
-    public void shouldAtomicDeleteDashboards() {
-        httpMock.perform(delete("/api/bulk/dashboards")
+    public void shouldDeleteDashboards() {
+        http.perform(delete("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .content(readAsString("bulkAtomicDeleteDashboards.json")))
+            .content(readAsString("bulkDeleteDashboards.json")))
+            .andExpect(content().json(readAsString("expectedBulkDeletedDashboards.json")))
             .andExpect(status().isOk());
-
-        assertNulls(953L, 954L);
     }
 
     @Test
     @SneakyThrows
-    public void shouldFailAtomicCreateDashboards() {
-        httpMock.perform(post("/api/bulk/dashboards")
+    public void shouldFailCreateDashboards() {
+        http.perform(post("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
-            .content(readAsString("failBulkAtomicCreateDashboards.json")))
-            .andExpect(status().isInternalServerError());
+            .content(readAsString("failCreateBulkDashboards.json")))
+            .andExpect(content().json(readAsString("expectedFailedCreateBulkDashboards.json")))
+            .andExpect(status().isOk());
     }
 
     @Test
     @SneakyThrows
-    public void shouldFailAtomicUpdateDashboards() {
-        httpMock.perform(put("/api/bulk/dashboards")
+    public void shouldFailUpdateDashboards() {
+        http.perform(put("/api/bulk/dashboards")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
-            .content(readAsString("failBulkAtomicUpdateDashboards.json")))
-            .andExpect(status().isInternalServerError());
+            .content(readAsString("failUpdateBulkDashboards.json")))
+            .andExpect(content().json(readAsString("expectedFailedUpdateBulkDashboards.json")))
+            .andExpect(status().isOk());
     }
 
-    void assertNulls(Long ...ids) {
-        Stream.of(ids)
-            .forEach(id-> assertNull(dashboardRepository.findOneById(id)));
+    @Test
+    @SneakyThrows
+    public void shouldFailDeleteDashboards() {
+        http.perform(delete("/api/bulk/dashboards")
+            .contentType(APPLICATION_JSON)
+            .content(readAsString("failDeleteBulkDashboards.json")))
+                .andExpect(content().json(readAsString("expectedFailedDeleteBulkDashboards.json")))
+            .andExpect(status().isOk());
     }
-
 }

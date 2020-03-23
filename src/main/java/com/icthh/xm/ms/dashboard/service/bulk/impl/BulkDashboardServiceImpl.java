@@ -15,10 +15,7 @@ import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.LinkedList;
 
-import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.created;
-import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.deleted;
-import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.failed;
-import static com.icthh.xm.ms.dashboard.service.dto.BulkDashboardResult.updated;
+import static com.icthh.xm.ms.dashboard.service.dto.BulkOperationStatus.*;
 
 @Slf4j
 @Service
@@ -67,10 +64,9 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
                     "Could not find dashboard with id = " + dashboardDto.getId()));
 
             persist(dashboardMapper.merge(dashboardDto, dashboardEntity));
-
-            itemStatuses.add(updated(dashboardDto));
+            itemStatuses.add(UPDATED.toItemStatus(dashboardDto));
         } catch (Exception ex) {
-            itemStatuses.add(failed(dashboardDto));
+            itemStatuses.add(FAILED.toItemStatus(dashboardDto));
             log.error("Could not update dashboard entity ", ex);
         }
     }
@@ -78,10 +74,9 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
     private void create(DashboardDto dashboardDto, Collection<BulkDashboardItemStatus> itemStatuses) {
         try {
             persist(dashboardMapper.toEntity(dashboardDto));
-
-            itemStatuses.add(created(dashboardDto));
+            itemStatuses.add(CREATED.toItemStatus(dashboardDto));
         } catch (Exception ex) {
-            itemStatuses.add(failed(dashboardDto));
+            itemStatuses.add(FAILED.toItemStatus(dashboardDto));
             log.error("Could not create dashboard entity ", ex);
         }
     }
@@ -89,9 +84,9 @@ public class BulkDashboardServiceImpl implements BulkDashboardService {
     private void delete(DashboardDto dashboardDto, Collection<BulkDashboardItemStatus> itemStatuses) {
         try {
             delete(dashboardDto.getId());
-            itemStatuses.add(deleted(dashboardDto));
+            itemStatuses.add(DELETED.toItemStatus(dashboardDto));
         } catch (Exception ex) {
-            itemStatuses.add(failed(dashboardDto));
+            itemStatuses.add(FAILED.toItemStatus(dashboardDto));
             log.error("Could not delete dashboard entity ", ex);
         }
     }
