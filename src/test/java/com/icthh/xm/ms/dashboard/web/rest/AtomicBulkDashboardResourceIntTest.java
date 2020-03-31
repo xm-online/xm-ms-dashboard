@@ -127,23 +127,23 @@ public class AtomicBulkDashboardResourceIntTest {
         assertNulls(dashboardToDelete.getId());
     }
 
-//    @Test
-//    @SneakyThrows
-//    public void shouldFailAtomicCreateDashboards() {
-//        httpMock.perform(post("/api/dashboards/bulk")
-//            .contentType(APPLICATION_JSON)
-//            .content(readAsString("failBulkAtomicCreateDashboards.json")))
-//            .andExpect(status().isInternalServerError());
-//    }
-//
-//    @Test
-//    @SneakyThrows
-//    public void shouldFailAtomicUpdateDashboards() {
-//        httpMock.perform(put("/api/dashboards/bulk")
-//            .contentType(APPLICATION_JSON)
-//            .content(readAsString("failBulkAtomicUpdateDashboards.json")))
-//            .andExpect(status().isInternalServerError());
-//    }
+    @Test
+    @SneakyThrows
+    public void shouldFailAtomicCreateDashboards() {
+        httpMock.perform(post("/api/dashboards/bulk")
+            .contentType(APPLICATION_JSON)
+            .content(readAsString("failBulkAtomicCreateDashboards.json")))
+            .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    @SneakyThrows
+    public void shouldFailAtomicUpdateDashboards() {
+        httpMock.perform(put("/api/dashboards/bulk")
+            .contentType(APPLICATION_JSON)
+            .content(readAsString("failBulkAtomicUpdateDashboards.json")))
+            .andExpect(status().isBadRequest());
+    }
 
     void assertNulls(Long... ids) {
         Stream.of(ids)
