@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,11 @@ public class BulkDashboardResource {
      * Request for atomic and non atomic bulk save of dashboards
      *
      * @param dashboardItems request body with list of dashboards objects
-     * @return result of each processed dashboard item
      */
     @Timed
     @PostMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE.BULK')")
+    @PrivilegeDescription("Privilege to create dashboard bulk")
     public void createDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
     ) {
@@ -39,11 +40,11 @@ public class BulkDashboardResource {
      * Request for atomic and non atomic bulk update of dashboards
      *
      * @param dashboardItems request body with list of dashboards objects
-     * @return result of each processed dashboard item
      */
     @Timed
     @PutMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE.BULK')")
+    @PrivilegeDescription("Privilege to update dashboard bulk")
     public void updateDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
     ) {
@@ -54,11 +55,11 @@ public class BulkDashboardResource {
      * Request for atomic and non atomic bulk delete of dashboards
      *
      * @param dashboardItems request body with list of dashboards objects
-     * @return result of each processed dashboard item
      */
     @Timed
     @DeleteMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE.BULK')")
+    @PrivilegeDescription("Privilege to delete dashboard bulk")
     public void deleteDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
     ) {
