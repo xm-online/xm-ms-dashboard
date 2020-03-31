@@ -17,16 +17,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
@@ -134,15 +131,6 @@ public class AtomicBulkDashboardResourceIntTest {
             .contentType(APPLICATION_JSON)
             .content(readAsString("failBulkAtomicCreateDashboards.json")))
             .andExpect(status().isInternalServerError());
-    }
-
-    @Test
-    @SneakyThrows
-    public void shouldFailAtomicUpdateDashboards() {
-        httpMock.perform(put("/api/dashboards/bulk")
-            .contentType(APPLICATION_JSON)
-            .content(readAsString("failBulkAtomicUpdateDashboards.json")))
-            .andExpect(status().isBadRequest());
     }
 
     void assertNulls(Long... ids) {

@@ -28,7 +28,7 @@ public class BulkDashboardResource {
      */
     @Timed
     @PostMapping
-    @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE.BULK')")
     public void createDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
     ) {
@@ -43,7 +43,7 @@ public class BulkDashboardResource {
      */
     @Timed
     @PutMapping
-    @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE.BULK')")
     public void updateDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
     ) {
@@ -58,7 +58,7 @@ public class BulkDashboardResource {
      */
     @Timed
     @DeleteMapping
-    @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE')")
+    @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE.BULK')")
     public void deleteDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
     ) {

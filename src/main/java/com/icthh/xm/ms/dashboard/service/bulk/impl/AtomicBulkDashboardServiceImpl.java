@@ -1,6 +1,5 @@
 package com.icthh.xm.ms.dashboard.service.bulk.impl;
 
-import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
@@ -11,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,12 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     @Override
     @Transactional
     public void update(Collection<DashboardDto> dashboardItems) {
-        dashboardItems.forEach(this::update);
+
+        Map<Long, DashboardDto> dtoById = dashboardItems.stream()
+            .collect(toMap(DashboardDto::getId, Function.identity()));
+
+        dashboardRepository.findAllById(dtoById.keySet())
+            .forEach(dashboard -> dashboardMapper.merge(dtoById.get(dashboard.getId()), dashboard));
     }
 
     @Override
@@ -52,12 +59,5 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
 
     void deleteAll(Collection<Dashboard> dashboardEntities) {
         dashboardRepository.deleteAll(dashboardEntities);
-    }
-
-    private Dashboard update(DashboardDto dashboardDto) {
-        Dashboard dashboard = dashboardRepository.findById(dashboardDto.getId())
-            .orElseThrow(() -> new BusinessException("Could not find dashboard with id = " + dashboardDto.getId()));
-
-        return dashboardMapper.merge(dashboardDto, dashboard);
     }
 }
