@@ -23,11 +23,10 @@ import java.util.stream.Stream;
 import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
 import static java.util.Arrays.asList;
 import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
@@ -83,9 +82,16 @@ public class AtomicBulkDashboardResourceIntTest {
     public void shouldAtomicCreateDashboards() {
         httpMock.perform(post("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
             .content(readAsString("bulkAtomicCreateDashboards.json")))
             .andExpect(status().isOk());
+
+        assertTrue(dashboardRepository.findAll().stream()
+            .anyMatch(dashboard -> "Bulk atomic crate first".equalsIgnoreCase(dashboard.getName()))
+        );
+
+        assertTrue(dashboardRepository.findAll().stream()
+            .anyMatch(dashboard -> "Bulk atomic crate second".equalsIgnoreCase(dashboard.getName()))
+        );
     }
 
     @Test
@@ -93,9 +99,16 @@ public class AtomicBulkDashboardResourceIntTest {
     public void shouldAtomicUpdateDashboards() {
         httpMock.perform(put("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
             .content(readAsString("bulkAtomicUpdateDashboards.json")))
             .andExpect(status().isOk());
+
+        assertTrue(dashboardRepository.findAll().stream()
+            .anyMatch(dashboard -> "Updated name first".equalsIgnoreCase(dashboard.getName()))
+        );
+
+        assertTrue(dashboardRepository.findAll().stream()
+            .anyMatch(dashboard -> "Updated name second".equalsIgnoreCase(dashboard.getName()))
+        );
     }
 
     @Test
@@ -114,7 +127,6 @@ public class AtomicBulkDashboardResourceIntTest {
     public void shouldFailAtomicCreateDashboards() {
         httpMock.perform(post("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicCreateDashboards.json")))
             .andExpect(status().isInternalServerError());
     }
@@ -124,13 +136,12 @@ public class AtomicBulkDashboardResourceIntTest {
     public void shouldFailAtomicUpdateDashboards() {
         httpMock.perform(put("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
-            .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicUpdateDashboards.json")))
             .andExpect(status().isInternalServerError());
     }
 
-    void assertNulls(Long ...ids) {
+    void assertNulls(Long... ids) {
         Stream.of(ids)
-            .forEach(id-> assertNull(dashboardRepository.findOneById(id)));
+            .forEach(id -> assertNull(dashboardRepository.findOneById(id)));
     }
 }

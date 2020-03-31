@@ -1,6 +1,6 @@
 [
     {
-        "name": "Name of dashboard",
+        "name": "Bulk atomic crate first",
         "owner": "me",
         "typeKey": "TYPE_KEY",
         "isPublic": false,
@@ -36,7 +36,7 @@
         ]
     },
     {
-        "name": "Name of dashboard",
+        "name": "Bulk atomic crate second",
         "owner": "me",
         "typeKey": "TYPE_KEY",
         "isPublic": false,

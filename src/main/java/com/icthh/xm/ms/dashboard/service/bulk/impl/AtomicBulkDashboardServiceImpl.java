@@ -31,12 +31,9 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     }
 
     @Override
+    @Transactional
     public void update(Collection<DashboardDto> dashboardItems) {
-        Collection<Dashboard> dashboardEntities = dashboardItems.stream()
-            .map(this::update)
-            .collect(toList());
-
-        save(dashboardEntities);
+        dashboardItems.forEach(this::update);
     }
 
     @Override
@@ -59,8 +56,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
 
     private Dashboard update(DashboardDto dashboardDto) {
         Dashboard dashboard = dashboardRepository.findById(dashboardDto.getId())
-            .orElseThrow(() -> new BusinessException(
-                "Could not find dashboard with id = " + dashboardDto.getId()));
+            .orElseThrow(() -> new BusinessException("Could not find dashboard with id = " + dashboardDto.getId()));
 
         return dashboardMapper.merge(dashboardDto, dashboard);
     }

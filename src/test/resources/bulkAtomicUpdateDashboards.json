@@ -1,7 +1,7 @@
 [
     {
         "id": 951,
-        "name": "Name of dashboard",
+        "name": "Updated name first",
         "owner": "me",
         "typeKey": "TYPE_KEY",
         "isPublic": false,
@@ -38,7 +38,7 @@
     },
     {
         "id": 952,
-        "name": "Name of dashboard",
+        "name": "Updated name second",
         "owner": "me",
         "typeKey": "TYPE_KEY",
         "isPublic": false,
