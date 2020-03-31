@@ -507,8 +507,6 @@ public class DashboardResourceIntTest {
         Dashboard savedDashboard = dashboardService.save(dashboard);
         Widget savedWidget = savedDashboard.getWidgets().stream().findAny().get();
 
-        int databaseSizeWidgetsBeforeDelete = widgetService.findAll(null).size();
-
         // Get the dashboard
         restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboard.getId())
                                          .accept(TestUtil.APPLICATION_JSON_UTF8))
@@ -516,10 +514,6 @@ public class DashboardResourceIntTest {
 
         assertNull(dashboardRepository.findOneById(dashboard.getId()));
         assertNull(widgetRepository.findById(savedWidget.getId()).orElse(null));
-
-        // Validate the Widgets is empty
-        List<WidgetDto> widgetList = widgetService.findAll(null);
-        assertThat(widgetList).hasSize(databaseSizeWidgetsBeforeDelete - 1);
     }
 
     @Test
