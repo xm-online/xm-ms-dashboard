@@ -2,16 +2,15 @@ package com.icthh.xm.ms.dashboard.service.dto;
 
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -49,5 +48,4 @@ public class DashboardDto {
     public static Set<WidgetDto> toWidgetsDto(Collection<Widget> widgets) {
         return widgets.stream().map(WidgetDto::new).collect(Collectors.toSet());
     }
-
 }

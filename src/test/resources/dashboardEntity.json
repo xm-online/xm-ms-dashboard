@@ -1,0 +1,36 @@
+{
+    "name": "Old name",
+    "owner": "owner",
+    "typeKey": "TYPE_KEY",
+    "isPublic": false,
+    "config": {
+        "hidden": true,
+        "name": {
+            "en": "EN",
+            "ru": "RU",
+            "uk": "UK"
+        },
+        "icon": "no-icon",
+        "orderIndex": 5,
+        "menu": {
+            "group": {
+                "key": "KEY",
+                "name": {
+                    "en": "EN",
+                    "ru": "RU",
+                    "uk": "UK"
+                },
+                "orderIndex": 1,
+                "icon": "swap_horizontal_circle"
+            }
+        },
+        "slug": "slug"
+    },
+    "widgets": [
+        {
+            "selector": "ext-tenant-mnp/request-details-widget",
+            "name": "Old widget",
+            "isPublic": false
+        }
+    ]
+}

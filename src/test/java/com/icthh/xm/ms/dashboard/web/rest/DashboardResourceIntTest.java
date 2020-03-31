@@ -1,22 +1,15 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
+import com.icthh.xm.ms.dashboard.DashboardApp;
+import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
+import com.icthh.xm.ms.dashboard.domain.Dashboard;
+import com.icthh.xm.ms.dashboard.domain.Widget;
+import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
+import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
+import com.icthh.xm.ms.dashboard.service.DashboardService;
+import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import org.junit.Before;
@@ -34,13 +27,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.ImmutableMap;
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
-import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.domain.Widget;
-import com.icthh.xm.ms.dashboard.service.DashboardService;
-import com.icthh.xm.ms.dashboard.service.WidgetService;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the DashboardResource REST controller.
@@ -94,6 +91,12 @@ public class DashboardResourceIntTest {
 
     @Autowired
     private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private DashboardRepository dashboardRepository;
+
+    @Autowired
+    private WidgetRepository widgetRepository;
 
     private MockMvc restDashboardMockMvc;
 
@@ -501,23 +504,16 @@ public class DashboardResourceIntTest {
     public void deleteDashboardWithWidgets() throws Exception {
         // Initialize the database
         dashboard.getWidgets().add(createWidget());
-        dashboardService.save(dashboard);
-
-        int databaseSizeBeforeDelete = dashboardService.findAll(null).size();
-        int databaseSizeWidgetsBeforeDelete = widgetService.findAll(null).size();
+        Dashboard savedDashboard = dashboardService.save(dashboard);
+        Widget savedWidget = savedDashboard.getWidgets().stream().findAny().get();
 
         // Get the dashboard
         restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboard.getId())
                                          .accept(TestUtil.APPLICATION_JSON_UTF8))
                             .andExpect(status().isOk());
 
-        // Validate the Dashboards is empty
-        List<Dashboard> dashboardList = dashboardService.findAll(null);
-        assertThat(dashboardList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Widgets is empty
-        List<WidgetDto> widgetList = widgetService.findAll(null);
-        assertThat(dashboardList).hasSize(databaseSizeWidgetsBeforeDelete - 1);
+        assertNull(dashboardRepository.findOneById(dashboard.getId()));
+        assertNull(widgetRepository.findById(savedWidget.getId()).orElse(null));
     }
 
     @Test
