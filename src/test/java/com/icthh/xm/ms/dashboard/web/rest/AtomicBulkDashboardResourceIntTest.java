@@ -15,9 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.util.stream.Stream;
 
 import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
@@ -61,6 +63,8 @@ public class AtomicBulkDashboardResourceIntTest {
 
     @Before
     @SneakyThrows
+    @Transactional
+    @Rollback(false)
     public void databaseSetup() {
         dashboardRepository.saveAll(
             asList(
