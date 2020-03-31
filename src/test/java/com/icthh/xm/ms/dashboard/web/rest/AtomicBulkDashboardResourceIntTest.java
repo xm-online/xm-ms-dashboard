@@ -81,7 +81,7 @@ public class AtomicBulkDashboardResourceIntTest {
     @Test
     @SneakyThrows
     public void shouldAtomicCreateDashboards() {
-        httpMock.perform(post("/api/bulk/dashboards")
+        httpMock.perform(post("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
             .param("isAtomicProcessing", "true")
             .content(readAsString("bulkAtomicCreateDashboards.json")))
@@ -91,7 +91,7 @@ public class AtomicBulkDashboardResourceIntTest {
     @Test
     @SneakyThrows
     public void shouldAtomicUpdateDashboards() {
-        httpMock.perform(put("/api/bulk/dashboards")
+        httpMock.perform(put("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
             .param("isAtomicProcessing", "true")
             .content(readAsString("bulkAtomicUpdateDashboards.json")))
@@ -101,7 +101,7 @@ public class AtomicBulkDashboardResourceIntTest {
     @Test
     @SneakyThrows
     public void shouldAtomicDeleteDashboards() {
-        httpMock.perform(delete("/api/bulk/dashboards")
+        httpMock.perform(delete("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
             .content(readAsString("bulkAtomicDeleteDashboards.json")))
             .andExpect(status().isOk());
@@ -112,7 +112,7 @@ public class AtomicBulkDashboardResourceIntTest {
     @Test
     @SneakyThrows
     public void shouldFailAtomicCreateDashboards() {
-        httpMock.perform(post("/api/bulk/dashboards")
+        httpMock.perform(post("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
             .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicCreateDashboards.json")))
@@ -122,7 +122,7 @@ public class AtomicBulkDashboardResourceIntTest {
     @Test
     @SneakyThrows
     public void shouldFailAtomicUpdateDashboards() {
-        httpMock.perform(put("/api/bulk/dashboards")
+        httpMock.perform(put("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
             .param("isAtomicProcessing", "true")
             .content(readAsString("failBulkAtomicUpdateDashboards.json")))

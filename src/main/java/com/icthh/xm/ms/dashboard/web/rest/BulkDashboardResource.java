@@ -15,7 +15,7 @@ import java.util.Collection;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/bulk")
+@RequestMapping("/api/dashboards/bulk")
 public class BulkDashboardResource {
 
     private final AtomicBulkDashboardService atomicBulkDashboardService;
@@ -27,7 +27,7 @@ public class BulkDashboardResource {
      * @return result of each processed dashboard item
      */
     @Timed
-    @PostMapping("/dashboards")
+    @PostMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE')")
     public void createDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
@@ -42,7 +42,7 @@ public class BulkDashboardResource {
      * @return result of each processed dashboard item
      */
     @Timed
-    @PutMapping("/dashboards")
+    @PutMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE')")
     public void updateDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
@@ -57,7 +57,7 @@ public class BulkDashboardResource {
      * @return result of each processed dashboard item
      */
     @Timed
-    @DeleteMapping("/dashboards")
+    @DeleteMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE')")
     public void deleteDashboards(
         @Valid @RequestBody Collection<DashboardDto> dashboardItems
