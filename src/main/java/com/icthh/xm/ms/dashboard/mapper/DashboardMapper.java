@@ -22,7 +22,7 @@ public class DashboardMapper {
         entity.setLayout(dto.getLayout());
         entity.setTypeKey(dto.getTypeKey());
         entity.setIsPublic(dto.getIsPublic());
-        entity.setWidgets(toEntities(dto.getWidgets()));
+        entity.setWidgets(toEntities(dto.getWidgets(), entity));
 
         return entity;
     }
@@ -33,17 +33,20 @@ public class DashboardMapper {
         return entity;
     }
 
-    public Set<Widget> toEntities(Set<WidgetDto> widgets) {
-        return widgets.stream().map(this::toEntity).collect(toSet());
+    public Set<Widget> toEntities(Set<WidgetDto> widgets, Dashboard dashboard) {
+        return widgets.stream()
+            .map(widget -> toEntity(widget, dashboard))
+            .collect(toSet());
     }
 
-    public Widget toEntity(WidgetDto dto) {
+    public Widget toEntity(WidgetDto dto, Dashboard dashboard) {
         Widget entity = new Widget();
 
         entity.setConfig(dto.getConfig());
         entity.setIsPublic(dto.getIsPublic());
         entity.setName(dto.getName());
         entity.setSelector(dto.getSelector());
+        entity.setDashboard(dashboard);
 
         return entity;
     }
@@ -56,37 +59,8 @@ public class DashboardMapper {
         entity.setLayout(dto.getLayout());
         entity.setTypeKey(dto.getTypeKey());
         entity.setIsPublic(dto.getIsPublic());
-        entity.setWidgets(toEntities(dto.getWidgets()));
+        entity.setWidgets(toEntities(dto.getWidgets(), entity));
 
         return entity;
-    }
-
-    public DashboardDto toDto(Dashboard entity) {
-        DashboardDto dto = new DashboardDto();
-
-        dto.setName(entity.getName());
-        dto.setOwner(entity.getOwner());
-        dto.setConfig(entity.getConfig());
-        dto.setLayout(entity.getLayout());
-        dto.setTypeKey(entity.getTypeKey());
-        dto.setIsPublic(entity.isIsPublic());
-        dto.setWidgets(toDtos(entity.getWidgets()));
-
-        return dto;
-    }
-
-    public Set<WidgetDto> toDtos(Set<Widget> widgets) {
-        return widgets.stream().map(this::toDto).collect(toSet());
-    }
-
-    public WidgetDto toDto(Widget entity) {
-        WidgetDto dto = new WidgetDto();
-
-        dto.setConfig(entity.getConfig());
-        dto.setIsPublic(entity.isIsPublic());
-        dto.setName(entity.getName());
-        dto.setSelector(entity.getSelector());
-
-        return dto;
     }
 }

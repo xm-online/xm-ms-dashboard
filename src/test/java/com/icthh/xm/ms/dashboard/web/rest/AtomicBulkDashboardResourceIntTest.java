@@ -20,6 +20,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -64,6 +65,7 @@ public class AtomicBulkDashboardResourceIntTest {
 
     @Test
     @SneakyThrows
+    @Transactional
     public void shouldAtomicCreateDashboards() {
         httpMock.perform(post("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
@@ -71,11 +73,17 @@ public class AtomicBulkDashboardResourceIntTest {
             .andExpect(status().isOk());
 
         assertTrue(dashboardRepository.findAll().stream()
-            .anyMatch(dashboard -> "Bulk atomic crate first".equalsIgnoreCase(dashboard.getName()))
+            .anyMatch(dashboard ->
+                "Bulk atomic crate first".equalsIgnoreCase(dashboard.getName())
+                    && !dashboard.getWidgets().isEmpty()
+            )
         );
 
         assertTrue(dashboardRepository.findAll().stream()
-            .anyMatch(dashboard -> "Bulk atomic crate second".equalsIgnoreCase(dashboard.getName()))
+            .anyMatch(dashboard ->
+                "Bulk atomic crate second".equalsIgnoreCase(dashboard.getName())
+                    && !dashboard.getWidgets().isEmpty()
+            )
         );
     }
 
@@ -112,7 +120,8 @@ public class AtomicBulkDashboardResourceIntTest {
             dashboardRepository.save(mapper.readValue(readAsString("dashboardEntity.json"), Dashboard.class));
 
         List<DashboardDto> dashboardDtos = mapper.readValue(
-            readAsString("bulkAtomicDeleteDashboards.json"), new TypeReference<List<DashboardDto>>() {}).stream()
+            readAsString("bulkAtomicDeleteDashboards.json"), new TypeReference<List<DashboardDto>>() {
+            }).stream()
             .peek(dashboardDto -> dashboardDto.setId(dashboardToDelete.getId()))
             .collect(toList());
 
