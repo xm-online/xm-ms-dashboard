@@ -20,13 +20,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
 import static java.util.stream.Collectors.toList;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -64,6 +64,7 @@ public class AtomicBulkDashboardResourceIntTest {
 
     @Test
     @SneakyThrows
+    @Transactional
     public void shouldAtomicCreateDashboards() {
         httpMock.perform(post("/api/dashboards/bulk")
             .contentType(APPLICATION_JSON)
@@ -77,6 +78,9 @@ public class AtomicBulkDashboardResourceIntTest {
         assertTrue(dashboardRepository.findAll().stream()
             .anyMatch(dashboard -> "Bulk atomic crate second".equalsIgnoreCase(dashboard.getName()))
         );
+
+        dashboardRepository.findAll()
+            .forEach(dashboard -> assertFalse(dashboard.getWidgets().isEmpty()));
     }
 
     @Test
@@ -112,7 +116,8 @@ public class AtomicBulkDashboardResourceIntTest {
             dashboardRepository.save(mapper.readValue(readAsString("dashboardEntity.json"), Dashboard.class));
 
         List<DashboardDto> dashboardDtos = mapper.readValue(
-            readAsString("bulkAtomicDeleteDashboards.json"), new TypeReference<List<DashboardDto>>() {}).stream()
+            readAsString("bulkAtomicDeleteDashboards.json"), new TypeReference<List<DashboardDto>>() {
+            }).stream()
             .peek(dashboardDto -> dashboardDto.setId(dashboardToDelete.getId()))
             .collect(toList());
 
