@@ -26,8 +26,7 @@ import java.util.stream.Stream;
 
 import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
 import static java.util.stream.Collectors.toList;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -73,18 +72,15 @@ public class AtomicBulkDashboardResourceIntTest {
             .andExpect(status().isOk());
 
         assertTrue(dashboardRepository.findAll().stream()
-            .anyMatch(dashboard ->
-                "Bulk atomic crate first".equalsIgnoreCase(dashboard.getName())
-                    && !dashboard.getWidgets().isEmpty()
-            )
+            .anyMatch(dashboard -> "Bulk atomic crate first".equalsIgnoreCase(dashboard.getName()))
         );
 
         assertTrue(dashboardRepository.findAll().stream()
-            .anyMatch(dashboard ->
-                "Bulk atomic crate second".equalsIgnoreCase(dashboard.getName())
-                    && !dashboard.getWidgets().isEmpty()
-            )
+            .anyMatch(dashboard -> "Bulk atomic crate second".equalsIgnoreCase(dashboard.getName()))
         );
+
+        dashboardRepository.findAll()
+            .forEach(dashboard -> assertFalse(dashboard.getWidgets().isEmpty()));
     }
 
     @Test
