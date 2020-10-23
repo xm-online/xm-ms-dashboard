@@ -31,6 +31,8 @@ public class ImportDashboardService {
     public void importDashboards(ImportDashboardDto imports) {
 
         List<Dashboard> toDelete = dashboardRepository.findAll();
+        toDelete.forEach(dashboard -> log.info("delete dashboard before import: {}. widgets: {}",
+                                               dashboard, dashboard.getWidgets()));
         dashboardRepository.deleteAll(toDelete);
 
         log.info("All existing dashboards was deleted before importing: {}", toDelete.size());
