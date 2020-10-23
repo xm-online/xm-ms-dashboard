@@ -1,0 +1,2247 @@
+{
+    "dashboards": [
+        {
+            "id": 1426,
+            "name": "Admin high level architecture",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN.HLA",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "architecture"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Architecture",
+                    "ru": "Архитектура",
+                    "uk": "Архітектура"
+                },
+                "orderIndex": 4,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-high-level-architecture"
+            },
+            "isPublic": false
+        }, {
+            "id": 1222,
+            "name": "Settings",
+            "owner": "xm_uaa",
+            "typeKey": "SETTINGS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12 col-md-8 offset-md-2",
+                        "content": [
+                            {
+                                "widgetName": "xm-user-login-widget"
+                            }, {
+                                "widgetName": "xm-user-password-widget"
+                            }, {
+                                "widgetName": "xm-user-settings-widget"
+                            }, {
+                                "widgetName": "Salesman profile"
+                            }, {
+                                "widgetName": "xm-user-security-settings"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Settings",
+                    "ru": "Настройки",
+                    "uk": "Налаштування"
+                },
+                "orderIndex": 1,
+                "menu": {
+                    "section": "xm-user"
+                },
+                "slug": "settings"
+            },
+            "isPublic": false
+        }, {
+            "id": 1421,
+            "name": "Admin metrics",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN_METRICS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "metrics"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Metrics",
+                    "ru": "Metrics",
+                    "uk": "Metrics"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-metrics"
+            },
+            "isPublic": false
+        }, {
+            "id": 1449,
+            "name": "Admin roles management",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "roles-management"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Access",
+                    "ru": "Доступ",
+                    "uk": "Доступ"
+                },
+                "orderIndex": 2,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-roles-management"
+            },
+            "isPublic": false
+        }, {
+            "id": 1231,
+            "name": "Admin audits",
+            "owner": "xm_uaa",
+            "typeKey": "Admin.AUDITS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "audits"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Audits",
+                    "ru": "Audits",
+                    "uk": "Audits"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-audits"
+            },
+            "isPublic": false
+        }, {
+            "id": 1417,
+            "name": "Admin form playground",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "form-playground"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Form Playground",
+                    "ru": "Form Playground",
+                    "uk": "Form Playground"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-form-playground"
+            },
+            "isPublic": false
+        }, {
+            "id": 1443,
+            "name": "Admin logs",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN_LOGS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "logs"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Logs",
+                    "ru": "Logs",
+                    "uk": "Logs"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-logs"
+            },
+            "isPublic": false
+        }, {
+            "id": 1245,
+            "name": "Pages",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "pages"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Pages",
+                    "ru": "Pages",
+                    "uk": "Pages"
+                },
+                "orderIndex": 1,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-pages"
+            },
+            "isPublic": false
+        }, {
+            "id": 1424,
+            "name": "Admin roles matrix",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "roles-matrix"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Roles Matrix",
+                    "ru": "Roles Matrix",
+                    "uk": "Roles Matrix"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-roles-matrix"
+            },
+            "isPublic": false
+        }, {
+            "id": 1447,
+            "name": "Admin user management",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "user-management"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "User management",
+                    "ru": "User management",
+                    "uk": "User management"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-user-management"
+            },
+            "isPublic": false
+        }, {
+            "id": 1433,
+            "name": "Admin dashboards",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Dashboards",
+                    "ru": "Dashboards",
+                    "uk": "Dashboards"
+                },
+                "orderIndex": 30,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-dashboards"
+            },
+            "isPublic": false
+        }, {
+            "id": 1224,
+            "name": "Admin docs",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "docs"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "API",
+                    "ru": "API",
+                    "uk": "API"
+                },
+                "orderIndex": 3,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-docs"
+            },
+            "isPublic": false
+        }, {
+            "id": 1448,
+            "name": "Admin client management",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN.CLIENT",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "client-management"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Client management",
+                    "ru": "Client management",
+                    "uk": "Client management"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-client-management"
+            },
+            "isPublic": false
+        }, {
+            "id": 1420,
+            "name": "Admin translations",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN.TRANSLATIONS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "translations"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Translations",
+                    "ru": "Translations",
+                    "uk": "Translations"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-translations"
+            },
+            "isPublic": false
+        }, {
+            "id": 1230,
+            "name": "Admin health",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "health"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Health",
+                    "ru": "Health",
+                    "uk": "Health"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-health"
+            },
+            "isPublic": false
+        }, {
+            "id": 1221,
+            "name": "Admin gateway",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "gateway"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Gateway",
+                    "ru": "Gateway",
+                    "uk": "Gateway"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-gateway"
+            },
+            "isPublic": false
+        }, {
+            "id": 1232,
+            "name": "widget-view",
+            "owner": "xm_uaa",
+            "typeKey": "widget-view",
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Widget view",
+                    "ru": "Widget view",
+                    "ua": "Widget view"
+                },
+                "slug": "widget-view"
+            },
+            "isPublic": false
+        }, {
+            "id": 1450,
+            "name": "Admin specifications",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "specifications"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Configuration",
+                    "ru": "Конфигурация",
+                    "uk": "Конфігурація"
+                },
+                "orderIndex": 1,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-specifications"
+            },
+            "isPublic": false
+        }, {
+            "id": 1442,
+            "name": "Admin maintenance",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            }, {
+                                "widgetName": "maintenance"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Maintenance",
+                    "ru": "Обслуживание",
+                    "uk": "Обслуговування"
+                },
+                "orderIndex": 3,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-maintenance"
+            },
+            "isPublic": false
+        }
+    ],
+    "widgets": [
+        {
+            "id": 1577,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": ["/dashboard/admin-specifications"]
+                    }, {
+                        "title": {
+                            "en": "Pages"
+                        },
+                        "routerLink": ["/dashboard/admin-pages"]
+                    }, {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": ["/dashboard/admin-translations"]
+                    }, {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": ["/dashboard/admin-form-playground"]
+                    }
+                ]
+            },
+            "dashboard": 1450
+        }, {
+            "id": 1500,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Architecture"
+                        },
+                        "routerLink": ["/dashboard/admin-high-level-architecture"]
+                    }, {
+                        "title": {
+                            "en": "API"
+                        },
+                        "routerLink": ["/dashboard/admin-docs"]
+                    }
+                ]
+            },
+            "dashboard": 1426
+        }, {
+            "id": 1310,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Architecture"
+                        },
+                        "routerLink": ["/dashboard/admin-high-level-architecture"]
+                    }, {
+                        "title": {
+                            "en": "API"
+                        },
+                        "routerLink": ["/dashboard/admin-docs"]
+                    }
+                ]
+            },
+            "dashboard": 1224
+        }, {
+            "id": 1335,
+            "selector": "@xm-ngx/components/docs-view",
+            "name": "docs-view",
+            "dashboard": 1232
+        }, {
+            "id": 1495,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-management"]
+                    }, {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-matrix"]
+                    }, {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": ["/dashboard/admin-client-management"]
+                    }, {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": ["/dashboard/admin-user-management"]
+                    }, {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": ["/dashboard/admin-audits"]
+                    }
+                ]
+            },
+            "dashboard": 1424
+        }, {
+            "id": 1304,
+            "selector": "@xm-ngx/account/xm-user-login-widget",
+            "name": "xm-user-login-widget",
+            "config": {
+                "hideDates": true
+            },
+            "dashboard": 1222
+        }, {
+            "id": 1336,
+            "selector": "@xm-ngx/components/innerHTML",
+            "name": "widget-view",
+            "dashboard": 1232
+        }, {
+            "id": 1487,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": ["/dashboard/admin-maintenance"]
+                    }, {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": ["/dashboard/admin-gateway"]
+                    }, {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": ["/dashboard/admin-health"]
+                    }, {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": ["/dashboard/admin-metrics"]
+                    }, {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": ["/dashboard/admin-logs"]
+                    }
+                ]
+            },
+            "dashboard": 1421
+        }, {
+            "id": 1299,
+            "selector": "@xm-ngx/administration/gateway",
+            "name": "gateway",
+            "dashboard": 1221
+        }, {
+            "id": 1309,
+            "selector": "@xm-ngx/administration/docs",
+            "name": "docs",
+            "dashboard": 1224
+        }, {
+            "id": 1477,
+            "selector": "@xm-ngx/administration/form-playground",
+            "name": "form-playground",
+            "dashboard": 1417
+        }, {
+            "id": 1549,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": ["/dashboard/admin-maintenance"]
+                    }, {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": ["/dashboard/admin-gateway"]
+                    }, {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": ["/dashboard/admin-health"]
+                    }, {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": ["/dashboard/admin-metrics"]
+                    }, {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": ["/dashboard/admin-logs"]
+                    }
+                ]
+            },
+            "dashboard": 1442
+        }, {
+            "id": 1485,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": ["/dashboard/admin-specifications"]
+                    }, {
+                        "title": {
+                            "en": "Pages"
+                        },
+                        "routerLink": ["/dashboard/admin-pages"]
+                    }, {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": ["/dashboard/admin-translations"]
+                    }, {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": ["/dashboard/admin-form-playground"]
+                    }
+                ]
+            },
+            "dashboard": 1420
+        }, {
+            "id": 1517,
+            "selector": "@xm-ngx/administration/dashboard-mng/dashboard-list-card",
+            "name": "@xm-ngx/administration/dashboard-mng/dashboard-list-card",
+            "dashboard": 1433
+        }, {
+            "id": 1572,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-management"]
+                    }, {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-matrix"]
+                    }, {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": ["/dashboard/admin-client-management"]
+                    }, {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": ["/dashboard/admin-user-management"]
+                    }, {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": ["/dashboard/admin-audits"]
+                    }
+                ]
+            },
+            "dashboard": 1447
+        }, {
+            "id": 1476,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": ["/dashboard/admin-specifications"]
+                    }, {
+                        "title": {
+                            "en": "Pages"
+                        },
+                        "routerLink": ["/dashboard/admin-pages"]
+                    }, {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": ["/dashboard/admin-translations"]
+                    }, {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": ["/dashboard/admin-form-playground"]
+                    }
+                ]
+            },
+            "dashboard": 1417
+        }, {
+            "id": 1484,
+            "selector": "@xm-ngx/administration/translations",
+            "name": "translations",
+            "dashboard": 1420
+        }, {
+            "id": 1516,
+            "selector": "@xm-ngx/components/innerHTML",
+            "name": "innerHTML",
+            "dashboard": 1433
+        }, {
+            "id": 1574,
+            "selector": "@xm-ngx/administration/client-management",
+            "name": "client-management",
+            "dashboard": 1448
+        }, {
+            "id": 1575,
+            "selector": "@xm-ngx/administration/roles-management",
+            "name": "roles-management",
+            "dashboard": 1449
+        }, {
+            "id": 1300,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": ["/dashboard/admin-maintenance"]
+                    }, {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": ["/dashboard/admin-gateway"]
+                    }, {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": ["/dashboard/admin-health"]
+                    }, {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": ["/dashboard/admin-metrics"]
+                    }, {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": ["/dashboard/admin-logs"]
+                    }
+                ]
+            },
+            "dashboard": 1221
+        }, {
+            "id": 1550,
+            "selector": "@xm-ngx/administration/logs",
+            "name": "logs",
+            "dashboard": 1443
+        }, {
+            "id": 1551,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": ["/dashboard/admin-maintenance"]
+                    }, {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": ["/dashboard/admin-gateway"]
+                    }, {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": ["/dashboard/admin-health"]
+                    }, {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": ["/dashboard/admin-metrics"]
+                    }, {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": ["/dashboard/admin-logs"]
+                    }
+                ]
+            },
+            "dashboard": 1443
+        }, {
+            "id": 1333,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-management"]
+                    }, {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-matrix"]
+                    }, {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": ["/dashboard/admin-client-management"]
+                    }, {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": ["/dashboard/admin-user-management"]
+                    }, {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": ["/dashboard/admin-audits"]
+                    }
+                ]
+            },
+            "dashboard": 1231
+        }, {
+            "id": 1303,
+            "selector": "@xm-ngx/account/xm-user-password-widget",
+            "name": "xm-user-password-widget",
+            "dashboard": 1222
+        }, {
+            "id": 1548,
+            "selector": "@xm-ngx/administration/maintenance",
+            "name": "maintenance",
+            "dashboard": 1442
+        }, {
+            "id": 1573,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-management"]
+                    }, {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-matrix"]
+                    }, {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": ["/dashboard/admin-client-management"]
+                    }, {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": ["/dashboard/admin-user-management"]
+                    }, {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": ["/dashboard/admin-audits"]
+                    }
+                ]
+            },
+            "dashboard": 1448
+        }, {
+            "id": 1501,
+            "selector": "@xm-ngx/administration/architecture",
+            "name": "architecture",
+            "config": {
+                "components": [
+                    {
+                        "type": "start",
+                        "name": "input",
+                        "links": [
+                            {
+                                "name": "mwweb-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "activation-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_ACTIVATION"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "SDP"
+                            }, {
+                                "name": "foris-app"
+                            }, {
+                                "name": "communication-app"
+                            }, {}, {
+                                "name": "entity-app"
+                            }, {
+                                "name": "GSR"
+                            }, {
+                                "name": "ldb-app"
+                            }, {
+                                "name": "stp-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "communication-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "SMSC",
+                                "isReverse": false
+                            }, {
+                                "name": "infobip (Viber)",
+                                "isReverse": false
+                            }, {
+                                "name": "Firebase",
+                                "isReverse": false
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "kafka-processing-app",
+                                "lepLinks": [
+                                    {
+                                        "name": "kafka-connect-app"
+                                    }
+                                ],
+                                "links": [
+                                    {
+                                        "name": "activation-app"
+                                    }
+                                ],
+                                "subcomponents": [
+                                    {
+                                        "name": "spring-boot"
+                                    }, {
+                                        "name": "kafka"
+                                    }
+                                ]
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "config-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "name": "Git"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "customer-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_CUSTOMER"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "foris-app"
+                            }, {}
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "dashboard-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_DASHBOARD"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "document-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "JRM",
+                                "isReverse": false
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "entity-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "entity-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_ENTITY"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "name": "elasticsearch"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "CDB"
+                            }, {
+                                "name": "scheduler-app"
+                            }, {
+                                "name": "foris-app"
+                            }, {
+                                "name": "Siebel CRM"
+                            }, {
+                                "name": "entity-app"
+                            }, {
+                                "name": "communication-app"
+                            }, {
+                                "name": "ldb-app"
+                            }, {
+                                "name": "activation-app"
+                            }, {}
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "foris-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "Foris",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "foris-callback-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "Foris",
+                                "isReverse": true
+                            }, {
+                                "name": "activation-app",
+                                "isReverse": false
+                            }, {
+                                "name": "entity-app",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "gate-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "activation-app"
+                            }, {
+                                "name": "communication-app"
+                            }, {
+                                "name": "config-app"
+                            }, {
+                                "name": "customer-app"
+                            }, {
+                                "name": "dashboard-app"
+                            }, {
+                                "name": "document-app"
+                            }, {
+                                "name": "entity-app"
+                            }, {
+                                "name": "foris-app"
+                            }, {
+                                "name": "foris-callback-app"
+                            }, {
+                                "name": "hlr-app"
+                            }, {
+                                "name": "hub-app"
+                            }, {
+                                "name": "interaction-app"
+                            }, {
+                                "name": "ldb-app"
+                            }, {
+                                "name": "loyalty-app"
+                            }, {
+                                "name": "mscp-app"
+                            }, {
+                                "name": "otp-app"
+                            }, {
+                                "name": "product-app"
+                            }, {
+                                "name": "qualification-app"
+                            }, {
+                                "name": "sales-works-app"
+                            }, {
+                                "name": "sas-app"
+                            }, {
+                                "name": "scheduler-app"
+                            }, {
+                                "name": "sharpay-app"
+                            }, {
+                                "name": "stp-app"
+                            }, {
+                                "name": "timeline-app"
+                            }, {
+                                "name": "uaa-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "hlr-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "HLR",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "hub-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "MW_HUB"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "interaction-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "RTM Kafka"
+                            }, {
+                                "name": "ECS"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "itsf-backlog-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "ldb-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "?"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "CDB",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "loyalty-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_LOYALTY"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "entity-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "mscp-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "MSCP",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "mwweb-app",
+                        "subcomponents": [
+                            {
+                                "name": "nginx"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "gate-app"
+                            }, {
+                                "name": "SAP",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "otp-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_OTP"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [{}]
+                    }, {
+                        "type": "abstract",
+                        "name": "product-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_PRODUCT"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "SDP"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "qualification-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "RTM Adapter"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "sales-works-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "?"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "SalesWorks DB",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "sas-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "SAS",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "scheduler-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_SCHEDULER"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "sharpay-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "MobiPay (Sharpay)",
+                                "isReverse": true
+                            }, {
+                                "name": "GlobalMoney",
+                                "isReverse": false
+                            }, {
+                                "name": "entity-app",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "stp-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "STP",
+                                "isReverse": false
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "timeline-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_TIMELINE"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ]
+                    }, {
+                        "type": "abstract",
+                        "name": "uaa-app",
+                        "subcomponents": [
+                            {
+                                "name": "spring boot"
+                            }, {
+                                "name": "consul"
+                            }, {
+                                "type": "database",
+                                "name": "XM_UAA"
+                            }, {
+                                "name": "kafka"
+                            }, {
+                                "type": "reference",
+                                "name": "config-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "AD corp",
+                                "isReverse": false
+                            }, {
+                                "name": "AD ext",
+                                "isReverse": false
+                            }
+                        ],
+                        "lepLinks": [
+                            {
+                                "name": "otp-app"
+                            }, {}
+                        ]
+                    }, {
+                        "name": "kafka-processing-app",
+                        "lepLinks": [
+                            {
+                                "name": "kafka-connect-app"
+                            }
+                        ],
+                        "links": [
+                            {
+                                "name": "activation-app"
+                            }
+                        ],
+                        "subcomponents": [
+                            {
+                                "name": "spring-boot"
+                            }, {
+                                "name": "kafka"
+                            }
+                        ]
+                    }, {
+                        "name": "kafka-connect-app",
+                        "links": [
+                            {
+                                "name": "activation-app"
+                            }
+                        ],
+                        "subcomponents": [
+                            {
+                                "name": "kafka-connect"
+                            }, {
+                                "name": "kafka"
+                            }
+                        ]
+                    }
+                ],
+                "projects": [
+                    {
+                        "name": {
+                            "en": "CHECK"
+                        },
+                        "components": ["input", "mwweb-app", "gate-app", "uaa-app", "customer-app", "hlr-app", "HLR"]
+                    }, {
+                        "name": {
+                            "en": "LDB"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "dashboard-app", "entity-app", "timeline-app",
+                            "scheduler-app", "document-app", "communication-app", "SMSC", "ldb-app", "CDB",
+                            "Sieble CRM", "activation-app", "GSR", "foris-app", "foris-callback-app", "Foris",
+                            "stp-app", "STP", "JRM"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "MSCP"
+                        },
+                        "components": ["input", "mwweb-app", "gate-app", "mscp-app", "MSCP"]
+                    }, {
+                        "name": {
+                            "en": "DDS"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "communication-app", "SMSC",
+                            "kafka-processing-app", "kafka-connect-app", "activation-app", "foris-app",
+                            "foris-callback-app", "Foris", "kafka-connect-app"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "RTM"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "qualification-app", "interaction-app",
+                            "RTM Adapter", "RTM Kafka", "ECS"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "SDP"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "product-app", "communication-app", "SMSC",
+                            "kafka-processing-app", "activation-app", "foris-app", "foris-callback-app", "Foris", "SDP"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "C-BR"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "loyalty-app", "entity-app", "foris-app",
+                            "Foris"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "SCORING"
+                        },
+                        "components": ["input", "mwweb-app", "gate-app", "uaa-app", "customer-app"]
+                    }, {
+                        "name": {
+                            "en": "NR"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "resource-app", "otp-app", "foris-app", "Foris"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "B2B"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "dashboard-app", "entity-app", "timeline-app",
+                            "foris-app", "foris-callback-app", "Foris", "sas-app", "SAS", "SAP"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "VMS"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "entity-app", "sharpay-app", "GlobalMoney",
+                            "MobiPay (Sharpay)"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "MYVF"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "entity-app", "foris-app",
+                            "foris-callback-app", "Foris", "mscp-app", "MSCP", "qualification-app", "interaction-app",
+                            "RTM Adapter", "RTM Kafka", "ECS", "customer-app", "account-app", "prepay-app", "DPI",
+                            "activation-app", "product-app", "hub-app"
+                        ]
+                    }, {
+                        "name": {
+                            "en": "B2C"
+                        },
+                        "components": [
+                            "input", "mwweb-app", "gate-app", "uaa-app", "AD corp", "AD ext", "entity-app", "foris-app",
+                            "foris-callback-app", "Foris", "customer-app", "activation-app", "otp-app", "config-app",
+                            "sales-works-app", "SalesWorks DB", "document-app"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1426
+        }, {
+            "id": 1486,
+            "selector": "@xm-ngx/administration/metrics",
+            "name": "metrics",
+            "dashboard": 1421
+        }, {
+            "id": 1301,
+            "selector": "@xm-ngx/account/xm-user-settings-widget",
+            "name": "xm-user-settings-widget",
+            "config": {
+                "hideDates": true
+            },
+            "dashboard": 1222
+        }, {
+            "id": 1302,
+            "selector": "ext-b2c/xm-salesman-sales-point-widget",
+            "name": "Salesman profile",
+            "config": {
+                "title": {
+                    "en": "Salesman profile",
+                    "ru": "Профиль продавца",
+                    "uk": "Профіль продавця"
+                }
+            },
+            "dashboard": 1222
+        }, {
+            "id": 1332,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": ["/dashboard/admin-maintenance"]
+                    }, {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": ["/dashboard/admin-gateway"]
+                    }, {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": ["/dashboard/admin-health"]
+                    }, {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": ["/dashboard/admin-metrics"]
+                    }, {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": ["/dashboard/admin-logs"]
+                    }
+                ]
+            },
+            "dashboard": 1230
+        }, {
+            "id": 1576,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-management"]
+                    }, {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": ["/dashboard/admin-roles-matrix"]
+                    }, {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": ["/dashboard/admin-client-management"]
+                    }, {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": ["/dashboard/admin-user-management"]
+                    }, {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": ["/dashboard/admin-audits"]
+                    }
+                ]
+            },
+            "dashboard": 1449
+        }, {
+            "id": 1571,
+            "selector": "@xm-ngx/administration/user-management",
+            "name": "user-management",
+            "dashboard": 1447
+        }, {
+            "id": 1496,
+            "selector": "@xm-ngx/administration/roles-matrix",
+            "name": "roles-matrix",
+            "dashboard": 1424
+        }, {
+            "id": 1331,
+            "selector": "@xm-ngx/administration/health",
+            "name": "health",
+            "dashboard": 1230
+        }, {
+            "id": 1305,
+            "selector": "@xm-ngx/account/xm-user-security-settings",
+            "name": "xm-user-security-settings",
+            "dashboard": 1222
+        }, {
+            "id": 1578,
+            "selector": "@xm-ngx/administration/specification-management",
+            "name": "specifications",
+            "dashboard": 1450
+        }, {
+            "id": 1371,
+            "selector": "@xm-ngx/administration/dashboards-config-widget",
+            "name": "pages",
+            "dashboard": 1245
+        }, {
+            "id": 1334,
+            "selector": "@xm-ngx/administration/audits",
+            "name": "audits",
+            "dashboard": 1231
+        }, {
+            "id": 1370,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": ["/dashboard/admin-specifications"]
+                    }, {
+                        "title": {
+                            "en": "Pages"
+                        },
+                        "routerLink": ["/dashboard/admin-pages"]
+                    }, {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": ["/dashboard/admin-translations"]
+                    }, {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": ["/dashboard/admin-form-playground"]
+                    }
+                ]
+            },
+            "dashboard": 1245
+        }
+    ]
+}

@@ -5,8 +5,8 @@ import static org.mockito.ArgumentMatchers.any;
 import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.internal.DefaultTenantContextHolder;
-import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.service.DashboardService;
+import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
+import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -15,18 +15,18 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
-public class TenantDefaultDashboardProvisionerTest {
+public class TenantDefaultDashboardProvisionerUnitTest {
     @Mock
-    private DashboardService profileService;
+    private ImportDashboardService importDashboardService;
     @Spy
-    private TenantContextHolder tenantContextHolder = new DefaultTenantContextHolder();
+    private final TenantContextHolder tenantContextHolder = new DefaultTenantContextHolder();
 
     private TenantDefaultDashboardProvisioner provisioner;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        provisioner = new TenantDefaultDashboardProvisioner(profileService, tenantContextHolder);
+        provisioner = new TenantDefaultDashboardProvisioner(importDashboardService, tenantContextHolder);
     }
 
     @Test
@@ -34,10 +34,10 @@ public class TenantDefaultDashboardProvisionerTest {
 
         provisioner.createTenant(new Tenant().tenantKey("NEWTENANT"));
 
-        InOrder inOrder = Mockito.inOrder(profileService, tenantContextHolder);
+        InOrder inOrder = Mockito.inOrder(importDashboardService, tenantContextHolder);
 
         inOrder.verify(tenantContextHolder).getPrivilegedContext();
-        inOrder.verify(profileService).save(any(Dashboard.class));
+        inOrder.verify(importDashboardService).importDashboards(any(ImportDashboardDto.class));
         inOrder.verifyNoMoreInteractions();
 
     }
@@ -46,14 +46,14 @@ public class TenantDefaultDashboardProvisionerTest {
     public void manageTenant() {
         provisioner.manageTenant("NEWTENANT", "ACTIVE");
         Mockito.verifyZeroInteractions(tenantContextHolder);
-        Mockito.verifyZeroInteractions(profileService);
+        Mockito.verifyZeroInteractions(importDashboardService);
     }
 
     @Test
     public void deleteTenant() {
         provisioner.deleteTenant("NEWTENANT");
         Mockito.verifyZeroInteractions(tenantContextHolder);
-        Mockito.verifyZeroInteractions(profileService);
+        Mockito.verifyZeroInteractions(importDashboardService);
     }
 
 }

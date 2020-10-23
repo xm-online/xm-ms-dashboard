@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.service.bulk.impl;
 
+import com.icthh.xm.commons.logging.LoggingAspectConfig;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
@@ -24,6 +25,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     private final DashboardRepository dashboardRepository;
 
     @Override
+    @LoggingAspectConfig(inputCollectionAware = true)
     public void create(Collection<DashboardDto> dashboardItems) {
         Collection<Dashboard> dashboardEntities = dashboardItems.stream()
             .map(dashboardMapper::toEntity)
@@ -34,6 +36,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
 
     @Override
     @Transactional
+    @LoggingAspectConfig(inputCollectionAware = true)
     public void update(Collection<DashboardDto> dashboardItems) {
 
         Map<Long, DashboardDto> dtoById = dashboardItems.stream()
@@ -44,6 +47,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
     }
 
     @Override
+    @LoggingAspectConfig(inputCollectionAware = true)
     public void delete(Collection<DashboardDto> dashboardItems) {
         Collection<Dashboard> dashboardEntities = dashboardItems.stream()
             .map(dashboardMapper::toFullEntity)
