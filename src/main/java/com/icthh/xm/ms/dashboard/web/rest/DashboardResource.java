@@ -5,8 +5,10 @@ import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.DashboardService;
+import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
 import org.springframework.context.annotation.Lazy;
@@ -41,14 +43,17 @@ public class DashboardResource {
     private final WidgetService widgetService;
 
     private final DashboardResource dashboardResource;
+    private final ImportDashboardService importDashboardService;
 
     public DashboardResource(
                     DashboardService dashboardService,
                     WidgetService widgetService,
-                    @Lazy DashboardResource dashboardResource) {
+                    @Lazy DashboardResource dashboardResource,
+                    ImportDashboardService importDashboardService) {
         this.dashboardService = dashboardService;
         this.widgetService = widgetService;
         this.dashboardResource = dashboardResource;
+        this.importDashboardService = importDashboardService;
     }
 
     /**
@@ -148,4 +153,15 @@ public class DashboardResource {
         dashboardService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+
+    @PostMapping("/dashboards/import")
+    @Timed
+    @PreAuthorize("hasPermission({'dashboard': #dashboard}, 'DASHBOARD.IMPORT')")
+    @PrivilegeDescription("Privilege to import dashboards")
+    public ResponseEntity<Void> importDashboards(@Valid @RequestBody ImportDashboardDto dashboard) {
+        importDashboardService.importDashboards(dashboard);
+        return ResponseEntity.noContent().build();
+    }
+
 }

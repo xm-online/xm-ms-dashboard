@@ -9,8 +9,10 @@ import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardService;
+import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,9 +33,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -81,6 +87,9 @@ public class DashboardResourceIntTest {
     private DashboardService dashboardService;
 
     @Autowired
+    private ImportDashboardService importDashboardService;
+
+    @Autowired
     private WidgetService widgetService;
 
     @Autowired
@@ -106,7 +115,7 @@ public class DashboardResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         DashboardResource dashboardResourceMock = new DashboardResource(dashboardService,
-                        widgetService, dashboardResource);
+                        widgetService, dashboardResource, importDashboardService);
         this.restDashboardMockMvc = MockMvcBuilders.standaloneSetup(dashboardResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -530,4 +539,110 @@ public class DashboardResourceIntTest {
         dashboard1.setId(null);
         assertThat(dashboard1).isNotEqualTo(dashboard2);
     }
+
+    @Test
+    @Transactional
+    public void testDashboardImportToEmptyDB() throws Exception {
+
+        // Get the dashboard with widgets
+        restDashboardMockMvc.perform(get("/api/dashboards", dashboard.getId()))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andDo(print())
+                            .andExpect(jsonPath("$").value(hasSize(0)))
+        ;
+
+        ImportDashboardDto importDto = createImportDto();
+        restDashboardMockMvc.perform(post("/api/dashboards/import")
+                                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                                         .content(TestUtil.convertObjectToJsonBytes(importDto)))
+                            .andExpect(status().isNoContent());
+
+        restDashboardMockMvc.perform(get("/api/dashboards"))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andDo(print())
+                            .andExpect(jsonPath("$").value(hasSize(1)))
+                            .andExpect(jsonPath("$.[0].id").value(any(Integer.class)))
+                            .andExpect(jsonPath("$.[0].name").value("Dashboard 1"))
+                            .andExpect(jsonPath("$.[0].widgets.[*]").value(hasSize(2)))
+                            .andExpect(jsonPath("$.[0].widgets.[*].id").value(hasItem(any(Integer.class))))
+                            .andExpect(jsonPath("$.[0].widgets.[*].name").value(hasItems("w1 in dashboard 1",
+                                                                                         "w2 in dashboard 1")))
+                            .andExpect(jsonPath("$.[0].widgets.[*].dashboard").value(hasItem(any(Integer.class))));
+
+    }
+
+    @Test
+    @Transactional
+    public void testDashboardImportNotEmptyDB() throws Exception {
+
+        // pre populate DB with Dashboard:
+        Widget widget = createWidget();
+        dashboard.getWidgets().add(widget);
+        Dashboard saved = dashboardService.save(dashboard);
+
+        Long savedDashboardId = saved.getId();
+        Long savedWidgetId = saved.getWidgets().stream().map(Widget::getId).findFirst().orElse(null);
+
+        // Get the dashboard with widgets
+        restDashboardMockMvc.perform(get("/api/dashboards", dashboard.getId()))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andDo(print())
+                            .andExpect(jsonPath("$").value(hasSize(1)))
+                            .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME))
+                            .andExpect(jsonPath("$.[0].widgets.[*]").value(hasSize(1)))
+                            .andExpect(jsonPath("$.[0].widgets.[*].name").value(hasItem(DEFAULT_NAME)));
+
+        ImportDashboardDto importDto = createImportDto();
+        restDashboardMockMvc.perform(post("/api/dashboards/import")
+                                         .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                                         .content(TestUtil.convertObjectToJsonBytes(importDto)))
+                            .andExpect(status().isNoContent());
+
+        // Check that old IDs does not returned, so old dashboards and widgets wass deleted
+        restDashboardMockMvc.perform(get("/api/dashboards"))
+                            .andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andDo(print())
+                            .andExpect(jsonPath("$").value(hasSize(1)))
+                            .andExpect(jsonPath("$.[0].id").value(any(Integer.class)))
+                            .andExpect(jsonPath("$.[0].id").value(not(savedDashboardId)))
+                            .andExpect(jsonPath("$.[0].name").value("Dashboard 1"))
+                            .andExpect(jsonPath("$.[0].widgets.[*]").value(hasSize(2)))
+                            .andExpect(jsonPath("$.[0].widgets.[*].id").value(hasItem(any(Integer.class))))
+                            .andExpect(jsonPath("$.[0].widgets.[*].id").value(not(hasItems(savedWidgetId))))
+                            .andExpect(jsonPath("$.[0].widgets.[*].name").value(hasItems("w1 in dashboard 1",
+                                                                                         "w2 in dashboard 1")))
+                            .andExpect(jsonPath("$.[0].widgets.[*].dashboard").value(hasItem(any(Integer.class))));
+
+    }
+
+    private ImportDashboardDto createImportDto() {
+        ImportDashboardDto imports = new ImportDashboardDto();
+
+        DashboardDto dashboardDto = new DashboardDto();
+        dashboardDto.setId(1L);
+        dashboardDto.setName("Dashboard 1");
+        dashboardDto.setOwner(DEFAULT_OWNER);
+        dashboardDto.setTypeKey(DEFAULT_TYPE_KEY);
+
+        WidgetDto widgetDto = new WidgetDto();
+        widgetDto.setName("w1 in dashboard 1");
+        widgetDto.setId(10L);
+        widgetDto.setDashboard(1L);
+        widgetDto.setSelector(DEFAULT_SELECTOR);
+
+        WidgetDto widgetDto2 = new WidgetDto();
+        widgetDto2.setName("w2 in dashboard 1");
+        widgetDto2.setId(20L);
+        widgetDto2.setDashboard(1L);
+        widgetDto2.setSelector(DEFAULT_SELECTOR);
+
+        imports.getDashboards().add(dashboardDto);
+        imports.getWidgets().addAll(List.of(widgetDto, widgetDto2));
+        return imports;
+    }
+
 }
