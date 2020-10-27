@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.icthh.xm.commons.config.client.repository.TenantListRepository;
 import com.icthh.xm.commons.gen.api.TenantsApi;
 import com.icthh.xm.commons.gen.api.TenantsApiController;
 import com.icthh.xm.commons.gen.model.Tenant;
@@ -40,9 +39,6 @@ public class TenantsApiIntTest {
 
     @Autowired
     private TenantManager tenantManager;
-
-    @Autowired
-    private TenantListRepository tenantListRepository;
 
     @Autowired
     private MultiTenantConnectionProvider connectionProvider;
@@ -90,7 +86,7 @@ public class TenantsApiIntTest {
     public void testDeleteTenant() throws Exception {
         testAddTenant();
         mvc.perform(delete("/tenants/testadd")).andExpect(status().isOk());
-        assertNotExistSchema("testaddd");
+        assertNotExistSchema("testadd");
     }
 
 }

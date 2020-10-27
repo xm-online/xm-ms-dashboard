@@ -1,0 +1,1494 @@
+{
+    "dashboards": [
+        {
+            "id": 1607,
+            "name": "Admin logs",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN_LOGS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "logs"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Logs",
+                    "ru": "Logs",
+                    "uk": "Logs"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-logs"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1613,
+            "name": "Admin client management",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN.CLIENT",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "client-management"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Client management",
+                    "ru": "Client management",
+                    "uk": "Client management"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-client-management"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1615,
+            "name": "Admin health",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "health"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Health",
+                    "ru": "Health",
+                    "uk": "Health"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-health"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1604,
+            "name": "Admin roles management",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "roles-management"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Access",
+                    "ru": "Доступ",
+                    "uk": "Доступ"
+                },
+                "orderIndex": 2,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-roles-management"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1605,
+            "name": "Admin audits",
+            "owner": "xm_uaa",
+            "typeKey": "Admin.AUDITS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "audits"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Audits",
+                    "ru": "Audits",
+                    "uk": "Audits"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-audits"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1614,
+            "name": "Admin translations",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN.TRANSLATIONS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "translations"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Translations",
+                    "ru": "Translations",
+                    "uk": "Translations"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-translations"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1608,
+            "name": "Dashboards",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "pages"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Dashboards",
+                    "ru": "Dashboards",
+                    "uk": "Dashboards"
+                },
+                "orderIndex": 1,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-config-dashboards"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1616,
+            "name": "Admin gateway",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "gateway"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Gateway",
+                    "ru": "Gateway",
+                    "uk": "Gateway"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-gateway"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1606,
+            "name": "Admin form playground",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "form-playground"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Form Playground",
+                    "ru": "Form Playground",
+                    "uk": "Form Playground"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-form-playground"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1610,
+            "name": "Admin user management",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "user-management"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "User management",
+                    "ru": "User management",
+                    "uk": "User management"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-user-management"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1603,
+            "name": "Admin metrics",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN_METRICS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "metrics"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Metrics",
+                    "ru": "Metrics",
+                    "uk": "Metrics"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-metrics"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1609,
+            "name": "Admin roles matrix",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "roles-matrix"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": true,
+                "name": {
+                    "en": "Roles Matrix",
+                    "ru": "Roles Matrix",
+                    "uk": "Roles Matrix"
+                },
+                "orderIndex": 5,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-roles-matrix"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1612,
+            "name": "Admin docs",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "docs"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "hidden": false,
+                "name": {
+                    "en": "API",
+                    "ru": "API",
+                    "uk": "API"
+                },
+                "orderIndex": 4,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-docs"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1602,
+            "name": "Settings",
+            "owner": "xm_uaa",
+            "typeKey": "SETTINGS",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12 col-md-8 offset-md-2",
+                        "content": [
+                            {
+                                "widgetName": "xm-user-login-widget"
+                            },
+                            {
+                                "widgetName": "xm-user-password-widget"
+                            },
+                            {
+                                "widgetName": "xm-user-settings-widget"
+                            },
+                            {
+                                "widgetName": "Salesman profile"
+                            },
+                            {
+                                "widgetName": "xm-user-security-settings"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Settings",
+                    "ru": "Настройки",
+                    "uk": "Налаштування"
+                },
+                "orderIndex": 1,
+                "menu": {
+                    "section": "xm-user"
+                },
+                "slug": "settings"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1618,
+            "name": "Admin specifications",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "specifications"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Configuration",
+                    "ru": "Конфигурация",
+                    "uk": "Конфігурація"
+                },
+                "orderIndex": 1,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-specifications"
+            },
+            "isPublic": false
+        },
+        {
+            "id": 1619,
+            "name": "Admin maintenance",
+            "owner": "xm_uaa",
+            "typeKey": "ADMIN",
+            "layout": {
+                "layout": [
+                    {
+                        "class": "col-12",
+                        "content": [
+                            {
+                                "widgetName": "links"
+                            },
+                            {
+                                "widgetName": "maintenance"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "config": {
+                "name": {
+                    "en": "Maintenance",
+                    "ru": "Обслуживание",
+                    "uk": "Обслуговування"
+                },
+                "orderIndex": 3,
+                "menu": {
+                    "group": {
+                        "key": "ADMINISTRATION",
+                        "name": {
+                            "en": "Administration",
+                            "ru": "Администрирование",
+                            "uk": "Адміністрування"
+                        },
+                        "orderIndex": 100,
+                        "icon": "settings"
+                    }
+                },
+                "slug": "admin-maintenance"
+            },
+            "isPublic": false
+        }
+    ],
+    "widgets": [
+        {
+            "id": 1667,
+            "selector": "@xm-ngx/administration/specification-management",
+            "name": "specifications",
+            "dashboard": 1618
+        },
+        {
+            "id": 1656,
+            "selector": "@xm-ngx/administration/client-management",
+            "name": "client-management",
+            "dashboard": 1613
+        },
+        {
+            "id": 1666,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-specifications"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Dashboards"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-config-dashboards"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-translations"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-form-playground"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1618
+        },
+        {
+            "id": 1662,
+            "selector": "@xm-ngx/administration/gateway",
+            "name": "gateway",
+            "dashboard": 1616
+        },
+        {
+            "id": 1589,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-matrix"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-client-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-user-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-audits"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1604
+        },
+        {
+            "id": 1591,
+            "selector": "@xm-ngx/administration/audits",
+            "name": "audits",
+            "dashboard": 1605
+        },
+        {
+            "id": 1582,
+            "selector": "@xm-ngx/account/xm-user-password-widget",
+            "name": "xm-user-password-widget",
+            "dashboard": 1602
+        },
+        {
+            "id": 1594,
+            "selector": "@xm-ngx/administration/logs",
+            "name": "logs",
+            "dashboard": 1607
+        },
+        {
+            "id": 1658,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-specifications"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Dashboards"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-config-dashboards"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-translations"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-form-playground"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1614
+        },
+        {
+            "id": 1588,
+            "selector": "@xm-ngx/administration/roles-management",
+            "name": "roles-management",
+            "dashboard": 1604
+        },
+        {
+            "id": 1583,
+            "selector": "@xm-ngx/account/xm-user-settings-widget",
+            "name": "xm-user-settings-widget",
+            "config": {
+                "hideDates": true
+            },
+            "dashboard": 1602
+        },
+        {
+            "id": 1660,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-maintenance"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-gateway"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-health"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-metrics"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-logs"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1615
+        },
+        {
+            "id": 1663,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-maintenance"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-gateway"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-health"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-metrics"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-logs"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1616
+        },
+        {
+            "id": 1596,
+            "selector": "@xm-ngx/administration/dashboards-config-widget",
+            "name": "pages",
+            "dashboard": 1608
+        },
+        {
+            "id": 1585,
+            "selector": "@xm-ngx/account/xm-user-security-settings",
+            "name": "xm-user-security-settings",
+            "dashboard": 1602
+        },
+        {
+            "id": 1657,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-matrix"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-client-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-user-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-audits"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1613
+        },
+        {
+            "id": 1595,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-maintenance"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-gateway"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-health"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-metrics"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-logs"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1607
+        },
+        {
+            "id": 1655,
+            "selector": "@xm-ngx/administration/docs",
+            "name": "docs",
+            "dashboard": 1612
+        },
+        {
+            "id": 1592,
+            "selector": "@xm-ngx/administration/form-playground",
+            "name": "form-playground",
+            "dashboard": 1606
+        },
+        {
+            "id": 1599,
+            "selector": "@xm-ngx/administration/roles-matrix",
+            "name": "roles-matrix",
+            "dashboard": 1609
+        },
+        {
+            "id": 1668,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-maintenance"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-gateway"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-health"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-metrics"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-logs"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1619
+        },
+        {
+            "id": 1593,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-specifications"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Dashboards"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-config-dashboards"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-translations"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-form-playground"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1606
+        },
+        {
+            "id": 1659,
+            "selector": "@xm-ngx/administration/translations",
+            "name": "translations",
+            "dashboard": 1614
+        },
+        {
+            "id": 1586,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Maintenance"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-maintenance"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Gateway"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-gateway"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Health"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-health"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Metrics"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-metrics"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Logs"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-logs"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1603
+        },
+        {
+            "id": 1651,
+            "selector": "@xm-ngx/administration/user-management",
+            "name": "user-management",
+            "dashboard": 1610
+        },
+        {
+            "id": 1669,
+            "selector": "@xm-ngx/administration/maintenance",
+            "name": "maintenance",
+            "dashboard": 1619
+        },
+        {
+            "id": 1598,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-matrix"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-client-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-user-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-audits"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1609
+        },
+        {
+            "id": 1661,
+            "selector": "@xm-ngx/administration/health",
+            "name": "health",
+            "dashboard": 1615
+        },
+        {
+            "id": 1590,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-matrix"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-client-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-user-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-audits"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1605
+        },
+        {
+            "id": 1587,
+            "selector": "@xm-ngx/administration/metrics",
+            "name": "metrics",
+            "dashboard": 1603
+        },
+        {
+            "id": 1581,
+            "selector": "@xm-ngx/account/xm-user-login-widget",
+            "name": "xm-user-login-widget",
+            "config": {
+                "hideDates": true
+            },
+            "dashboard": 1602
+        },
+        {
+            "id": 1600,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Roles management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Roles matrix"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-roles-matrix"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Client management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-client-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "User management"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-user-management"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Audits"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-audits"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1610
+        },
+        {
+            "id": 1597,
+            "selector": "@xm-ngx/components/links-group-widget",
+            "name": "links",
+            "config": {
+                "list": [
+                    {
+                        "title": {
+                            "en": "Specifications"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-specifications"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Dashboards"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-config-dashboards"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Translations"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-translations"
+                        ]
+                    },
+                    {
+                        "title": {
+                            "en": "Form Playground"
+                        },
+                        "routerLink": [
+                            "/dashboard/admin-form-playground"
+                        ]
+                    }
+                ]
+            },
+            "dashboard": 1608
+        }
+    ]
+}
