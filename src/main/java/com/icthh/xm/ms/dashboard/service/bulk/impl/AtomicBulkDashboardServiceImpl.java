@@ -58,7 +58,7 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
 
     @Transactional
     void save(Collection<Dashboard> dashboardEntities) {
-        dashboardRepository.saveAll(dashboardEntities);
+        dashboardEntities.forEach(dashboardRepository::save);
     }
 
     void deleteAll(Collection<Dashboard> dashboardEntities) {
