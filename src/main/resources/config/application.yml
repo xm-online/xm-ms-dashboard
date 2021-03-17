@@ -168,6 +168,7 @@ xm-config:
     kafka-config-topic: config_topic
 
 application:
+    timeline-ignored-http-methods:
     tenant-ignored-path-list: /v2/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
     timelines-enabled: true
     kafka-enabled: true
