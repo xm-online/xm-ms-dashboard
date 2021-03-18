@@ -14,6 +14,7 @@ public final class Constants {
     public static final String ANONYMOUS_USER = "anonymoususer";
     public static final String AUTH_TENANT_KEY = "tenant";
     public static final String AUTH_USER_KEY = "user_key";
+    public static final String AUTH_ADDITIONAL_DETAILS = "additionalDetails";
     public static final String AUTH_XM_TOKEN_KEY = "xmToken";
     public static final String AUTH_XM_COOKIE_KEY = "xmCookie";
     public static final String AUTH_XM_USERID_KEY = "xmUserID";
