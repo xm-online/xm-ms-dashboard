@@ -22,6 +22,7 @@ public class ApplicationProperties {
 
     private String xmEndpoint;
     private List<String> tenantIgnoredPathList = Collections.emptyList();
+    private List<String> timelineIgnoredHttpMethods = Collections.emptyList();
     private boolean timelinesEnabled;
     private boolean kafkaEnabled;
     private String kafkaSystemQueue;
