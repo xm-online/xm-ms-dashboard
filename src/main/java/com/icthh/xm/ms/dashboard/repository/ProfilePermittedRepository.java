@@ -1,16 +1,14 @@
 package com.icthh.xm.ms.dashboard.repository;
 
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.commons.permission.service.PermissionCheckService;
 import com.icthh.xm.ms.dashboard.domain.Profile;
-import java.util.Collection;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @Slf4j
@@ -32,9 +30,8 @@ public class ProfilePermittedRepository extends PermittedRepository {
         String selectSql = SELECT_SQL;
         String countSql = COUNT_SQL;
 
-        Collection<String> permittedCondition = createPermissionCondition(privilegeKey);
-        if (isNotEmpty(permittedCondition)) {
-            String orChainedPermittedCondition = String.join(" OR ", permittedCondition);
+        String orChainedPermittedCondition = createPermissionCondition(privilegeKey);
+        if (isNotEmpty(orChainedPermittedCondition)) {
             selectSql += WHERE_SQL + orChainedPermittedCondition;
             countSql += WHERE_SQL + orChainedPermittedCondition;
         }
