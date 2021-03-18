@@ -122,6 +122,7 @@ xm-config:
     enabled: false
 
 application:
+    timeline-ignored-http-methods:
     kafka-enabled: false
     kafka-system-queue: system_queue
 
