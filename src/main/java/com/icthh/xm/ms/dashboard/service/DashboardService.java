@@ -1,20 +1,19 @@
 package com.icthh.xm.ms.dashboard.service;
 
+import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
+
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
-import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
+import com.icthh.xm.ms.dashboard.repository.DashboardPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
 
 /**
  * Service Implementation for managing Dashboard.
@@ -25,7 +24,7 @@ import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
 public class DashboardService {
 
     private final DashboardRepository dashboardRepository;
-    private final PermittedRepository permittedRepository;
+    private final DashboardPermittedRepository permittedRepository;
     private final WidgetService widgetService;
 
     /**
@@ -58,7 +57,7 @@ public class DashboardService {
     @FindWithPermission("DASHBOARD.GET_LIST")
     @PrivilegeDescription("Privilege to get all the dashboards")
     public List<Dashboard> findAll(String privilegeKey) {
-        return permittedRepository.findAll(Dashboard.class, privilegeKey);
+        return permittedRepository.findAll(privilegeKey);
     }
 
     /**

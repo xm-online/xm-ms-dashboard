@@ -2,14 +2,15 @@ package com.icthh.xm.ms.dashboard.repository;
 
 import com.icthh.xm.commons.permission.access.repository.ResourceRepository;
 import com.icthh.xm.ms.dashboard.domain.Widget;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-/**
- * Spring Data JPA repository for the Widget entity.
- */
-@SuppressWarnings("unused")
-@Repository
-public interface WidgetRepository extends JpaRepository<Widget,Long>, ResourceRepository {
+public interface WidgetRepository extends ResourceRepository {
 
+    Widget save(Widget widget);
+
+    Widget saveAndFlush(Widget widget);
+
+    Optional<Widget> findById(Long id);
+
+    void deleteById(Long id);
 }

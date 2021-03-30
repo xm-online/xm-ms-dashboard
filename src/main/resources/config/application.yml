@@ -179,6 +179,15 @@ application:
         delay: 1000 #in milliseconds
         multiplier: 2
 
+    specification-name: dashboardspec.yml
+    specification-path-pattern: /config/tenants/{tenantName}/dashboard/${application.specification-name}
+
+    tenant-dashboards-folder-path-pattern: ${application.tenant-dashboards-folder-path}*.yml
+    tenant-dashboards-folder-path : /config/tenants/{tenantName}/dashboard/dashboards/
+
+    tenant-dashboard-properties-id-path-pattern: /config/tenants/{tenantName}/dashboard/${application.tenant-dashboard-properties-id-name}
+    tenant-dashboard-properties-id-name: dashboards-id.yml
+    store-configuration-enabled: true
 gracefulShutdown:
     enabled: false
     shutdownDelay:

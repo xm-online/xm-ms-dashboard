@@ -1,14 +1,13 @@
 package com.icthh.xm.ms.dashboard.mapper;
 
+import static java.util.stream.Collectors.toSet;
+
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import org.springframework.stereotype.Component;
-
 import java.util.Set;
-
-import static java.util.stream.Collectors.toSet;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DashboardMapper {
@@ -30,12 +29,19 @@ public class DashboardMapper {
     public Dashboard toFullEntity(DashboardDto dto) {
         Dashboard entity = toEntity(dto);
         entity.setId(dto.getId());
+        entity.setWidgets(toFullEntities(dto.getWidgets(), entity));
         return entity;
     }
 
     public Set<Widget> toEntities(Set<WidgetDto> widgets, Dashboard dashboard) {
         return widgets.stream()
             .map(widget -> toEntity(widget, dashboard))
+            .collect(toSet());
+    }
+
+    public Set<Widget> toFullEntities(Set<WidgetDto> widgets, Dashboard dashboard) {
+        return widgets.stream()
+            .map(widget -> toFullEntity(widget, dashboard))
             .collect(toSet());
     }
 
@@ -48,6 +54,12 @@ public class DashboardMapper {
         entity.setSelector(dto.getSelector());
         entity.setDashboard(dashboard);
 
+        return entity;
+    }
+
+    public Widget toFullEntity(WidgetDto dto, Dashboard dashboard) {
+        Widget entity = toEntity(dto, dashboard);
+        entity.setId(dto.getId());
         return entity;
     }
 

@@ -1,21 +1,21 @@
 package com.icthh.xm.ms.dashboard.service.bulk.impl;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+
 import com.icthh.xm.commons.logging.LoggingAspectConfig;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +42,10 @@ public class AtomicBulkDashboardServiceImpl implements AtomicBulkDashboardServic
         Map<Long, DashboardDto> dtoById = dashboardItems.stream()
             .collect(toMap(DashboardDto::getId, Function.identity()));
 
-        dashboardRepository.findAllById(dtoById.keySet())
-            .forEach(dashboard -> dashboardMapper.merge(dtoById.get(dashboard.getId()), dashboard));
+        List<Dashboard> dashboards = dashboardRepository.findAllById(dtoById.keySet());
+        dashboards.forEach(dashboard -> dashboardMapper.merge(dtoById.get(dashboard.getId()), dashboard));
+        save(dashboards);
+
     }
 
     @Override

@@ -28,6 +28,14 @@ public class ApplicationProperties {
     private String kafkaSystemQueue;
     private String dbSchemaSuffix;
 
+    private boolean storeConfigurationEnabled;
+    private String specificationPathPattern;
+    private String specificationName;
+    private String tenantDashboardsFolderPathPattern;
+    private String tenantDashboardsFolderPath;
+    private String tenantDashboardPropertiesIdPathPattern;
+    private String tenantDashboardPropertiesIdName;
+
     @Getter
     @Setter
     public static class Amazon {
