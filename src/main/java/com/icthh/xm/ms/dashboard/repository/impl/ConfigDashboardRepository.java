@@ -81,7 +81,9 @@ public class ConfigDashboardRepository implements DashboardRepository {
     @Override
     public void deleteById(Long id) {
         List<Dashboard> dashboards = findAll();
-        Optional<Dashboard> dashboard = dashboards.stream().filter(dash -> dash.getId().equals(id)).findAny();
+        Optional<Dashboard> dashboard = dashboards.stream()
+            .filter(dash -> dash.getId().equals(id))
+            .findAny();
         dashboard.ifPresent(refreshableRepository::deleteDashboard);
     }
 

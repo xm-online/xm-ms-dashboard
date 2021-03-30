@@ -1,13 +1,11 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
-import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.icthh.xm.commons.config.client.api.RefreshableConfiguration;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
-import com.icthh.xm.commons.config.domain.Configuration;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
@@ -18,7 +16,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
@@ -71,14 +68,14 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
         String tenant = getTenantKeyValue();
         DashboardId dashboardId = dashboards.getOrDefault(tenant, new DashboardId());
 
-        //todo refactor
         if (dashboardId.getId() == null) {
             dashboardId.setId(0L);
         }
         dashboardId.setId(dashboardId.getId() + 1);
         dashboards.put(tenant, dashboardId);
         tenantConfigRepository.updateConfigFullPath(tenant,
-                                            "/api" + applicationProperties.getTenantDashboardPropertiesIdPathPattern(),
+                                            "/api"
+                                                    + applicationProperties.getTenantDashboardPropertiesIdPathPattern(),
                                                     mapper.writeValueAsString(dashboardId));
 
         return dashboardId.getId();
@@ -93,7 +90,4 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
         Long id;
     }
 
-    private String sha1Hex(Configuration configuration) {
-        return ofNullable(configuration).map(Configuration::getContent).map(DigestUtils::sha1Hex).orElse(null);
-    }
 }
