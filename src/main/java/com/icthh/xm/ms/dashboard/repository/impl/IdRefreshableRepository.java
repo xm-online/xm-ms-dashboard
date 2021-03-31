@@ -101,10 +101,11 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
         String path = "/api" + applicationProperties.getTenantDashboardPropertiesIdPathPattern();
         DashboardGlobalCounterState dashboardCounterState = getDashboardCounterState(tenant).globalCounterState.get();
         DashboardIdDto value = new DashboardIdDto();
-        value.setId(dashboardCounterState.currentValue + count);
+        Long currentValue = dashboardCounterState.currentValue;
+        value.setId(currentValue + count);
         String body = mapper.writeValueAsString(value);
         tenantConfigRepository.updateConfigFullPath(tenant, path, body, dashboardCounterState.oldHash);
-        return new DashboardLocalCounter(value.getId(), count);
+        return new DashboardLocalCounter(currentValue, count);
     }
 
     private DashboardCounterState getDashboardCounterState(String tenant) {

@@ -26,13 +26,10 @@ public class DashboardSpecService implements RefreshableConfiguration {
     private final Map<String, DashboardSpec> dashboardSpec = new ConcurrentHashMap<>();
 
     private final AntPathMatcher matcher = new AntPathMatcher();
-    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory())
+                                                .configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
-
-    {
-        mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
 
     @Override
     public void onRefresh(String updatedKey, String config) {
