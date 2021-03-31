@@ -35,6 +35,7 @@ public class ApplicationProperties {
     private String tenantDashboardsFolderPath;
     private String tenantDashboardPropertiesIdPathPattern;
     private String tenantDashboardPropertiesIdName;
+    private Long idReservedQuantity;
 
     @Getter
     @Setter
