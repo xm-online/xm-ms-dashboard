@@ -131,7 +131,7 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
 
         public Optional<Long> getNextCounter() {
             long currentValue = availableCounterResources.decrementAndGet();
-            if (currentValue == 0) {
+            if (currentValue <= 0) {
                 return Optional.empty();
             }
             return Optional.of(startCounterValue + (counterResource - currentValue));
