@@ -11,7 +11,6 @@ import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.repository.IdRepository;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -41,13 +40,12 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
-    private final IdRepository idRepository;
     private final TenantConfigRepository tenantConfigRepository;
 
     @Override
     public void onRefresh(String updatedKey, String config) {
         try {
-            String pathPattern = getPathPattern(updatedKey);
+            String pathPattern = applicationProperties.getTenantDashboardsFolderPathPattern();
             String tenant = matcher.extractUriTemplateVariables(pathPattern, updatedKey).get(TENANT_NAME);
             updateByFileState(updatedKey, config, tenant);
             log.info("Specification was for tenant {} updated from file {}", tenant, updatedKey);
@@ -82,14 +80,6 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         onRefresh(configKey, configValue);
     }
 
-    private String getPathPattern(String updatedKey) {
-        String tenantDashboardsFolderPathPattern = applicationProperties.getTenantDashboardsFolderPathPattern();
-        if (matcher.match(tenantDashboardsFolderPathPattern, updatedKey)) {
-            return tenantDashboardsFolderPathPattern;
-        }
-        throw new IllegalStateException("Dashboards path does not match defined patterns");
-    }
-
     public List<DashboardDto> getDashboards() {
         String tenant = getTenantKeyValue();
         return new ArrayList<>(dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).values());
@@ -99,8 +89,22 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public <S extends Dashboard> S saveDashboard(S dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        tenantConfigRepository.updateConfigFullPath(tenant, fullPath, mapper.writeValueAsString(dashboard));
+        String specPath = applicationProperties.getTenantDashboardsFolderPathPattern();
+        specPath = resolvePathWithTenant(tenant, specPath, dashboard);
+
+//        DashboardDto dashboardDto = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(specPath);
+//        Configuration configuration = new Configuration(specPath, mapper.writeValueAsString(dashboardDto));
+
+        tenantConfigRepository.updateConfigFullPath(tenant,
+                                                    fullPath,
+                                                    mapper.writeValueAsString(dashboard)/*,
+                                                    sha1Hex(configuration)*/);
         return dashboard;
+    }
+
+    private String resolvePathWithTenant(String tenantKey, String specPath, Dashboard dashboard) {
+        return specPath.replace("*.yml", dashboard.getTypeKey() + "-" + dashboard.getId() + ".yml")
+                       .replace("{" + TENANT_NAME + "}", tenantKey);
     }
 
     private String getTenantKeyValue() {

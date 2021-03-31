@@ -26,7 +26,7 @@ public class TenantManagerConfiguration {
                                        TenantDatabaseProvisioner databaseProvisioner,
                                        TenantDefaultDashboardProvisioner dashboardProvisioner,
                                        TenantListProvisioner tenantListProvisioner,
-                                       TenantConfigProvisioner tenantConfigProvisioner ) {
+                                       TenantConfigProvisioner tenantConfigProvisioner) {
 
         TenantManager manager = TenantManager.builder()
                                              .service(abilityCheckerProvisioner)
