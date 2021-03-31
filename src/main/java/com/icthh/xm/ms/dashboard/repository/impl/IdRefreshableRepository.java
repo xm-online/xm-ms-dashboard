@@ -91,7 +91,8 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
         if (counterValue.isPresent()) {
             return counterValue.get();
         } else {
-            DashboardLocalCounter dashboardLocalCounter = acquireCounterResource(tenant, 1000);
+            Long idReservedQuantity = applicationProperties.getIdReservedQuantity();
+            DashboardLocalCounter dashboardLocalCounter = acquireCounterResource(tenant, idReservedQuantity);
             dashboardCounterState.localCounter.set(dashboardLocalCounter);
             return dashboardLocalCounter.getNextCounter().orElseThrow(IllegalStateException::new);
         }
