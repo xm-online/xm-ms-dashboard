@@ -80,7 +80,17 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
         if (counterValue.isPresent()) {
             return counterValue.get();
         } else {
-            // acquire counter resource from ms config
+            // for avoid conflict exception on bulk import
+            return getNextIdSynchronized(tenant, dashboardCounterState);
+        }
+    }
+
+    private synchronized Long getNextIdSynchronized(String tenant, DashboardCounterState dashboardCounterState) throws JsonProcessingException {
+        DashboardLocalCounter localCounter = dashboardCounterState.getLocalCounter();
+        Optional<Long> counterValue = localCounter.getNextCounter();
+        if (counterValue.isPresent()) {
+            return counterValue.get();
+        } else {
             DashboardLocalCounter dashboardLocalCounter = acquireCounterResource(tenant, 1000);
             dashboardCounterState.localCounter.set(dashboardLocalCounter);
             return dashboardLocalCounter.getNextCounter().orElseThrow(IllegalStateException::new);
@@ -131,7 +141,7 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
 
         public Optional<Long> getNextCounter() {
             long currentValue = availableCounterResources.decrementAndGet();
-            if (currentValue == 0) {
+            if (currentValue <= 0) {
                 return Optional.empty();
             }
             return Optional.of(startCounterValue + (counterResource - currentValue));
