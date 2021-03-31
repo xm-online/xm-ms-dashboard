@@ -10,7 +10,6 @@ import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -62,6 +61,8 @@ public class ConfigDashboardRepository implements DashboardRepository {
             if (oldDashboard != null) {
                 if (CollectionUtils.isEmpty(dashboard.getWidgets())) {
                     dashboard.setWidgets(oldDashboard.getWidgets());
+                } else {
+                    dashboard.getWidgets().addAll(oldDashboard.getWidgets());
                 }
 
                 if (!oldDashboard.getTypeKey().equals(dashboard.getTypeKey())) {
@@ -80,11 +81,10 @@ public class ConfigDashboardRepository implements DashboardRepository {
 
     @Override
     public void deleteById(Long id) {
-        List<Dashboard> dashboards = findAll();
-        Optional<Dashboard> dashboard = dashboards.stream()
-            .filter(dash -> dash.getId().equals(id))
-            .findAny();
-        dashboard.ifPresent(refreshableRepository::deleteDashboard);
+        Dashboard dashboard = findOneById(id);
+        if (dashboard != null) {
+            refreshableRepository.deleteDashboard(dashboard);
+        }
     }
 
     @Override

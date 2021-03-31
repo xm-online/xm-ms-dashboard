@@ -81,29 +81,15 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
         Mockito.doAnswer(invocation -> {
             String updateKey = invocation.getArgument(1);
             String content = invocation.getArgument(2);
-            updateKey =  updateKey.replace("/api", "").replace("{tenantName}", "XM");
-
-            if (refreshableRepository.isListeningConfiguration(updateKey)) {
-                refreshableRepository.onRefresh(updateKey, content);
-            }
-
-            if (idRefreshableRepository.isListeningConfiguration(updateKey)) {
-                idRefreshableRepository.onRefresh(updateKey, content);
-            }
+            updateKey = prepareUpdateKey(updateKey);
+            callOnRefresh(refreshableRepository, idRefreshableRepository, updateKey, content);
             return null;
-        }).when(tenantConfigRepository).updateConfigFullPath(anyString(), anyString(), anyString());
+        }).when(tenantConfigRepository).updateConfigFullPath(anyString(), anyString(), anyString(), anyString());
 
         Mockito.doAnswer(invocation -> {
             String updateKey = invocation.getArgument(1);
-            updateKey =  updateKey.replace("/api", "").replace("{tenantName}", "XM");
-            if (refreshableRepository.isListeningConfiguration(updateKey)) {
-                refreshableRepository.onRefresh(updateKey, null);
-            }
-
-            if (idRefreshableRepository.isListeningConfiguration(updateKey)) {
-                idRefreshableRepository.onRefresh(updateKey, null);
-            }
-
+            updateKey = prepareUpdateKey(updateKey);
+            callOnRefresh(refreshableRepository, idRefreshableRepository, updateKey, null);
             return null;
         }).when(tenantConfigRepository).deleteConfigFullPath(any(), any());
     }
@@ -117,6 +103,23 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
     public static void cleanDashboardRepository(DashboardRepository dashboardRepository) {
         List<Dashboard> dashboards = dashboardRepository.findAll();
         dashboardRepository.deleteAll(dashboards);
+    }
+
+    private static void callOnRefresh(ConfigDashboardRefreshableRepository refreshableRepository,
+                                      IdRefreshableRepository idRefreshableRepository,
+                                      String updateKey,
+                                      String content) {
+        if (refreshableRepository.isListeningConfiguration(updateKey)) {
+            refreshableRepository.onRefresh(updateKey, content);
+        }
+
+        if (idRefreshableRepository.isListeningConfiguration(updateKey)) {
+            idRefreshableRepository.onRefresh(updateKey, content);
+        }
+    }
+
+    private static String prepareUpdateKey(String updateKey) {
+        return updateKey.replace("/api", "").replace("{tenantName}", "XM");
     }
 
 }

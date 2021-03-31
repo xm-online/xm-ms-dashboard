@@ -1,22 +1,22 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
-import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.icthh.xm.commons.config.client.api.RefreshableConfiguration;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
-import com.icthh.xm.commons.config.domain.Configuration;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     private static final String TENANT_NAME = "tenantName";
 
-    private final Map<String, Map<String, DashboardDto>> dashboardsByTenantByFile = new ConcurrentHashMap<>();
+    private final Map<String, Map<String, DashboardConfig>> dashboardsByTenantByFile = new ConcurrentHashMap<>();
 
     private final AntPathMatcher matcher = new AntPathMatcher();
     private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -54,10 +54,9 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         }
     }
 
-
     @SneakyThrows
     private void updateByFileState(String updatedKey, String config, String tenant) {
-        Map<String, DashboardDto> dashboards = dashboardsByTenantByFile
+        Map<String, DashboardConfig> dashboards = dashboardsByTenantByFile
             .computeIfAbsent(tenant, key -> new LinkedHashMap<>());
 
         if (StringUtils.isBlank(config)) {
@@ -66,7 +65,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         }
 
         DashboardDto dashboard = mapper.readValue(config, DashboardDto.class);
-        dashboards.put(updatedKey, dashboard);
+        dashboards.put(updatedKey, new DashboardConfig(dashboard, DigestUtils.sha1Hex(config)));
     }
 
     @Override
@@ -82,7 +81,11 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     public List<DashboardDto> getDashboards() {
         String tenant = getTenantKeyValue();
-        return new ArrayList<>(dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).values());
+        return dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).values()
+            .stream()
+            .map(DashboardConfig::getDashboardDto)
+            .collect(toList());
+
     }
 
     @SneakyThrows
@@ -91,14 +94,15 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         String fullPath = getFullPath(dashboard);
         String specPath = applicationProperties.getTenantDashboardsFolderPathPattern();
         specPath = resolvePathWithTenant(tenant, specPath, dashboard);
-
-//        DashboardDto dashboardDto = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(specPath);
-//        Configuration configuration = new Configuration(specPath, mapper.writeValueAsString(dashboardDto));
-
+        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(specPath);
+        String oldConfigHash = "";
+        if (dashboardConfig != null) {
+            oldConfigHash = dashboardConfig.getOldHash();
+        }
         tenantConfigRepository.updateConfigFullPath(tenant,
                                                     fullPath,
-                                                    mapper.writeValueAsString(dashboard)/*,
-                                                    sha1Hex(configuration)*/);
+                                                    mapper.writeValueAsString(dashboard),
+                                                    oldConfigHash);
         return dashboard;
     }
 
@@ -120,17 +124,19 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     public  <S extends Dashboard> String getFullPath(S dashboard) {
         String tenantDashboardsFolderPath = applicationProperties.getTenantDashboardsFolderPath();
-        String fullPath = "/api"
+        return "/api"
             + tenantDashboardsFolderPath
             + dashboard.getTypeKey()
             + "-"
             + dashboard.getId()
             + ".yml";
-        return fullPath;
     }
 
-    private String sha1Hex(Configuration configuration) {
-        return ofNullable(configuration).map(Configuration::getContent).map(DigestUtils::sha1Hex).orElse(null);
+    @Data
+    @AllArgsConstructor
+    private static class DashboardConfig {
+        private DashboardDto dashboardDto;
+        private String oldHash;
     }
 
 }
