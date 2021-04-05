@@ -11,7 +11,6 @@ import com.icthh.xm.commons.tenant.TenantContext;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantKey;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
-import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.StorageType;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.impl.ConfigDashboardRefreshableRepository;
@@ -69,7 +68,6 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
         tenantContextHolder = mock(TenantContextHolder.class);
         when(tenantContextHolder.getContext()).thenReturn(tenantContext);
         applicationProperties.getStorage().setStoreConfigurationEnabled(true);
-        applicationProperties.getStorage().setType(StorageType.MSCONFIG);
 
         dashboardSpecService.onRefresh(CONFIG_SPECS_UPDATED_KEY, loadFile(CONFIG_SPECS_PATH));
 

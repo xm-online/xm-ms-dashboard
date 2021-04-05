@@ -183,7 +183,6 @@ application:
     specification-path-pattern: /config/tenants/{tenantName}/dashboard/${application.specification-name}
     storage:
         store-configuration-enabled: false
-        type: RDBMS
         ms-config:
             tenant-dashboards-folder-path-pattern: ${application.storage.ms-config.tenant-dashboards-folder-path}*.yml
             tenant-dashboards-folder-path: /config/tenants/{tenantName}/dashboard/dashboards/

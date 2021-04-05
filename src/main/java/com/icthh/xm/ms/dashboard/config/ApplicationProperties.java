@@ -68,14 +68,8 @@ public class ApplicationProperties {
     @Getter
     @Setter
     public static class Storage {
-
-        private StorageType type;
         private boolean storeConfigurationEnabled;
         private MsConfigStorageProperties msConfig;
-
-        public enum StorageType {
-            MSCONFIG, RDBMS
-        }
 
         @Getter
         @Setter
