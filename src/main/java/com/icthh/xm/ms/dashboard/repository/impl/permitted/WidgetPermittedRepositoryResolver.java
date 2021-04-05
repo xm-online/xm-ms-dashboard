@@ -21,8 +21,8 @@ public class WidgetPermittedRepositoryResolver extends RepositoryResolver<Widget
         DashboardSpecService dashboardSpecService) {
         super(applicationProperties, dashboardSpecService);
 
-        getRepositories().put(DashboardStoreType.DB, defaultWidgetPermittedRepository);
-        getRepositories().put(DashboardStoreType.CONFIG, configWidgetPermittedRepository);
+        getRepositories().put(DashboardStoreType.RDBMS, defaultWidgetPermittedRepository);
+        getRepositories().put(DashboardStoreType.MSCONFG, configWidgetPermittedRepository);
     }
 
     @Override

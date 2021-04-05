@@ -8,7 +8,7 @@ public class DashboardSpec {
     private DashboardStoreType dashboardStoreType;
 
     public enum DashboardStoreType {
-        DB, CONFIG
+        RDBMS, MSCONFG
     }
 
 }

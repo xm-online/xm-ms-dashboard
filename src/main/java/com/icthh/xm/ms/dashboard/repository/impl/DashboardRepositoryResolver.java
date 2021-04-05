@@ -20,8 +20,8 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
         DefaultDashboardRepository defaultDashboardRepository,
         ConfigDashboardRepository configDashboardRepository) {
         super(applicationProperties, dashboardSpecService);
-        getRepositories().put(DashboardStoreType.DB, defaultDashboardRepository);
-        getRepositories().put(DashboardStoreType.CONFIG, configDashboardRepository);
+        getRepositories().put(DashboardStoreType.RDBMS, defaultDashboardRepository);
+        getRepositories().put(DashboardStoreType.MSCONFG, configDashboardRepository);
     }
 
     @Override

@@ -19,8 +19,8 @@ public class WidgetRepositoryResolver extends RepositoryResolver<WidgetRepositor
         DashboardSpecService dashboardSpecService) {
 
         super(applicationProperties, dashboardSpecService);
-        getRepositories().put(DashboardStoreType.DB, defaultWidgetRepository);
-        getRepositories().put(DashboardStoreType.CONFIG, configWidgetRepository);
+        getRepositories().put(DashboardStoreType.RDBMS, defaultWidgetRepository);
+        getRepositories().put(DashboardStoreType.MSCONFG, configWidgetRepository);
     }
 
     @Override

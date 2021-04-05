@@ -21,8 +21,8 @@ public class DashboardPermittedRepositoryResolver extends RepositoryResolver<Das
         DashboardSpecService dashboardSpecService) {
 
         super(applicationProperties, dashboardSpecService);
-        getRepositories().put(DashboardStoreType.DB, defaultDashboardPermittedRepository);
-        getRepositories().put(DashboardStoreType.CONFIG, configDashboardPermittedRepository);
+        getRepositories().put(DashboardStoreType.RDBMS, defaultDashboardPermittedRepository);
+        getRepositories().put(DashboardStoreType.MSCONFG, configDashboardPermittedRepository);
     }
 
     @Override
