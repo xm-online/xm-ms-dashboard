@@ -10,6 +10,7 @@ import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
+import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.MsConfigStorageProperties;
 import com.icthh.xm.ms.dashboard.repository.IdRepository;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,8 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
     @Override
     public void onRefresh(String updatedKey, String config) {
 
-        String specificationPathPattern = applicationProperties.getTenantDashboardPropertiesIdPathPattern();
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String specificationPathPattern = msConfigProperties.getTenantDashboardPropertiesIdPathPattern();
         try {
             String tenant = matcher.extractUriTemplateVariables(specificationPathPattern, updatedKey).get("tenantName");
             if (isBlank(config)) {
@@ -61,7 +63,8 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
 
     @Override
     public boolean isListeningConfiguration(String updatedKey) {
-        String specificationPathPattern = applicationProperties.getTenantDashboardPropertiesIdPathPattern();
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String specificationPathPattern = msConfigProperties.getTenantDashboardPropertiesIdPathPattern();
         return matcher.match(specificationPathPattern, updatedKey);
     }
 
@@ -91,7 +94,8 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
         if (counterValue.isPresent()) {
             return counterValue.get();
         } else {
-            Long idReservedQuantity = applicationProperties.getIdReservedQuantity();
+            MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+            Long idReservedQuantity = msConfigProperties.getIdReservedQuantity();
             DashboardLocalCounter dashboardLocalCounter = acquireCounterResource(tenant, idReservedQuantity);
             dashboardCounterState.localCounter.set(dashboardLocalCounter);
             return dashboardLocalCounter.getNextCounter().orElseThrow(IllegalStateException::new);
@@ -99,7 +103,8 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
     }
 
     private DashboardLocalCounter acquireCounterResource(String tenant, long count) throws JsonProcessingException {
-        String path = "/api" + applicationProperties.getTenantDashboardPropertiesIdPathPattern();
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String path = "/api" + msConfigProperties.getTenantDashboardPropertiesIdPathPattern();
         DashboardGlobalCounterState dashboardCounterState = getDashboardCounterState(tenant).globalCounterState.get();
         DashboardIdDto value = new DashboardIdDto();
         Long currentValue = dashboardCounterState.currentValue;

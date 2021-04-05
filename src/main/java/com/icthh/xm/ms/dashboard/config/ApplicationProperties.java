@@ -28,14 +28,9 @@ public class ApplicationProperties {
     private String kafkaSystemQueue;
     private String dbSchemaSuffix;
 
-    private boolean storeConfigurationEnabled;
     private String specificationPathPattern;
     private String specificationName;
-    private String tenantDashboardsFolderPathPattern;
-    private String tenantDashboardsFolderPath;
-    private String tenantDashboardPropertiesIdPathPattern;
-    private String tenantDashboardPropertiesIdName;
-    private Long idReservedQuantity;
+    private final Storage storage = new Storage();
 
     @Getter
     @Setter
@@ -68,5 +63,29 @@ public class ApplicationProperties {
         private int maxAttempts;
         private long delay;
         private int multiplier;
+    }
+
+    @Getter
+    @Setter
+    public static class Storage {
+
+        private StorageType type;
+        private boolean storeConfigurationEnabled;
+        private MsConfigStorageProperties msConfig;
+
+        public enum StorageType {
+            MSCONFIG, RDBMS
+        }
+
+        @Getter
+        @Setter
+        public static class MsConfigStorageProperties {
+                private String tenantDashboardsFolderPathPattern;
+                private String tenantDashboardsFolderPath;
+                private String tenantDashboardPropertiesIdPathPattern;
+                private String tenantDashboardPropertiesIdName;
+                private Long idReservedQuantity;
+        }
+
     }
 }

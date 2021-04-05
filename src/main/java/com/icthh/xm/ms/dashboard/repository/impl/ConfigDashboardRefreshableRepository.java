@@ -9,6 +9,7 @@ import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
+import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.MsConfigStorageProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.LinkedHashMap;
@@ -45,7 +46,8 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     @Override
     public void onRefresh(String updatedKey, String config) {
         try {
-            String pathPattern = applicationProperties.getTenantDashboardsFolderPathPattern();
+            MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+            String pathPattern = msConfigProperties.getTenantDashboardsFolderPathPattern();
             String tenant = matcher.extractUriTemplateVariables(pathPattern, updatedKey).get(TENANT_NAME);
             updateByFileState(updatedKey, config, tenant);
             log.info("Specification was for tenant {} updated from file {}", tenant, updatedKey);
@@ -70,7 +72,8 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     @Override
     public boolean isListeningConfiguration(String updatedKey) {
-        String tenantDashboardsFolderPathPattern = applicationProperties.getTenantDashboardsFolderPathPattern();
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String tenantDashboardsFolderPathPattern = msConfigProperties.getTenantDashboardsFolderPathPattern();
         return matcher.match(tenantDashboardsFolderPathPattern, updatedKey);
     }
 
@@ -92,7 +95,8 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public <S extends Dashboard> S saveDashboard(S dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        String specPath = applicationProperties.getTenantDashboardsFolderPathPattern();
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String specPath = msConfigProperties.getTenantDashboardsFolderPathPattern();
         specPath = resolvePathWithTenant(tenant, specPath, dashboard);
         DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(specPath);
         String oldConfigHash = "";
@@ -123,7 +127,8 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     }
 
     public  <S extends Dashboard> String getFullPath(S dashboard) {
-        String tenantDashboardsFolderPath = applicationProperties.getTenantDashboardsFolderPath();
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String tenantDashboardsFolderPath = msConfigProperties.getTenantDashboardsFolderPath();
         return "/api"
             + tenantDashboardsFolderPath
             + dashboard.getTypeKey()

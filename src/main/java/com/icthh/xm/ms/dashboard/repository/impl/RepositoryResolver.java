@@ -24,7 +24,7 @@ public abstract class RepositoryResolver<T> {
     }
 
     public T retrieveRepository() {
-        if (!applicationProperties.isStoreConfigurationEnabled()) {
+        if (!applicationProperties.getStorage().isStoreConfigurationEnabled()) {
             return repositories.get(DashboardStoreType.DB);
         }
         Optional<DashboardSpec> dashboardSpec = dashboardSpecService.getDashboardSpec();
