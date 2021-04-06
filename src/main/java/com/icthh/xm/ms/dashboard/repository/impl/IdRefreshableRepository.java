@@ -2,7 +2,6 @@ package com.icthh.xm.ms.dashboard.repository.impl;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.icthh.xm.commons.config.client.api.RefreshableConfiguration;
@@ -17,7 +16,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -80,29 +78,28 @@ public class IdRefreshableRepository implements RefreshableConfiguration, IdRepo
         DashboardCounterState dashboardCounterState = getDashboardCounterState(tenant);
         DashboardLocalCounter localCounter = dashboardCounterState.getLocalCounter();
         Optional<Long> counterValue = localCounter.getNextCounter();
-        if (counterValue.isPresent()) {
-            return counterValue.get();
-        } else {
-            // for avoid conflict exception on bulk import
-            return getNextIdSynchronized(tenant, dashboardCounterState);
-        }
+
+        return counterValue.orElseGet(() -> getNextIdSynchronized(tenant, dashboardCounterState));
     }
 
-    private synchronized Long getNextIdSynchronized(String tenant, DashboardCounterState dashboardCounterState) throws JsonProcessingException {
+    @SneakyThrows
+    private synchronized Long getNextIdSynchronized(String tenant, DashboardCounterState dashboardCounterState) {
         DashboardLocalCounter localCounter = dashboardCounterState.getLocalCounter();
         Optional<Long> counterValue = localCounter.getNextCounter();
-        if (counterValue.isPresent()) {
-            return counterValue.get();
-        } else {
-            MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
-            Long idReservedQuantity = msConfigProperties.getIdReservedQuantity();
-            DashboardLocalCounter dashboardLocalCounter = acquireCounterResource(tenant, idReservedQuantity);
-            dashboardCounterState.localCounter.set(dashboardLocalCounter);
-            return dashboardLocalCounter.getNextCounter().orElseThrow(IllegalStateException::new);
-        }
+
+        return counterValue.orElseGet(() -> acquireCounterValue(tenant, dashboardCounterState));
     }
 
-    private DashboardLocalCounter acquireCounterResource(String tenant, long count) throws JsonProcessingException {
+    private Long acquireCounterValue(String tenant, DashboardCounterState dashboardCounterState) {
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        Long idReservedQuantity = msConfigProperties.getIdReservedQuantity();
+        DashboardLocalCounter dashboardLocalCounter = acquireCounterResource(tenant, idReservedQuantity);
+        dashboardCounterState.localCounter.set(dashboardLocalCounter);
+        return dashboardLocalCounter.getNextCounter().orElseThrow(IllegalStateException::new);
+    }
+
+    @SneakyThrows
+    private DashboardLocalCounter acquireCounterResource(String tenant, long count) {
         MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
         String path = "/api" + msConfigProperties.getTenantDashboardPropertiesIdPathPattern();
         DashboardGlobalCounterState dashboardCounterState = getDashboardCounterState(tenant).globalCounterState.get();

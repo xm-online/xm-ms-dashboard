@@ -6,7 +6,6 @@ import com.icthh.xm.ms.dashboard.domain.DashboardSpec.DashboardStoreType;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
 import lombok.Getter;
 
 public abstract class RepositoryResolver<T> {
@@ -27,11 +26,10 @@ public abstract class RepositoryResolver<T> {
         if (!applicationProperties.getStorage().isStoreConfigurationEnabled()) {
             return repositories.get(DashboardStoreType.RDBMS);
         }
-        Optional<DashboardSpec> dashboardSpec = dashboardSpecService.getDashboardSpec();
-        if (dashboardSpec.isEmpty()) {
-            throw new IllegalStateException("Can't retrieve dashboard store specification");
-        }
-        return repositories.get(dashboardSpec.get().getDashboardStoreType());
+        return dashboardSpecService.getDashboardSpec()
+            .map(DashboardSpec::getDashboardStoreType)
+            .map(repositories::get)
+            .orElseThrow(() -> new IllegalStateException("Can't retrieve dashboard store specification"));
     }
 
 }
