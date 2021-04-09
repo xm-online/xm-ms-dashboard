@@ -1,6 +1,8 @@
 package com.icthh.xm.ms.dashboard.repository.impl.permitted;
 
 import com.icthh.xm.commons.permission.service.PermissionCheckService;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -16,6 +18,7 @@ public abstract class ConfigPermittedRepository {
 
     private final PermissionCheckService permissionService;
     private final ExpressionParser expressionParser;
+    private final Map<String, Expression> expressions = new ConcurrentHashMap<>();
 
     protected ConfigPermittedRepository(
         PermissionCheckService permissionService) {
@@ -32,8 +35,7 @@ public abstract class ConfigPermittedRepository {
         if (StringUtils.isBlank(condition)) {
             return Boolean.TRUE;
         }
-
-        Expression expression = expressionParser.parseExpression(condition);
+        Expression expression = expressions.computeIfAbsent(condition, expressionParser::parseExpression);
         EvaluationContext context = new StandardEvaluationContext();
         context.setVariable("returnObject", obj);
         Object value = expression.getValue(context);
