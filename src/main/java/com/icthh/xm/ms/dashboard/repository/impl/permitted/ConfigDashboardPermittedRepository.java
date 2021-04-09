@@ -29,12 +29,9 @@ public class ConfigDashboardPermittedRepository extends ConfigPermittedRepositor
 
     @Override
     public List<Dashboard> findAll(String privilegeKey) {
-        List<Dashboard> dashboards = refreshableRepository.getDashboards().stream()
+        return refreshableRepository.getDashboards().stream()
             .map(dashboardMapper::toFullEntity)
-            .collect(toList());
-
-        return dashboards.stream()
-            .filter(dashboardDto -> matchSpelExpression(privilegeKey, dashboardDto))
+            .filter(dashboard -> matchSpelExpression(privilegeKey, dashboard))
             .collect(toList());
     }
 

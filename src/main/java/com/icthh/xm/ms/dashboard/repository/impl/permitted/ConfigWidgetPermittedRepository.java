@@ -9,6 +9,7 @@ import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.impl.ConfigDashboardRefreshableRepository;
+import java.util.Collection;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -32,13 +33,11 @@ public class ConfigWidgetPermittedRepository extends ConfigPermittedRepository i
 
     @Override
     public List<Widget> findAll(String privilegeKey) {
-        List<Dashboard> dashboards = refreshableRepository.getDashboards().stream()
+        return refreshableRepository.getDashboards().stream()
             .map(dashboardMapper::toFullEntity)
-            .collect(toList());
-
-        return dashboards.stream()
             .filter(dashboardDto -> matchSpelExpression(privilegeKey, dashboardDto))
-            .flatMap(dashboard -> dashboard.getWidgets().stream())
+            .map(Dashboard::getWidgets)
+            .flatMap(Collection::stream)
             .collect(toList());
     }
 
