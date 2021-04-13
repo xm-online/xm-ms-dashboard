@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
+import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.service.DashboardService;
 import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
@@ -41,17 +42,19 @@ public class DashboardResource {
 
     private final DashboardService dashboardService;
     private final WidgetService widgetService;
+    private final DashboardMapper dashboardMapper;
 
     private final DashboardResource dashboardResource;
     private final ImportDashboardService importDashboardService;
 
     public DashboardResource(
-                    DashboardService dashboardService,
-                    WidgetService widgetService,
-                    @Lazy DashboardResource dashboardResource,
-                    ImportDashboardService importDashboardService) {
+        DashboardService dashboardService,
+        WidgetService widgetService,
+        DashboardMapper dashboardMapper, @Lazy DashboardResource dashboardResource,
+        ImportDashboardService importDashboardService) {
         this.dashboardService = dashboardService;
         this.widgetService = widgetService;
+        this.dashboardMapper = dashboardMapper;
         this.dashboardResource = dashboardResource;
         this.importDashboardService = importDashboardService;
     }
@@ -80,7 +83,7 @@ public class DashboardResource {
     /**
      * PUT  /dashboards : Updates an existing dashboard.
      *
-     * @param dashboard the dashboard to update
+     * @param dashboardDto the dashboard to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated dashboard,
      * or with status 400 (Bad Request) if the dashboard is not valid,
      * or with status 500 (Internal Server Error) if the dashboard couldn't be updated
@@ -88,16 +91,17 @@ public class DashboardResource {
      */
     @PutMapping("/dashboards")
     @Timed
-    @PreAuthorize("hasPermission({'id': #dashboard.id, 'newDashboard': #dashboard}, 'dashboard', 'DASHBOARD.UPDATE')")
+    @PreAuthorize("hasPermission({'id': #dashboardDto.id, 'newDashboard': #dashboardDto}, 'dashboard', 'DASHBOARD.UPDATE')")
     @PrivilegeDescription("Privilege to updates an existing dashboard")
-    public ResponseEntity<Dashboard> updateDashboard(@Valid @RequestBody Dashboard dashboard) throws URISyntaxException {
-        if (dashboard.getId() == null) {
+    public ResponseEntity<Dashboard> updateDashboard(@Valid @RequestBody DashboardDto dashboardDto) throws URISyntaxException {
+        Dashboard dashboard = dashboardMapper.toFullEntity(dashboardDto);
+        if (dashboardDto.getId() == null) {
             //in order to call method with permissions check
             return this.dashboardResource.createDashboard(dashboard);
         }
         Dashboard result = dashboardService.save(dashboard);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dashboard.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, dashboardDto.getId().toString()))
             .body(result);
     }
 

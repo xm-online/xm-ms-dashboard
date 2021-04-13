@@ -28,6 +28,10 @@ public class ApplicationProperties {
     private String kafkaSystemQueue;
     private String dbSchemaSuffix;
 
+    private String specificationPathPattern;
+    private String specificationName;
+    private final Storage storage = new Storage();
+
     @Getter
     @Setter
     public static class Amazon {
@@ -59,5 +63,23 @@ public class ApplicationProperties {
         private int maxAttempts;
         private long delay;
         private int multiplier;
+    }
+
+    @Getter
+    @Setter
+    public static class Storage {
+        private boolean storeConfigurationEnabled;
+        private MsConfigStorageProperties msConfig;
+
+        @Getter
+        @Setter
+        public static class MsConfigStorageProperties {
+                private String tenantDashboardsFolderPathPattern;
+                private String tenantDashboardsFolderPath;
+                private String tenantDashboardPropertiesIdPathPattern;
+                private String tenantDashboardPropertiesIdName;
+                private Long idReservedQuantity;
+        }
+
     }
 }

@@ -2,20 +2,25 @@ package com.icthh.xm.ms.dashboard.repository;
 
 import com.icthh.xm.commons.permission.access.repository.ResourceRepository;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 
-/**
- * Spring Data JPA repository for the Dashboard entity.
- */
-@SuppressWarnings("unused")
-@Repository
-public interface DashboardRepository extends JpaRepository<Dashboard, Long>, ResourceRepository {
+public interface DashboardRepository extends ResourceRepository {
 
     Dashboard findOneById(Long id);
 
-    void deleteAllByIdIn(Collection<Long> ids);
+    <S extends Dashboard> S save(S dashboard);
+
+    Dashboard saveAndFlush(Dashboard dashboard);
+
+    void deleteById(Long id);
+
+    List<Dashboard> findAll();
+
+    void deleteAll(Iterable<? extends Dashboard> entities);
+
+    List<Dashboard> findAllById(Set<Long> ids);
+
+    <S extends Dashboard> List<S> saveAll(Iterable<S> entities);
 }

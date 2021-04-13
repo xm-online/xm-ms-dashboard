@@ -53,7 +53,7 @@ public class WidgetService {
     @FindWithPermission("WIDGET.GET_LIST")
     @PrivilegeDescription("Privilege to get all the widgets")
     public List<WidgetDto> findAll(String privilegeKey) {
-        return widgetPermittedRepository.findAll(Widget.class, privilegeKey)
+        return widgetPermittedRepository.findAll(privilegeKey)
             .stream().map(WidgetDto::new).collect(Collectors.toList());
     }
 
