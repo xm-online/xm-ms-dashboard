@@ -75,8 +75,8 @@ public class TenantManagerConfigurationUnitTest {
         inOrder.verify(abilityCheckerProvisioner).createTenant(any(Tenant.class));
         inOrder.verify(tenantListProvisioner).createTenant(any(Tenant.class));
         inOrder.verify(databaseProvisioner).createTenant(any(Tenant.class));
-        inOrder.verify(dashboardProvisioner).createTenant(any(Tenant.class));
         inOrder.verify(tenantConfigProvisioner).createTenant(any(Tenant.class));
+        inOrder.verify(dashboardProvisioner).createTenant(any(Tenant.class));
 
         verifyNoMoreInteractions(abilityCheckerProvisioner,
                                  tenantListProvisioner,
