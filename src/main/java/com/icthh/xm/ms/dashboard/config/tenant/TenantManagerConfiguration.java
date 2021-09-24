@@ -32,8 +32,8 @@ public class TenantManagerConfiguration {
                                              .service(abilityCheckerProvisioner)
                                              .service(tenantListProvisioner)
                                              .service(databaseProvisioner)
-                                             .service(dashboardProvisioner)
                                              .service(tenantConfigProvisioner)
+                                             .service(dashboardProvisioner)
                                              .build();
         log.info("Configured tenant manager: {}", manager);
         return manager;
