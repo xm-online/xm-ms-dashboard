@@ -21,6 +21,8 @@ import org.springframework.core.io.ClassPathResource;
 @org.springframework.context.annotation.Configuration
 public class TenantManagerConfiguration {
 
+    private static final String DASHBOARD_SPEC_FILE = "/config/specs/dashboardspec.yml";
+
     @Bean
     public TenantManager tenantManager(TenantAbilityCheckerProvisioner abilityCheckerProvisioner,
                                        TenantDatabaseProvisioner databaseProvisioner,
@@ -47,7 +49,7 @@ public class TenantManagerConfiguration {
             .builder()
             .tenantConfigRepository(tenantConfigRepository)
             .configuration(of().path(applicationProperties.getSpecificationPathPattern())
-                .content(readResource("/config/specs/dashboardspec.yml"))
+                .content(readSpecResource())
                 .build())
             .build();
 
@@ -56,8 +58,8 @@ public class TenantManagerConfiguration {
     }
 
     @SneakyThrows
-    private String readResource(String location) {
-        return IOUtils.toString(new ClassPathResource(location).getInputStream(), UTF_8);
+    public static String readSpecResource() {
+        return IOUtils.toString(new ClassPathResource(DASHBOARD_SPEC_FILE).getInputStream(), UTF_8);
     }
 
 }
