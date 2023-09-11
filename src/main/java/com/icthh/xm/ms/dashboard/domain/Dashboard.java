@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -22,9 +23,10 @@ import java.util.function.BiConsumer;
  */
 @ApiModel(description = "Dashboard is a user web page which collates information about a business via set of widgets.")
 @Entity
+@Audited
 @Table(name = "dashboard")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Dashboard implements Serializable {
+public class Dashboard extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

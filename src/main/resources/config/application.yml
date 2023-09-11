@@ -89,6 +89,12 @@ spring:
             naming:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        properties:
+            org:
+                hibernate:
+                    envers:
+                        revision_field_name: revision
+                        revision_type_field_name: OPERATION
     liquibase:
         default-schema: XM
         change-log: classpath:config/liquibase/master.xml

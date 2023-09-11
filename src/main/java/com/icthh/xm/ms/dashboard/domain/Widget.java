@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -23,9 +24,10 @@ import java.util.Objects;
  */
 @ApiModel(description = "Widget is a web component intended to be used within dashboards. Widgets could communication with each other only via event manager. Widget can be of particular type.")
 @Entity
+@Audited
 @Table(name = "widget")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Widget implements Serializable {
+public class Widget extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added revinfo table for hibernate-envers.
+    -->
+
+
+    <changeSet id="20230913162100-1" author="dbahazhkov">
+        <addColumn tableName="widget">
+            <column name="created_by" type="varchar(256)"/>
+        </addColumn>
+        <addColumn tableName="widget">
+            <column name="created_date" type="timestamp with time zone"/>
+        </addColumn>
+        <addColumn tableName="widget">
+            <column name="last_modified_by" type="varchar(256)"/>
+        </addColumn>
+        <addColumn tableName="widget">
+            <column name="last_modified_date" type="timestamp with time zone"/>
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>
