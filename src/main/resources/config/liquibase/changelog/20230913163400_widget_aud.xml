@@ -23,5 +23,25 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="20230913162100-2" author="dbahazhkov">
+        <createTable tableName="widget_aud">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revision" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation" type="smallint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="selector" type="varchar(255)" />
+            <column name="name" type="varchar(255)" />
+            <column name="config" type="${textType}" />
+            <column name="is_public" type="boolean" />
+            <column name="dashboard_id" type="bigint" />
+        </createTable>
+    </changeSet>
+
 
 </databaseChangeLog>

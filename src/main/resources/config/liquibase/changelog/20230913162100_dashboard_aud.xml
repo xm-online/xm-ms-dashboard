@@ -19,7 +19,6 @@
 
     </changeSet>
 
-
     <changeSet id="20230913162100-2" author="dbahazhkov">
         <addColumn tableName="dashboard">
             <column name="created_by" type="varchar(256)"/>
@@ -35,6 +34,27 @@
 
     <changeSet id="20230913162100-4" author="dbahazhkov">
         <addDefaultValue tableName="revinfo" columnName="rev" defaultValueSequenceNext="seq_audit"></addDefaultValue>
+    </changeSet>
+
+    <changeSet id="20230913162100-5" author="dbahazhkov">
+        <createTable tableName="dashboard_aud">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revision" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation" type="smallint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(255)" />
+            <column name="owner" type="varchar(255)" />
+            <column name="layout" type="${textType}" />
+            <column name="config" type="${textType}" />
+            <column name="is_public" type="boolean" />
+            <column name="type_key" type="varchar(255)" />
+        </createTable>
     </changeSet>
 
 </databaseChangeLog>
