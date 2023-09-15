@@ -7,6 +7,10 @@ import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -24,6 +28,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 
 /**
@@ -39,11 +44,15 @@ public class WidgetResource {
 
     private final WidgetResource widgetResource;
 
+    private final AuditReader auditReader;
+
     public WidgetResource(
                     WidgetService widgetService,
-                    @Lazy WidgetResource widgetResource) {
+                    @Lazy WidgetResource widgetResource,
+                    AuditReader auditReader) {
         this.widgetService = widgetService;
         this.widgetResource = widgetResource;
+        this.auditReader = auditReader;
     }
 
     /**
@@ -129,5 +138,15 @@ public class WidgetResource {
     public ResponseEntity<Void> deleteWidget(@PathVariable Long id) {
         widgetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/widgets-audit/{id}")
+    public ResponseEntity<Object> getWidgetAuditById(@PathVariable Long id) {
+        return ResponseEntity.ok(widgetService.findAuditsById(id));
+    }
+
+    @GetMapping("/widgets-audit/")
+    public ResponseEntity<Object> getAllWidgetAudits() {
+        return ResponseEntity.ok(widgetService.findAllAudits());
     }
 }

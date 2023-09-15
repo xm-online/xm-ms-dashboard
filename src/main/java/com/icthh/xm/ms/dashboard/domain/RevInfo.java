@@ -1,10 +1,13 @@
 package com.icthh.xm.ms.dashboard.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.icthh.xm.ms.dashboard.listener.CustomRevisionEntityListener;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,6 +41,10 @@ public class RevInfo implements Serializable {
     @Column(name = "REVTSTMP", nullable = false)
     private Date revtstmp;
 
+    @LastModifiedBy
+    @Column(name = "last_modified_by", length = 50)
+    private String lastModifiedBy;
+
     public Long getRev() {
         return rev;
     }
@@ -54,24 +61,33 @@ public class RevInfo implements Serializable {
         this.revtstmp = revtstmp;
     }
 
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof RevInfo)) return false;
         RevInfo revInfo = (RevInfo) o;
-        return Objects.equals(getRev(), revInfo.getRev()) && Objects.equals(getRevtstmp(), revInfo.getRevtstmp());
+        return Objects.equals(getRev(), revInfo.getRev()) && Objects.equals(getRevtstmp(), revInfo.getRevtstmp()) && Objects.equals(getLastModifiedBy(), revInfo.getLastModifiedBy());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRev(), getRevtstmp());
+        return Objects.hash(getRev(), getRevtstmp(), getLastModifiedBy());
     }
 
     @Override
     public String toString() {
-        return "RefInfo{" +
+        return "RevInfo{" +
             "rev=" + rev +
             ", revtstmp=" + revtstmp +
+            ", lastModifiedBy='" + lastModifiedBy + '\'' +
             '}';
     }
 }

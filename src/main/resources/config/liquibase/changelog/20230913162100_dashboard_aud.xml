@@ -54,7 +54,17 @@
             <column name="config" type="${textType}" />
             <column name="is_public" type="boolean" />
             <column name="type_key" type="varchar(255)" />
+            <column name="created_by" type="varchar(256)"/>
+            <column name="created_date" type="timestamp with time zone"/>
+            <column name="last_modified_by" type="varchar(256)"/>
+            <column name="last_modified_date" type="timestamp with time zone"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="20230913162100-6" author="dbahazhkov">
+        <addColumn tableName="revinfo">
+            <column name="last_modified_by" type="varchar(256)"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

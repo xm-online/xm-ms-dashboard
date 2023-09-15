@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import org.hibernate.envers.AuditReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,6 +81,9 @@ public class WidgetResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private AuditReader auditReader;
+
     private MockMvc restWidgetMockMvc;
 
     private Widget widget;
@@ -87,7 +91,7 @@ public class WidgetResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        WidgetResource widgetResourceMock = new WidgetResource(widgetService, widgetResource);
+        WidgetResource widgetResourceMock = new WidgetResource(widgetService, widgetResource, auditReader);
         this.restWidgetMockMvc = MockMvcBuilders.standaloneSetup(widgetResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

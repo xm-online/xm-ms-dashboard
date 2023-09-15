@@ -2,15 +2,22 @@ package com.icthh.xm.ms.dashboard.service;
 
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
+import com.icthh.xm.ms.dashboard.domain.RevInfo;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.WidgetPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -23,6 +30,7 @@ public class WidgetService {
 
     private final WidgetRepository widgetRepository;
     private final WidgetPermittedRepository widgetPermittedRepository;
+    private final AuditReader auditReader;
 
     /**
      * Save a widget.
@@ -87,5 +95,34 @@ public class WidgetService {
     @PrivilegeDescription("Privilege to finds widgets by dashboard")
     public List<Widget> findByDashboardId(Long id, String privilegeKey) {
         return widgetPermittedRepository.findByDashboardId(id, privilegeKey);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> findAuditsById(Long id) {
+        AuditQuery auditQuery = auditReader.createQuery()
+            .forRevisionsOfEntity(Widget.class,true, true)
+            .add(AuditEntity.property("id").eq(id));
+        return getResult(auditQuery);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Map<String, Object>> findAllAudits() {
+        AuditQuery auditQuery = auditReader.createQuery()
+            .forRevisionsOfEntity(Widget.class,false, true);
+        return getResult(auditQuery);
+    }
+
+    private List<Map<String, Object>> getResult(AuditQuery auditQuery) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Object entry : auditQuery.getResultList()) {
+            Object[] row = (Object[]) entry;
+            Widget widget = (Widget) row[0];
+            RevInfo revInfo = (RevInfo) row[1];
+            Map<String, Object> resultEntry = new HashMap<>();
+            resultEntry.put("audit", widget);
+            resultEntry.put("revInfo", revInfo);
+            result.add(resultEntry);
+        }
+        return result;
     }
 }
