@@ -18,7 +18,6 @@ public class CustomRevisionEntityListener implements RevisionListener {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        log.info(currentPrincipalName);
 
         customRevisionEntity.setLastModifiedBy(currentPrincipalName);
     }

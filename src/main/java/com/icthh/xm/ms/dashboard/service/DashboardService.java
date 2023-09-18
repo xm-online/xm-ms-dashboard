@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,16 +100,20 @@ public class DashboardService {
     }
 
 
-    public List<Map<String, Object>> findAuditsById(Long id) {
+    public Page<Map<String, Object>> findAuditsById(Long id, int page, int size) {
         AuditQuery auditQuery = auditReader.createQuery()
             .forRevisionsOfEntity(Dashboard.class,false, true)
+            .setFirstResult(page * size)
+            .setMaxResults(size)
             .add(AuditEntity.property("id").eq(id));
         return widgetService.getResult(auditQuery);
     }
 
-    public List<Map<String, Object>> findAllAudits() {
+    public Page<Map<String, Object>> findAllAudits(int page, int size) {
         AuditQuery auditQuery = auditReader.createQuery()
-            .forRevisionsOfEntity(Dashboard.class,false, true);
+            .forRevisionsOfEntity(Dashboard.class,false, true)
+            .setFirstResult(page * size)
+            .setMaxResults(size);
         return widgetService.getResult(auditQuery);
     }
 }

@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,20 +100,24 @@ public class WidgetService {
         return widgetPermittedRepository.findByDashboardId(id, privilegeKey);
     }
 
-    public List<Map<String, Object>> findAuditsById(Long id) {
+    public Page<Map<String, Object>> findAuditsById(Long id, int page, int size) {
         AuditQuery auditQuery = auditReader.createQuery()
             .forRevisionsOfEntity(Widget.class,false, true)
-            .add(AuditEntity.property("id").eq(id));
+            .add(AuditEntity.property("id").eq(id))
+            .setFirstResult(page * size)
+            .setMaxResults(size);
         return getResult(auditQuery);
     }
 
-    public List<Map<String, Object>> findAllAudits() {
+    public Page<Map<String, Object>> findAllAudits(int page, int size) {
         AuditQuery auditQuery = auditReader.createQuery()
-            .forRevisionsOfEntity(Widget.class,false, true);
+            .forRevisionsOfEntity(Widget.class,false, true)
+            .setFirstResult(page * size)
+            .setMaxResults(size);
         return getResult(auditQuery);
     }
 
-    public List<Map<String, Object>> getResult(AuditQuery auditQuery) {
+    public Page<Map<String, Object>> getResult(AuditQuery auditQuery) {
         List<Map<String, Object>> result = new ArrayList<>();
         for (Object entry : auditQuery.getResultList()) {
             Object[] row = (Object[]) entry;
@@ -121,6 +128,6 @@ public class WidgetService {
             resultEntry.put("revInfo", revInfo);
             result.add(resultEntry);
         }
-        return result;
+        return new PageImpl<>(result);
     }
 }

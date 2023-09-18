@@ -13,22 +13,18 @@ import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -169,13 +165,16 @@ public class DashboardResource {
     }
 
     @GetMapping("/dashboards-audit/{id}")
-    public ResponseEntity<Object> getDashboardAuditById(@PathVariable Long id) {
-        return ResponseEntity.ok(dashboardService.findAuditsById(id));
+    public ResponseEntity<Page<Map<String, Object>>> getDashboardAuditById(@PathVariable Long id,
+                                                                           @RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(dashboardService.findAuditsById(id, page, size));
     }
 
     @GetMapping("/dashboards-audit/")
-    public ResponseEntity<Object> getAllDashboardsAudits() {
-        return ResponseEntity.ok(dashboardService.findAllAudits());
+    public ResponseEntity<Page<Map<String, Object>>> getAllDashboardsAudits(@RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(dashboardService.findAllAudits(page, size));
     }
 
 }
