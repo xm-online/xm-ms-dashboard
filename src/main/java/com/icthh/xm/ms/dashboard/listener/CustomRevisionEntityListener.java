@@ -1,13 +1,14 @@
 package com.icthh.xm.ms.dashboard.listener;
 
 import com.icthh.xm.ms.dashboard.domain.RevInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.RevisionListener;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.Instant;
 import java.util.Date;
 
+@Slf4j
 public class CustomRevisionEntityListener implements RevisionListener {
     public void newRevision(Object revisionEntity) {
         RevInfo customRevisionEntity =
@@ -17,6 +18,7 @@ public class CustomRevisionEntityListener implements RevisionListener {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
+        log.info(currentPrincipalName);
 
         customRevisionEntity.setLastModifiedBy(currentPrincipalName);
     }

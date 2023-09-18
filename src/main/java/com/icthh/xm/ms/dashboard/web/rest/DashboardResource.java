@@ -168,4 +168,14 @@ public class DashboardResource {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/dashboards-audit/{id}")
+    public ResponseEntity<Object> getDashboardAuditById(@PathVariable Long id) {
+        return ResponseEntity.ok(dashboardService.findAuditsById(id));
+    }
+
+    @GetMapping("/dashboards-audit/")
+    public ResponseEntity<Object> getAllDashboardsAudits() {
+        return ResponseEntity.ok(dashboardService.findAllAudits());
+    }
+
 }

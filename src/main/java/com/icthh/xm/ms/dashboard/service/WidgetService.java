@@ -97,22 +97,20 @@ public class WidgetService {
         return widgetPermittedRepository.findByDashboardId(id, privilegeKey);
     }
 
-    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> findAuditsById(Long id) {
         AuditQuery auditQuery = auditReader.createQuery()
-            .forRevisionsOfEntity(Widget.class,true, true)
+            .forRevisionsOfEntity(Widget.class,false, true)
             .add(AuditEntity.property("id").eq(id));
         return getResult(auditQuery);
     }
 
-    @SuppressWarnings("unchecked")
     public List<Map<String, Object>> findAllAudits() {
         AuditQuery auditQuery = auditReader.createQuery()
             .forRevisionsOfEntity(Widget.class,false, true);
         return getResult(auditQuery);
     }
 
-    private List<Map<String, Object>> getResult(AuditQuery auditQuery) {
+    public List<Map<String, Object>> getResult(AuditQuery auditQuery) {
         List<Map<String, Object>> result = new ArrayList<>();
         for (Object entry : auditQuery.getResultList()) {
             Object[] row = (Object[]) entry;

@@ -5,13 +5,18 @@ import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
+import com.icthh.xm.ms.dashboard.domain.RevInfo;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.DashboardPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +31,7 @@ public class DashboardService {
     private final DashboardRepository dashboardRepository;
     private final DashboardPermittedRepository permittedRepository;
     private final WidgetService widgetService;
+    private final AuditReader auditReader;
 
     /**
      * Save a dashboard.
@@ -89,5 +95,19 @@ public class DashboardService {
      */
     public void delete(Long id) {
         dashboardRepository.deleteById(id);
+    }
+
+
+    public List<Map<String, Object>> findAuditsById(Long id) {
+        AuditQuery auditQuery = auditReader.createQuery()
+            .forRevisionsOfEntity(Dashboard.class,false, true)
+            .add(AuditEntity.property("id").eq(id));
+        return widgetService.getResult(auditQuery);
+    }
+
+    public List<Map<String, Object>> findAllAudits() {
+        AuditQuery auditQuery = auditReader.createQuery()
+            .forRevisionsOfEntity(Dashboard.class,false, true);
+        return widgetService.getResult(auditQuery);
     }
 }
