@@ -100,20 +100,20 @@ public class WidgetService {
         return widgetPermittedRepository.findByDashboardId(id, privilegeKey);
     }
 
-    public Page<Map<String, Object>> findAuditsById(Long id, int page, int size) {
+    public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
         AuditQuery auditQuery = auditReader.createQuery()
             .forRevisionsOfEntity(Widget.class,false, true)
             .add(AuditEntity.property("id").eq(id))
-            .setFirstResult(page * size)
-            .setMaxResults(size);
+            .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+            .setMaxResults(pageable.getPageSize());
         return getResult(auditQuery);
     }
 
-    public Page<Map<String, Object>> findAllAudits(int page, int size) {
+    public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
         AuditQuery auditQuery = auditReader.createQuery()
             .forRevisionsOfEntity(Widget.class,false, true)
-            .setFirstResult(page * size)
-            .setMaxResults(size);
+            .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+            .setMaxResults(pageable.getPageSize());
         return getResult(auditQuery);
     }
 

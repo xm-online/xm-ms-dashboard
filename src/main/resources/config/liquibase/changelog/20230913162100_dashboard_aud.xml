@@ -15,6 +15,9 @@
             <column name="revtstmp" type="TIMESTAMP(6) WITH TIME ZONE">
                 <constraints nullable="false"/>
             </column>
+            <column name="last_modified_by" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
     </changeSet>
@@ -59,12 +62,6 @@
             <column name="last_modified_by" type="varchar(256)"/>
             <column name="last_modified_date" type="timestamp with time zone"/>
         </createTable>
-    </changeSet>
-
-    <changeSet id="20230913162100-6" author="dbahazhkov">
-        <addColumn tableName="revinfo">
-            <column name="last_modified_by" type="varchar(256)"/>
-        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

@@ -5,13 +5,13 @@ import static com.icthh.xm.ms.dashboard.service.dto.DashboardDto.toWidgetsDto;
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.domain.RevInfo;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.DashboardPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
-
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
@@ -100,20 +100,20 @@ public class DashboardService {
     }
 
 
-    public Page<Map<String, Object>> findAuditsById(Long id, int page, int size) {
+    public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
         AuditQuery auditQuery = auditReader.createQuery()
             .forRevisionsOfEntity(Dashboard.class,false, true)
-            .setFirstResult(page * size)
-            .setMaxResults(size)
+            .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+            .setMaxResults(pageable.getPageSize())
             .add(AuditEntity.property("id").eq(id));
         return widgetService.getResult(auditQuery);
     }
 
-    public Page<Map<String, Object>> findAllAudits(int page, int size) {
+    public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
         AuditQuery auditQuery = auditReader.createQuery()
             .forRevisionsOfEntity(Dashboard.class,false, true)
-            .setFirstResult(page * size)
-            .setMaxResults(size);
+            .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
+            .setMaxResults(pageable.getPageSize());
         return widgetService.getResult(auditQuery);
     }
 }
