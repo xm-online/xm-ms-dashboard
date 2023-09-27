@@ -176,7 +176,7 @@ public class DashboardResource {
         return ResponseEntity.ok(dashboardService.findAuditsById(id, pageable));
     }
 
-    @GetMapping("/dashboards-audit/")
+    @GetMapping("/dashboards-audit")
     public ResponseEntity<Page<Map<String, Object>>> getAllDashboardsAudits(Pageable pageable) {
         return ResponseEntity.ok(dashboardService.findAllAudits(pageable));
     }

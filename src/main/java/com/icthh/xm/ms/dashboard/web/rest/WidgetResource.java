@@ -144,7 +144,7 @@ public class WidgetResource {
         return ResponseEntity.ok(widgetService.findAuditsById(id, pageable));
     }
 
-    @GetMapping("/widgets-audit/")
+    @GetMapping("/widgets-audit")
     public ResponseEntity<Page<Map<String, Object>>> getAllWidgetAudits(Pageable pageable) {
         return ResponseEntity.ok(widgetService.findAllAudits(pageable));
     }

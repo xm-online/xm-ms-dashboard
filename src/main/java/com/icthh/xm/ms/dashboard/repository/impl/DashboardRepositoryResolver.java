@@ -6,8 +6,11 @@ import com.icthh.xm.ms.dashboard.domain.DashboardSpec.DashboardStoreType;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Primary
@@ -17,7 +20,7 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
 
     protected DashboardRepositoryResolver(ApplicationProperties applicationProperties,
         DashboardSpecService dashboardSpecService,
-        DefaultDashboardRepository defaultDashboardRepository,
+        DefaultDashboardRepositoryWrapper defaultDashboardRepository,
         ConfigDashboardRepository configDashboardRepository) {
         super(applicationProperties, dashboardSpecService);
         getRepositories().put(DashboardStoreType.RDBMS, defaultDashboardRepository);
@@ -62,6 +65,16 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
     @Override
     public <S extends Dashboard> List<S> saveAll(Iterable<S> dashboardEntities) {
         return retrieveRepository().saveAll(dashboardEntities);
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
+        return retrieveRepository().findAllAudits(pageable);
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
+        return retrieveRepository().findAuditsById(id, pageable);
     }
 
     @Override

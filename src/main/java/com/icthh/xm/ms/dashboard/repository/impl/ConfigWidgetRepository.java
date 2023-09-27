@@ -6,8 +6,13 @@ import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.IdRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
+
+import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.cfg.NotYetImplementedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
@@ -67,5 +72,15 @@ public class ConfigWidgetRepository implements WidgetRepository {
     @Override
     public Object findResourceById(Object id) {
         return findById((Long) id);
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
+        throw new NotYetImplementedException();
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
+        throw new NotYetImplementedException();
     }
 }

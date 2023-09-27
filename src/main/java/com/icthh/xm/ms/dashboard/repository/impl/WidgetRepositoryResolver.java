@@ -5,15 +5,19 @@ import com.icthh.xm.ms.dashboard.domain.DashboardSpec.DashboardStoreType;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
+
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Primary
 @Repository
 public class WidgetRepositoryResolver extends RepositoryResolver<WidgetRepository> implements WidgetRepository {
 
-    public WidgetRepositoryResolver(DefaultWidgetRepository defaultWidgetRepository,
+    public WidgetRepositoryResolver(DefaultWidgetRepositoryWrapper defaultWidgetRepository,
         ConfigWidgetRepository configWidgetRepository,
         ApplicationProperties applicationProperties,
         DashboardSpecService dashboardSpecService) {
@@ -41,6 +45,16 @@ public class WidgetRepositoryResolver extends RepositoryResolver<WidgetRepositor
     @Override
     public void deleteById(Long id) {
         retrieveRepository().deleteById(id);
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
+        return retrieveRepository().findAllAudits(pageable);
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
+        return retrieveRepository().findAuditsById(id, pageable);
     }
 
     @Override

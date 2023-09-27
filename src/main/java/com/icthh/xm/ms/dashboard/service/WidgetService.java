@@ -2,23 +2,17 @@ package com.icthh.xm.ms.dashboard.service;
 
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
-import com.icthh.xm.ms.dashboard.domain.RevInfo;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.WidgetPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -101,33 +95,10 @@ public class WidgetService {
     }
 
     public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
-        AuditQuery auditQuery = auditReader.createQuery()
-            .forRevisionsOfEntity(Widget.class,false, true)
-            .add(AuditEntity.property("id").eq(id))
-            .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-            .setMaxResults(pageable.getPageSize());
-        return getResult(auditQuery);
+        return widgetRepository.findAuditsById(id, pageable);
     }
 
     public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
-        AuditQuery auditQuery = auditReader.createQuery()
-            .forRevisionsOfEntity(Widget.class,false, true)
-            .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
-            .setMaxResults(pageable.getPageSize());
-        return getResult(auditQuery);
-    }
-
-    public Page<Map<String, Object>> getResult(AuditQuery auditQuery) {
-        List<Map<String, Object>> result = new ArrayList<>();
-        for (Object entry : auditQuery.getResultList()) {
-            Object[] row = (Object[]) entry;
-            Widget widget = (Widget) row[0];
-            RevInfo revInfo = (RevInfo) row[1];
-            Map<String, Object> resultEntry = new HashMap<>();
-            resultEntry.put("audit", widget);
-            resultEntry.put("revInfo", revInfo);
-            result.add(resultEntry);
-        }
-        return new PageImpl<>(result);
+        return widgetRepository.findAllAudits(pageable);
     }
 }
