@@ -336,7 +336,8 @@ public class WidgetResourceIntTest {
             .andExpect(jsonPath("$.content[0].audit.selector").value(DEFAULT_SELECTOR))
             .andExpect(jsonPath("$.content[0].audit.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC));
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[0].operation").value("ADD"));
 
         // Update the widget
         WidgetDto updatedWidget = widgetService.findOne(widget.getId());
@@ -360,6 +361,7 @@ public class WidgetResourceIntTest {
             .andExpect(jsonPath("$.content[1].audit.selector").value(UPDATED_SELECTOR))
             .andExpect(jsonPath("$.content[1].audit.name").value(UPDATED_NAME))
             .andExpect(jsonPath("$.content[1].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC));
+            .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[1].operation").value("MOD"));
     }
 }

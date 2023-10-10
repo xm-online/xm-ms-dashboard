@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 @Primary
 @Repository
 public class WidgetRepositoryResolver extends RepositoryResolver<WidgetRepository> implements WidgetRepository {
+    private final boolean isAuditSupport;
 
     public WidgetRepositoryResolver(DefaultWidgetRepositoryWrapper defaultWidgetRepository,
         ConfigWidgetRepository configWidgetRepository,
@@ -25,6 +26,7 @@ public class WidgetRepositoryResolver extends RepositoryResolver<WidgetRepositor
         super(applicationProperties, dashboardSpecService);
         getRepositories().put(DashboardStoreType.RDBMS, defaultWidgetRepository);
         getRepositories().put(DashboardStoreType.MSCONFG, configWidgetRepository);
+        this.isAuditSupport = applicationProperties.getStorage().isAuditSupport();
     }
 
     @Override
@@ -49,12 +51,18 @@ public class WidgetRepositoryResolver extends RepositoryResolver<WidgetRepositor
 
     @Override
     public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
-        return retrieveRepository().findAllAudits(pageable);
+        if (isAuditSupport) {
+            return retrieveRepository().findAllAudits(pageable);
+        }
+        return Page.empty();
     }
 
     @Override
     public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
-        return retrieveRepository().findAuditsById(id, pageable);
+        if (isAuditSupport) {
+            return retrieveRepository().findAuditsById(id, pageable);
+        }
+        return Page.empty();
     }
 
     @Override

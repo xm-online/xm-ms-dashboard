@@ -678,7 +678,8 @@ public class DashboardResourceIntTest {
             .andExpect(jsonPath("$.content[0].audit.typeKey").value(DEFAULT_TYPE_KEY))
             .andExpect(jsonPath("$.content[0].audit.layout.AAAAAAAAAA").value(DEFAULT_LAYOUT.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC));
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[0].operation").value("ADD"));
 
         // Update the dashboard
         DashboardDto updatedDashboard = dashboardService.findOne(dashboard.getId());
@@ -707,7 +708,9 @@ public class DashboardResourceIntTest {
             .andExpect(jsonPath("$.content[1].audit.typeKey").value(UPDATED_TYPE_KEY))
             .andExpect(jsonPath("$.content[1].audit.layout.AAAAAAAAAA").value(UPDATED_LAYOUT.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[1].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC));
+            .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[1].operation").value("MOD"));
+
     }
 
 }

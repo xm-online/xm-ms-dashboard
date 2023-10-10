@@ -13,8 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.NotSupportedException;
-
 @Primary
 @Repository
 public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRepository> implements
@@ -77,7 +75,7 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
         if (isAuditSupport) {
             return retrieveRepository().findAllAudits(pageable);
         }
-        throw new UnsupportedOperationException();
+        return Page.empty();
     }
 
     @Override
@@ -85,7 +83,7 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
         if (isAuditSupport) {
             return retrieveRepository().findAuditsById(id, pageable);
         }
-        throw new UnsupportedOperationException();
+        return Page.empty();
     }
 
     @Override
