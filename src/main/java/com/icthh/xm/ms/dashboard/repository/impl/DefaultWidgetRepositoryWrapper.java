@@ -1,6 +1,5 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
-import com.icthh.xm.ms.dashboard.domain.RevInfo;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
 import lombok.RequiredArgsConstructor;
@@ -70,11 +69,10 @@ public class DefaultWidgetRepositoryWrapper implements WidgetRepository {
         List<Map<String, Object>> result = new ArrayList<>();
         for (Object entry : auditQuery.getResultList()) {
             Object[] row = (Object[]) entry;
-            Widget widget = (Widget) row[0];
-            RevInfo revInfo = (RevInfo) row[1];
             Map<String, Object> resultEntry = new HashMap<>();
-            resultEntry.put("audit", widget);
-            resultEntry.put("revInfo", revInfo);
+            resultEntry.put("audit", row[0]);
+            resultEntry.put("revInfo", row[1]);
+            resultEntry.put("operation", row[2]);
             result.add(resultEntry);
         }
         return new PageImpl<>(result);

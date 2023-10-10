@@ -44,10 +44,10 @@
             <column name="id" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="revision" type="integer">
+            <column name="revision" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="operation" type="smallint">
+            <column name="operation" type="tinyint">
                 <constraints nullable="false"/>
             </column>
 

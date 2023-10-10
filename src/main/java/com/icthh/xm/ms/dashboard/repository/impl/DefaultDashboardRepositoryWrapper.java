@@ -1,14 +1,15 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
-import com.icthh.xm.ms.dashboard.domain.RevInfo;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -89,11 +90,10 @@ public class DefaultDashboardRepositoryWrapper implements DashboardRepository {
         List<Map<String, Object>> result = new ArrayList<>();
         for (Object entry : auditQuery.getResultList()) {
             Object[] row = (Object[]) entry;
-            Dashboard widget = (Dashboard) row[0];
-            RevInfo revInfo = (RevInfo) row[1];
             Map<String, Object> resultEntry = new HashMap<>();
-            resultEntry.put("audit", widget);
-            resultEntry.put("revInfo", revInfo);
+            resultEntry.put("audit", row[0]);
+            resultEntry.put("revInfo", row[1]);
+            resultEntry.put("operation", row[2]);
             result.add(resultEntry);
         }
         return new PageImpl<>(result);

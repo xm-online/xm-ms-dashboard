@@ -13,10 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.NotSupportedException;
+
 @Primary
 @Repository
 public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRepository> implements
     DashboardRepository {
+
+    private final boolean isAuditSupport;
 
     protected DashboardRepositoryResolver(ApplicationProperties applicationProperties,
         DashboardSpecService dashboardSpecService,
@@ -25,6 +29,7 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
         super(applicationProperties, dashboardSpecService);
         getRepositories().put(DashboardStoreType.RDBMS, defaultDashboardRepository);
         getRepositories().put(DashboardStoreType.MSCONFG, configDashboardRepository);
+        this.isAuditSupport = applicationProperties.getStorage().isAuditSupport();
     }
 
     @Override
@@ -69,12 +74,18 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
 
     @Override
     public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
-        return retrieveRepository().findAllAudits(pageable);
+        if (isAuditSupport) {
+            return retrieveRepository().findAllAudits(pageable);
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
-        return retrieveRepository().findAuditsById(id, pageable);
+        if (isAuditSupport) {
+            return retrieveRepository().findAuditsById(id, pageable);
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -47,6 +47,15 @@ spring:
                 physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         properties:
+            hibernate:
+                integration:
+                    envers:
+                        enabled: ${application.storage.audit-support:false}
+            org:
+                hibernate:
+                    envers:
+                        revision_field_name: revision
+                        revision_type_field_name: OPERATION
             hibernate.id.new_generator_mappings: true
             hibernate.cache.use_second_level_cache: false
             hibernate.cache.use_query_cache: false
@@ -130,6 +139,7 @@ application:
     specification-path-pattern: /config/tenants/{tenantName}/dashboard/${application.specification-name}
     storage:
         store-configuration-enabled: false
+        audit-support: true
         ms-config:
             tenant-dashboards-folder-path-pattern: ${application.storage.ms-config.tenant-dashboards-folder-path}*.yml
             tenant-dashboards-folder-path: /config/tenants/{tenantName}/dashboard/dashboards/

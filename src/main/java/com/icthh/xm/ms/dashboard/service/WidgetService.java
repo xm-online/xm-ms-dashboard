@@ -7,7 +7,6 @@ import com.icthh.xm.ms.dashboard.repository.WidgetPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.envers.AuditReader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,6 @@ public class WidgetService {
 
     private final WidgetRepository widgetRepository;
     private final WidgetPermittedRepository widgetPermittedRepository;
-    private final AuditReader auditReader;
 
     /**
      * Save a widget.
@@ -94,10 +92,12 @@ public class WidgetService {
         return widgetPermittedRepository.findByDashboardId(id, privilegeKey);
     }
 
+    @Transactional(readOnly = true)
     public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
         return widgetRepository.findAuditsById(id, pageable);
     }
 
+    @Transactional(readOnly = true)
     public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
         return widgetRepository.findAllAudits(pageable);
     }

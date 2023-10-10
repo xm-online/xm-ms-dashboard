@@ -21,7 +21,7 @@ import javax.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.cfg.NotYetImplementedException;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -142,11 +142,11 @@ public class ConfigDashboardRepository implements DashboardRepository {
 
     @Override
     public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
-        throw new NotYetImplementedException();
+        throw new NotImplementedException();
     }
 
     @Override
     public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
-        throw new NotYetImplementedException();
+        throw new NotImplementedException();
     }
 }

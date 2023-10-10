@@ -1,7 +1,10 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.iterableWithSize;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -17,7 +20,6 @@ import javax.persistence.EntityManager;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import org.hibernate.envers.AuditReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,9 +83,6 @@ public class WidgetResourceIntTest {
     @Autowired
     private EntityManager em;
 
-    @Autowired
-    private AuditReader auditReader;
-
     private MockMvc restWidgetMockMvc;
 
     private Widget widget;
@@ -91,7 +90,7 @@ public class WidgetResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        WidgetResource widgetResourceMock = new WidgetResource(widgetService, widgetResource, auditReader);
+        WidgetResource widgetResourceMock = new WidgetResource(widgetService, widgetResource);
         this.restWidgetMockMvc = MockMvcBuilders.standaloneSetup(widgetResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -315,5 +314,52 @@ public class WidgetResourceIntTest {
         assertThat(widget1).isNotEqualTo(widget2);
         widget1.setId(null);
         assertThat(widget1).isNotEqualTo(widget2);
+    }
+
+    @Test
+    public void test() throws Exception {
+
+        // Check audit table is empty
+        restWidgetMockMvc.perform(get("/api/widgets-audit")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value(emptyIterable()));
+
+        // Initialize the database
+        widgetService.save(widget);
+
+        //Checking audit table: create widget
+        restWidgetMockMvc.perform(get("/api/widgets-audit")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value(iterableWithSize(1)))
+            .andExpect(jsonPath("$.content[0].audit.selector").value(DEFAULT_SELECTOR))
+            .andExpect(jsonPath("$.content[0].audit.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC));
+
+        // Update the widget
+        WidgetDto updatedWidget = widgetService.findOne(widget.getId());
+        updatedWidget.setSelector(UPDATED_SELECTOR);
+        updatedWidget.setName(UPDATED_NAME);
+        updatedWidget.setConfig(UPDATED_CONFIG);
+        updatedWidget.setIsPublic(UPDATED_IS_PUBLIC);
+
+        restWidgetMockMvc.perform(put("/api/widgets")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(updatedWidget)))
+            .andExpect(status().isOk());
+        System.out.println(widgetService.findOne(widget.getId()));
+
+        //Checking audit table: update widget
+        restWidgetMockMvc.perform(get("/api/widgets-audit")
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
+            .andExpect(jsonPath("$.content").value(iterableWithSize(2)))
+            .andExpect(jsonPath("$.content[1].audit.selector").value(UPDATED_SELECTOR))
+            .andExpect(jsonPath("$.content[1].audit.name").value(UPDATED_NAME))
+            .andExpect(jsonPath("$.content[1].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC));
     }
 }

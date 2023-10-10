@@ -69,6 +69,7 @@ public class ApplicationProperties {
     @Setter
     public static class Storage {
         private boolean storeConfigurationEnabled;
+        private boolean auditSupport;
         private MsConfigStorageProperties msConfig;
 
         @Getter

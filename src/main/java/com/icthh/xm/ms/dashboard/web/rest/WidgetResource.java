@@ -7,7 +7,6 @@ import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import io.github.jhipster.web.util.ResponseUtil;
-import org.hibernate.envers.AuditReader;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,15 +42,11 @@ public class WidgetResource {
 
     private final WidgetResource widgetResource;
 
-    private final AuditReader auditReader;
-
     public WidgetResource(
                     WidgetService widgetService,
-                    @Lazy WidgetResource widgetResource,
-                    AuditReader auditReader) {
+                    @Lazy WidgetResource widgetResource) {
         this.widgetService = widgetService;
         this.widgetResource = widgetResource;
-        this.auditReader = auditReader;
     }
 
     /**
