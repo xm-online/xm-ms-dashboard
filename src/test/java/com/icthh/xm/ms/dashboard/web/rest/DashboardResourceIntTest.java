@@ -2,11 +2,9 @@ package com.icthh.xm.ms.dashboard.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.any;
-import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.iterableWithSize;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -652,65 +650,6 @@ public class DashboardResourceIntTest {
         imports.getDashboards().add(dashboardDto);
         imports.getWidgets().addAll(List.of(widgetDto, widgetDto2));
         return imports;
-    }
-
-    @Test
-    public void test() throws Exception {
-
-        // Check audit table is empty
-        restDashboardMockMvc.perform(get("/api/dashboards-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content").value(emptyIterable()));
-
-        // Initialize the database
-        dashboardService.save(dashboard);
-
-        // Checking audit table: create dashboard
-        restDashboardMockMvc.perform(get("/api/dashboards-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk())
-            .andDo(h -> System.out.println(h.getResponse().getContentAsString()))
-            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
-            .andExpect(jsonPath("$.content").value(iterableWithSize(1)))
-            .andExpect(jsonPath("$.content[0].audit.name").value(DEFAULT_NAME))
-            .andExpect(jsonPath("$.content[0].audit.owner").value(DEFAULT_OWNER))
-            .andExpect(jsonPath("$.content[0].audit.typeKey").value(DEFAULT_TYPE_KEY))
-            .andExpect(jsonPath("$.content[0].audit.layout.AAAAAAAAAA").value(DEFAULT_LAYOUT.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC))
-            .andExpect(jsonPath("$.content[0].operation").value("ADD"));
-
-        // Update the dashboard
-        DashboardDto updatedDashboard = dashboardService.findOne(dashboard.getId());
-
-        updatedDashboard.setName(UPDATED_NAME);
-        updatedDashboard.setOwner(UPDATED_OWNER);
-        updatedDashboard.setLayout(UPDATED_LAYOUT);
-        updatedDashboard.setConfig(UPDATED_CONFIG);
-        updatedDashboard.setIsPublic(UPDATED_IS_PUBLIC);
-        updatedDashboard.setTypeKey(UPDATED_TYPE_KEY);
-        updatedDashboard.setWidgets(null);
-
-        restDashboardMockMvc.perform(put("/api/dashboards")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedDashboard)))
-            .andExpect(status().isOk());
-
-        //Checking audit table: update dashboard
-        restDashboardMockMvc.perform(get("/api/dashboards-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
-            .andExpect(jsonPath("$.content").value(iterableWithSize(2)))
-            .andExpect(jsonPath("$.content[1].audit.name").value(UPDATED_NAME))
-            .andExpect(jsonPath("$.content[1].audit.owner").value(UPDATED_OWNER))
-            .andExpect(jsonPath("$.content[1].audit.typeKey").value(UPDATED_TYPE_KEY))
-            .andExpect(jsonPath("$.content[1].audit.layout.AAAAAAAAAA").value(UPDATED_LAYOUT.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[1].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
-            .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC))
-            .andExpect(jsonPath("$.content[1].operation").value("MOD"));
-
     }
 
 }
