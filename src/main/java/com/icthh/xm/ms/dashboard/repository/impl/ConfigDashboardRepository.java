@@ -7,9 +7,11 @@ import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.IdRepository;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -19,6 +21,9 @@ import javax.validation.ValidatorFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.NotImplementedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
@@ -133,5 +138,15 @@ public class ConfigDashboardRepository implements DashboardRepository {
         if (!constraintViolations.isEmpty()) {
             throw new ValidationException(constraintViolations.toString());
         }
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
+        throw new NotImplementedException();
     }
 }

@@ -10,8 +10,13 @@ import com.icthh.xm.ms.dashboard.repository.DashboardPermittedRepository;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
+import org.hibernate.envers.AuditReader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +31,7 @@ public class DashboardService {
     private final DashboardRepository dashboardRepository;
     private final DashboardPermittedRepository permittedRepository;
     private final WidgetService widgetService;
+    private final AuditReader auditReader;
 
     /**
      * Save a dashboard.
@@ -89,5 +95,14 @@ public class DashboardService {
      */
     public void delete(Long id) {
         dashboardRepository.deleteById(id);
+    }
+
+
+    public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
+        return dashboardRepository.findAuditsById(id, pageable);
+    }
+
+    public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
+        return dashboardRepository.findAllAudits(pageable);
     }
 }
