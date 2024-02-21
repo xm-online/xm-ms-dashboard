@@ -160,7 +160,6 @@ public class AuditIntTest {
         restDashboardMockMvc.perform(get("/api/dashboards-audit")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
-            .andDo(h -> System.out.println(h.getResponse().getContentAsString()))
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
             .andExpect(jsonPath("$.content").value(iterableWithSize(1)))
             .andExpect(jsonPath("$.content[0].audit.name").value(DEFAULT_NAME))
@@ -188,7 +187,7 @@ public class AuditIntTest {
             .andExpect(status().isOk());
 
         //Checking audit table: update dashboard
-        restDashboardMockMvc.perform(get("/api/dashboards-audit")
+        restDashboardMockMvc.perform(get("/api/dashboards-audit?sort=rev,asc")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
@@ -206,9 +205,10 @@ public class AuditIntTest {
             .andExpect(status().isOk());
 
         //Checking audit table: delete dashboard
-        restDashboardMockMvc.perform(get("/api/dashboards-audit")
+        restDashboardMockMvc.perform(get("/api/dashboards-audit?sort=revtstmp,asc")
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
+            .andDo(h -> System.out.println(h.getResponse().getContentAsString()))
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
             .andExpect(jsonPath("$.content").value(iterableWithSize(3)))
             .andExpect(jsonPath("$.content[2].audit.name").value(nullValue()))
