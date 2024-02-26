@@ -77,7 +77,11 @@ public class DefaultDashboardRepositoryWrapper implements DashboardRepository {
             .setMaxResults(pageable.getPageSize())
             .add(AuditEntity.property("id").eq(id))
             .addOrder(new PropertyAuditOrder(null, new EntityPropertyName(order.getProperty()), order.isAscending()));
-        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, getTotalCountAuditDashboard());
+        Long totalCount = (Long) auditReader.createQuery().forRevisionsOfEntity(Dashboard.class, false, true)
+            .add(AuditEntity.property("id").eq(id))
+            .addProjection(AuditEntity.revisionNumber().count())
+            .getSingleResult();
+        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, totalCount);
     }
 
     @Override
@@ -88,13 +92,10 @@ public class DefaultDashboardRepositoryWrapper implements DashboardRepository {
             .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
             .setMaxResults(pageable.getPageSize())
             .addOrder(new PropertyAuditOrder(null, new EntityPropertyName(order.getProperty()), order.isAscending()));
-        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, getTotalCountAuditDashboard());
-    }
-
-    private Long getTotalCountAuditDashboard() {
-        return (Long) auditReader.createQuery().forRevisionsOfEntity(Dashboard.class, false, true)
+        Long totalCount = (Long) auditReader.createQuery().forRevisionsOfEntity(Dashboard.class, false, true)
             .addProjection(AuditEntity.revisionNumber().count())
             .getSingleResult();
+        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, totalCount);
     }
 
     @Override
