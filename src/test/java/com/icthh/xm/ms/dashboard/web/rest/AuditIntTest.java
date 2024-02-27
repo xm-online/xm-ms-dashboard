@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Map;
 
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.iterableWithSize;
@@ -103,8 +104,6 @@ public class AuditIntTest {
     private MockMvc restDashboardMockMvc;
     private MockMvc restWidgetMockMvc;
 
-    private Dashboard dashboard;
-    private Widget widget;
 
     @Before
     public void setup() {
@@ -121,6 +120,7 @@ public class AuditIntTest {
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
     }
+
     public static Dashboard createDashboard() {
         return new Dashboard()
             .name(DEFAULT_NAME)
@@ -139,26 +139,16 @@ public class AuditIntTest {
             .isPublic(DEFAULT_IS_PUBLIC);
     }
 
-    @Before
-    public void initTest() {
-        dashboard = createDashboard();
-        widget = createWidget();
-    }
-    @Test
-    public void testAuditDashboard() throws Exception {
-
-        // Check audit table is empty
-        restDashboardMockMvc.perform(get("/api/dashboards-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content").value(emptyIterable()));
+    @Test()
+    public void testAuditDashboardById() throws Exception {
 
         // Initialize the database
+        Dashboard dashboard = createDashboard();
         dashboardService.save(dashboard);
 
         // Checking audit table: create dashboard
-        restDashboardMockMvc.perform(get("/api/dashboards-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+        restDashboardMockMvc.perform(get("/api/dashboards-audit/{id}", dashboard.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
             .andExpect(jsonPath("$.content").value(iterableWithSize(1)))
@@ -168,7 +158,8 @@ public class AuditIntTest {
             .andExpect(jsonPath("$.content[0].audit.layout.AAAAAAAAAA").value(DEFAULT_LAYOUT.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC))
-            .andExpect(jsonPath("$.content[0].operation").value("ADD"));
+            .andExpect(jsonPath("$.content[0].operation").value("ADD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
 
         // Update the dashboard
         DashboardDto updatedDashboard = dashboardService.findOne(dashboard.getId());
@@ -182,13 +173,13 @@ public class AuditIntTest {
         updatedDashboard.setWidgets(null);
 
         restDashboardMockMvc.perform(put("/api/dashboards")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedDashboard)))
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedDashboard)))
             .andExpect(status().isOk());
 
         //Checking audit table: update dashboard
-        restDashboardMockMvc.perform(get("/api/dashboards-audit?sort=rev,asc")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+        restDashboardMockMvc.perform(get("/api/dashboards-audit/{id}", dashboard.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
             .andExpect(jsonPath("$.content").value(iterableWithSize(2)))
@@ -198,17 +189,17 @@ public class AuditIntTest {
             .andExpect(jsonPath("$.content[1].audit.layout.AAAAAAAAAA").value(UPDATED_LAYOUT.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[1].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC))
-            .andExpect(jsonPath("$.content[1].operation").value("MOD"));
+            .andExpect(jsonPath("$.content[1].operation").value("MOD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
 
         restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboard.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
         //Checking audit table: delete dashboard
-        restDashboardMockMvc.perform(get("/api/dashboards-audit?sort=revtstmp,asc")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+        restDashboardMockMvc.perform(get("/api/dashboards-audit/{id}", dashboard.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
-            .andDo(h -> System.out.println(h.getResponse().getContentAsString()))
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
             .andExpect(jsonPath("$.content").value(iterableWithSize(3)))
             .andExpect(jsonPath("$.content[2].audit.name").value(nullValue()))
@@ -217,31 +208,98 @@ public class AuditIntTest {
             .andExpect(jsonPath("$.content[2].audit.layout.size()").value(is(0)))
             .andExpect(jsonPath("$.content[2].audit.config.size()").value(is(0)))
             .andExpect(jsonPath("$.content[2].audit.isPublic").value(nullValue()))
-            .andExpect(jsonPath("$.content[2].operation").value("DEL"));
+            .andExpect(jsonPath("$.content[2].operation").value("DEL"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
     }
 
     @Test
-    public void testAuditWidget() throws Exception {
-
-        // Check audit table is empty
-        restWidgetMockMvc.perform(get("/api/widgets-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content").value(emptyIterable()));
+    public void testAuditDashboard() throws Exception {
 
         // Initialize the database
+        Dashboard dashboard = createDashboard();
+        dashboardService.save(dashboard);
+
+        // Checking audit table: create dashboard
+        restDashboardMockMvc.perform(get("/api/dashboards-audit?sort=revtstmp,desc")
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
+            .andExpect(jsonPath("$.content[0].audit.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.content[0].audit.owner").value(DEFAULT_OWNER))
+            .andExpect(jsonPath("$.content[0].audit.typeKey").value(DEFAULT_TYPE_KEY))
+            .andExpect(jsonPath("$.content[0].audit.layout.AAAAAAAAAA").value(DEFAULT_LAYOUT.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[0].operation").value("ADD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
+
+        // Update the dashboard
+        DashboardDto updatedDashboard = dashboardService.findOne(dashboard.getId());
+
+        updatedDashboard.setName(UPDATED_NAME);
+        updatedDashboard.setOwner(UPDATED_OWNER);
+        updatedDashboard.setLayout(UPDATED_LAYOUT);
+        updatedDashboard.setConfig(UPDATED_CONFIG);
+        updatedDashboard.setIsPublic(UPDATED_IS_PUBLIC);
+        updatedDashboard.setTypeKey(UPDATED_TYPE_KEY);
+        updatedDashboard.setWidgets(null);
+
+        restDashboardMockMvc.perform(put("/api/dashboards")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedDashboard)))
+            .andExpect(status().isOk());
+
+        //Checking audit table: update dashboard
+        restDashboardMockMvc.perform(get("/api/dashboards-audit?sort=revtstmp,desc")
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
+            .andExpect(jsonPath("$.content[0].audit.name").value(UPDATED_NAME))
+            .andExpect(jsonPath("$.content[0].audit.owner").value(UPDATED_OWNER))
+            .andExpect(jsonPath("$.content[0].audit.typeKey").value(UPDATED_TYPE_KEY))
+            .andExpect(jsonPath("$.content[0].audit.layout.AAAAAAAAAA").value(UPDATED_LAYOUT.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(UPDATED_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[0].operation").value("MOD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
+
+        restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboard.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+
+        //Checking audit table: delete dashboard
+        restDashboardMockMvc.perform(get("/api/dashboards-audit?sort=revtstmp,desc")
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
+            .andExpect(jsonPath("$.content[0].audit.name").value(nullValue()))
+            .andExpect(jsonPath("$.content[0].audit.owner").value(nullValue()))
+            .andExpect(jsonPath("$.content[0].audit.typeKey").value(nullValue()))
+            .andExpect(jsonPath("$.content[0].audit.layout.size()").value(is(0)))
+            .andExpect(jsonPath("$.content[0].audit.config.size()").value(is(0)))
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(nullValue()))
+            .andExpect(jsonPath("$.content[0].operation").value("DEL"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
+    }
+
+    @Test
+    public void testAuditWidgetById() throws Exception {
+
+        // Initialize the database
+        Widget widget = createWidget();
         widgetService.save(widget);
 
         //Checking audit table: create widget
-        restWidgetMockMvc.perform(get("/api/widgets-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+        restWidgetMockMvc.perform(get("/api/widgets-audit/{id}", widget.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content").value(iterableWithSize(1)))
             .andExpect(jsonPath("$.content[0].audit.selector").value(DEFAULT_SELECTOR))
             .andExpect(jsonPath("$.content[0].audit.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC))
-            .andExpect(jsonPath("$.content[0].operation").value("ADD"));
+            .andExpect(jsonPath("$.content[0].operation").value("ADD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
 
         // Update the widget
         WidgetDto updatedWidget = widgetService.findOne(widget.getId());
@@ -251,14 +309,13 @@ public class AuditIntTest {
         updatedWidget.setIsPublic(UPDATED_IS_PUBLIC);
 
         restWidgetMockMvc.perform(put("/api/widgets")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(updatedWidget)))
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedWidget)))
             .andExpect(status().isOk());
-        System.out.println(widgetService.findOne(widget.getId()));
 
         //Checking audit table: update widget
-        restWidgetMockMvc.perform(get("/api/widgets-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+        restWidgetMockMvc.perform(get("/api/widgets-audit/{id}", widget.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
             .andExpect(jsonPath("$.content").value(iterableWithSize(2)))
@@ -266,15 +323,16 @@ public class AuditIntTest {
             .andExpect(jsonPath("$.content[1].audit.name").value(UPDATED_NAME))
             .andExpect(jsonPath("$.content[1].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
             .andExpect(jsonPath("$.content[1].audit.isPublic").value(UPDATED_IS_PUBLIC))
-            .andExpect(jsonPath("$.content[1].operation").value("MOD"));
+            .andExpect(jsonPath("$.content[1].operation").value("MOD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
 
         restWidgetMockMvc.perform(delete("/api/widgets/{id}", widget.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
         //Checking audit table: delete widget
-        restWidgetMockMvc.perform(get("/api/widgets-audit")
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
+        restWidgetMockMvc.perform(get("/api/widgets-audit/{id}", widget.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.content").value(not(emptyIterable())))
             .andExpect(jsonPath("$.content").value(iterableWithSize(3)))
@@ -282,6 +340,67 @@ public class AuditIntTest {
             .andExpect(jsonPath("$.content[2].audit.name").value(nullValue()))
             .andExpect(jsonPath("$.content[2].audit.config.size()").value(is(0)))
             .andExpect(jsonPath("$.content[2].audit.isPublic").value(nullValue()))
-            .andExpect(jsonPath("$.content[2].operation").value("DEL"));
+            .andExpect(jsonPath("$.content[2].operation").value("DEL"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
+    }
+
+    @Test
+    public void testAuditWidget() throws Exception {
+
+        // Initialize the database
+        Widget widget = createWidget();
+        widgetService.save(widget);
+
+        //Checking audit table: create widget
+        restWidgetMockMvc.perform(get("/api/widgets-audit?sort=revtstmp,desc")
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content[0].audit.selector").value(DEFAULT_SELECTOR))
+            .andExpect(jsonPath("$.content[0].audit.name").value(DEFAULT_NAME))
+            .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(DEFAULT_CONFIG.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(DEFAULT_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[0].operation").value("ADD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
+
+        // Update the widget
+        WidgetDto updatedWidget = widgetService.findOne(widget.getId());
+        updatedWidget.setSelector(UPDATED_SELECTOR);
+        updatedWidget.setName(UPDATED_NAME);
+        updatedWidget.setConfig(UPDATED_CONFIG);
+        updatedWidget.setIsPublic(UPDATED_IS_PUBLIC);
+
+        restWidgetMockMvc.perform(put("/api/widgets")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(updatedWidget)))
+            .andExpect(status().isOk());
+
+        //Checking audit table: update widget
+        restWidgetMockMvc.perform(get("/api/widgets-audit?sort=revtstmp,desc")
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
+            .andExpect(jsonPath("$.content[0].audit.selector").value(UPDATED_SELECTOR))
+            .andExpect(jsonPath("$.content[0].audit.name").value(UPDATED_NAME))
+            .andExpect(jsonPath("$.content[0].audit.config.AAAAAAAAAA").value(UPDATED_CONFIG.get("AAAAAAAAAA")))
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(UPDATED_IS_PUBLIC))
+            .andExpect(jsonPath("$.content[0].operation").value("MOD"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
+
+        restWidgetMockMvc.perform(delete("/api/widgets/{id}", widget.getId())
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
+
+        //Checking audit table: delete widget
+        restWidgetMockMvc.perform(get("/api/widgets-audit?sort=revtstmp,desc")
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk())
+            .andDo(h -> System.out.println(h.getResponse().getContentAsString()))
+            .andExpect(jsonPath("$.content").value(not(emptyIterable())))
+            .andExpect(jsonPath("$.content[0].audit.selector").value(nullValue()))
+            .andExpect(jsonPath("$.content[0].audit.name").value(nullValue()))
+            .andExpect(jsonPath("$.content[0].audit.config.size()").value(is(0)))
+            .andExpect(jsonPath("$.content[0].audit.isPublic").value(nullValue()))
+            .andExpect(jsonPath("$.content[0].operation").value("DEL"))
+            .andExpect(jsonPath("[?($.numberOfElements == $.content.size())].numberOfElements").value(not(empty())));
     }
 }
