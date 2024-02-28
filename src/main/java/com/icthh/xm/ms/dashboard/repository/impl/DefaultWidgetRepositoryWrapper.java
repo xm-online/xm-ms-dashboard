@@ -8,16 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.envers.query.criteria.AuditCriterion;
-import org.hibernate.envers.query.criteria.internal.SimpleAuditExpression;
 import org.hibernate.envers.query.internal.property.EntityPropertyName;
 import org.hibernate.envers.query.order.internal.PropertyAuditOrder;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,29 +50,30 @@ public class DefaultWidgetRepositoryWrapper implements WidgetRepository {
     public Page<Map<String, Object>> findAuditsById(Long id, Pageable pageable) {
         Sort.Order order = ServiceUtil.getPageOrder(pageable);
         AuditQuery auditQuery = auditReader.createQuery()
-            .forRevisionsOfEntity(Widget.class,false, true)
+            .forRevisionsOfEntity(Widget.class, false, true)
             .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
             .setMaxResults(pageable.getPageSize())
             .add(AuditEntity.property("id").eq(id))
             .addOrder(new PropertyAuditOrder(null, new EntityPropertyName(order.getProperty()), order.isAscending()));
-        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, getTotalCountAuditWidget());
+        Long totalCount = (Long) auditReader.createQuery().forRevisionsOfEntity(Widget.class, false, true)
+            .add(AuditEntity.property("id").eq(id))
+            .addProjection(AuditEntity.revisionNumber().count())
+            .getSingleResult();
+        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, totalCount);
     }
 
     @Override
     public Page<Map<String, Object>> findAllAudits(Pageable pageable) {
         Sort.Order order = ServiceUtil.getPageOrder(pageable);
         AuditQuery auditQuery = auditReader.createQuery()
-            .forRevisionsOfEntity(Widget.class,false, true)
+            .forRevisionsOfEntity(Widget.class, false, true)
             .setFirstResult(pageable.getPageNumber() * pageable.getPageSize())
             .setMaxResults(pageable.getPageSize())
             .addOrder(new PropertyAuditOrder(null, new EntityPropertyName(order.getProperty()), order.isAscending()));
-        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, getTotalCountAuditWidget());
-    }
-
-    private Long getTotalCountAuditWidget() {
-        return (Long) auditReader.createQuery().forRevisionsOfEntity(Widget.class, false, true)
+        Long totalCount = (Long) auditReader.createQuery().forRevisionsOfEntity(Widget.class, false, true)
             .addProjection(AuditEntity.revisionNumber().count())
             .getSingleResult();
+        return ServiceUtil.getResult(auditQuery.getResultList(), pageable, totalCount);
     }
 
     @Override
