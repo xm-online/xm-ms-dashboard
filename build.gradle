@@ -316,6 +316,10 @@ dependencies {
     implementation "com.icthh.xm.commons:xm-commons-tenant-endpoint:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-i18n:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-metric:${xm_commons_version}"
+
+    implementation "io.undertow:undertow-core:${undertow_version}"
+    implementation "io.undertow:undertow-servlet:${undertow_version}"
+    implementation "io.undertow:undertow-websockets-jsr:${undertow_version}"
 }
 
 task cleanResources(type: Delete) {
