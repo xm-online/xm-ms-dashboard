@@ -39,12 +39,13 @@ public class TenantDefaultDashboardProvisioner implements TenantProvisioner {
     @Override
     public void createTenant(final Tenant tenant) {
 
-        ensureDashboardSpecUpdated(tenant);
-
         ImportDashboardDto dashboards = readDefaultDashboards();
         tenantContextHolder.getPrivilegedContext()
                            .execute(TenantContextUtils.buildTenant(tenant.getTenantKey()),
-                                    () -> importDashboardService.importDashboards(dashboards));
+                                    () -> {
+                                        ensureDashboardSpecUpdated(tenant);
+                                        importDashboardService.importDashboards(dashboards);
+                                    });
     }
 
     private void ensureDashboardSpecUpdated(Tenant tenant) {
