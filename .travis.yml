@@ -10,7 +10,6 @@ addons:
     branches:
     - master
     - main
-    - arm
 
 script:
   - set -e
@@ -53,4 +52,3 @@ branches:
        only:
          - master
          - main
-         - arm
