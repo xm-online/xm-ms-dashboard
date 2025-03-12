@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
@@ -33,17 +34,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  * Test class for the DefaultProfileResource REST controller.
  *
  * @see DefaultProfileResource
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
 @WithMockUser(authorities = "SUPER-ADMIN")
-public class DefaultProfileResourceIntTest {
+public class DefaultProfileResourceIntTest extends AbstractSpringBootTest {
 
     private static final String DEFAULT_ROLE_KEY = "AAAAAAAAAA";
     private static final String UPDATED_ROLE_KEY = "BBBBBBBBBB";

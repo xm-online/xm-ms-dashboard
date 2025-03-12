@@ -61,7 +61,6 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         TenantContext tenantContext = mock(TenantContext.class);
         when(tenantContext.getTenantKey()).thenReturn(Optional.of(TenantKey.valueOf("XM")));
 

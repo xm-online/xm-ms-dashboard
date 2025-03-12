@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
@@ -54,10 +55,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @see DashboardResource
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
 @WithMockUser(authorities = "SUPER-ADMIN")
-public class DashboardResourceIntTest {
+public class DashboardResourceIntTest extends AbstractSpringBootTest {
 
     private static final String DEFAULT_SELECTOR = "AAAAAAAAAA";
     private static final String UPDATED_SELECTOR = "BBBBBBBBBB";
@@ -120,7 +119,6 @@ public class DashboardResourceIntTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
         DashboardResource dashboardResourceMock = new DashboardResource(dashboardService,
                         widgetService, dashboardMapper, dashboardResource, importDashboardService);
         this.restDashboardMockMvc = MockMvcBuilders.standaloneSetup(dashboardResourceMock)

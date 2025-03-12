@@ -6,7 +6,6 @@ import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import io.github.jhipster.web.util.ResponseUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +26,8 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Widget.

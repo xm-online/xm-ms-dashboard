@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.icthh.xm.commons.logging.web.rest.LogsResource;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.DashboardApp;
 import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.web.rest.vm.LoggerVM;
@@ -28,9 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see LogsResource
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
-public class LogsResourceIntTest {
+public class LogsResourceIntTest extends AbstractSpringBootTest {
 
     private MockMvc restLogsMockMvc;
 

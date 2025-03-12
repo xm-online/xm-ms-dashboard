@@ -1,7 +1,7 @@
 apply plugin: "war"
 
 bootWar {
-    mainClassName = "com.icthh.xm.ms.dashboard.GateApp"
+    mainClass = "com.icthh.xm.ms.dashboard.DashboardApp"
     includes = ["WEB-INF/**", "META-INF/**"]
 }
 

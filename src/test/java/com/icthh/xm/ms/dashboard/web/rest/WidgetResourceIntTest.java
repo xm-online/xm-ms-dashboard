@@ -13,7 +13,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
+import jakarta.persistence.EntityManager;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
@@ -43,10 +44,8 @@ import com.icthh.xm.ms.dashboard.service.WidgetService;
  *
  * @see WidgetResource
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
 @WithMockUser(authorities = "SUPER-ADMIN")
-public class WidgetResourceIntTest {
+public class WidgetResourceIntTest extends AbstractSpringBootTest {
 
     private static final String DEFAULT_SELECTOR = "AAAAAAAAAA";
     private static final String UPDATED_SELECTOR = "BBBBBBBBBB";

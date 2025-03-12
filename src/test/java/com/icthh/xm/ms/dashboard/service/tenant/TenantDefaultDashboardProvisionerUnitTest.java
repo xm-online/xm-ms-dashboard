@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.internal.DefaultTenantContextHolder;
+import com.icthh.xm.ms.dashboard.AbstractUnitTest;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.config.tenant.TenantManagerConfiguration;
 
@@ -26,7 +27,7 @@ import org.mockito.Spy;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TenantDefaultDashboardProvisionerUnitTest {
+public class TenantDefaultDashboardProvisionerUnitTest extends AbstractUnitTest {
     @Mock
     private ImportDashboardService importDashboardService;
 
@@ -77,15 +78,15 @@ public class TenantDefaultDashboardProvisionerUnitTest {
     @Test
     public void manageTenant() {
         provisioner.manageTenant("NEWTENANT", "ACTIVE");
-        Mockito.verifyZeroInteractions(tenantContextHolder);
-        Mockito.verifyZeroInteractions(importDashboardService);
+        Mockito.verifyNoInteractions(tenantContextHolder);
+        Mockito.verifyNoInteractions(importDashboardService);
     }
 
     @Test
     public void deleteTenant() {
         provisioner.deleteTenant("NEWTENANT");
-        Mockito.verifyZeroInteractions(tenantContextHolder);
-        Mockito.verifyZeroInteractions(importDashboardService);
+        Mockito.verifyNoInteractions(tenantContextHolder);
+        Mockito.verifyNoInteractions(importDashboardService);
     }
 
 }

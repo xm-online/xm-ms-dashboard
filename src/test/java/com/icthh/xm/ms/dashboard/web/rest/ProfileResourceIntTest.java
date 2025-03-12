@@ -14,7 +14,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
+import jakarta.persistence.EntityManager;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -44,10 +45,8 @@ import com.icthh.xm.ms.dashboard.service.ProfileService;
  *
  * @see ProfileResource
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
 @WithMockUser(authorities = "SUPER-ADMIN")
-public class ProfileResourceIntTest {
+public class ProfileResourceIntTest extends AbstractSpringBootTest {
 
     private static final String DEFAULT_USER_KEY = "AAAAAAAAAA";
     private static final String UPDATED_USER_KEY = "BBBBBBBBBB";

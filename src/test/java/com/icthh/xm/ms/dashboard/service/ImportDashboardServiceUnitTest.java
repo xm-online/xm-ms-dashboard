@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.verify;
 
+import com.icthh.xm.ms.dashboard.AbstractUnitTest;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
@@ -25,7 +26,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collection;
 import java.util.List;
 
-public class ImportDashboardServiceUnitTest {
+public class ImportDashboardServiceUnitTest extends AbstractUnitTest {
 
     @Mock
     AtomicBulkDashboardService atomicBulkDashboardService;

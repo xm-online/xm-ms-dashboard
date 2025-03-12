@@ -1,8 +1,8 @@
 package com.icthh.xm.ms.dashboard;
 
-import com.icthh.xm.ms.dashboard.config.DefaultProfileUtil;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import tech.jhipster.config.DefaultProfileUtil;
 
 /**
  * This is a helper Java class that provides an alternative to creating a web.xml.
