@@ -3,14 +3,6 @@ jdk:
 - oraclejdk21
 install: true
 dist: jammy
-addons:
-  sonarcloud:
-    organization: xm-online
-    token:
-      secure: zds7mJgevKPku0YkoCpKMdUnu5zOqPP4ACq046NFRCi/wKTuN+2hcvUV5Bw2hdMlHfXr5gpJ61q29v9jghmpv5nI36/s1fAYXbJimUvIlzIs5G3Kk5owlbUL4M920LydWNhjDJurxdbyN+DKLkapWAkOHVzn312k6mQXiZKtYFOS/f/vBgIoOSepuWnN2mMl7aVTYcgqwnJtfIrfhrmp1hKvBRgMN/vXrndt/4MLiX9yxvZoY92aUT1wO7OptRPiOQCS6NbSK9mIuAerUzV1t/sKhWN5HqKprqVHcN3ru3MUqEjXnlp5pnGWzYql5DeEgObkhiB61GcrJOaaYIjJ2gtDI4sXCkJhZnZuB/DYSB3sUsFj0+nxyCUVbLYYQ/+FDQa//26k1eA4CYwmaSl7gJnUKnGSxCwbw8os0fs1tqZXRjPwpqo4A/FQeCtj9WEFCPo/tv3fUOIuo4yYBStQQNOjfmZ4sEhJjvMnalG/h9XUzuj4GzFrv/Vt3AdSg6kVXTGcydXXntlupRFW+i+3T+kctYj+uyhznQScd5St8U1I1+KlfgOnVVok/WuIgjkvLw6VlKyCZkcrdB4UkVDnCUe1Y6Eg+EQnxa6Rf6fYX3ACtzLcP4r0IfS5OEm10YcM6ke6JZT8S0faSLC59jIfgX8zU5lOeL32KTPCibtTnns=
-    branches:
-    - master
-    - main
 
 script:
   - set -e
@@ -53,3 +45,4 @@ branches:
        only:
          - master
          - main
+         - feature/java_21_migrations
