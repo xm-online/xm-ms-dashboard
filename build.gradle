@@ -252,14 +252,11 @@ dependencies {
     }
     implementation "com.icthh.xm.commons:xm-commons-lep:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-lep-groovy:${xm_commons_version}"
-    implementation "com.icthh.xm.commons:xm-commons-lep-js:${xm_commons_version}" // optional
     implementation "com.icthh.xm.commons:xm-commons-tenant-endpoint:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-i18n:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-timeline:${xm_commons_version}"
-    implementation "com.icthh.xm.commons:xm-commons-cache:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-migration-db:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-permission:${xm_commons_version}"
-    implementation "com.icthh.xm.commons:xm-commons-scheduler:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-metric:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-topic:${xm_commons_version}"
     implementation "com.icthh.xm.commons:xm-commons-logging-configurable:${xm_commons_version}"

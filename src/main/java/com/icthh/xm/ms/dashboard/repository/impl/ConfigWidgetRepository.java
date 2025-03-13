@@ -70,8 +70,8 @@ public class ConfigWidgetRepository implements WidgetRepository {
     }
 
     @Override
-    public Object findResourceById(Object id) {
-        return findById((Long) id);
+    public Widget findResourceById(Long id) {
+        return findById(id).orElse(null);
     }
 
     @Override

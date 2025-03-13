@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,8 +19,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
@@ -35,17 +33,13 @@ import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -117,7 +111,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
 
     private Dashboard dashboard;
 
-    @Before
+    @BeforeEach
     public void setup() {
         DashboardResource dashboardResourceMock = new DashboardResource(dashboardService,
                         widgetService, dashboardMapper, dashboardResource, importDashboardService);
@@ -151,7 +145,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
             .isPublic(DEFAULT_IS_PUBLIC);
     }
 
-    @Before
+    @BeforeEach
     public void initTest() {
         dashboard = createDashboard();
     }
@@ -210,7 +204,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         // Get the dashboard with widgets
         restDashboardMockMvc.perform(get("/api/dashboards/{id}", testDashboard.getId()))
                             .andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                             .andDo(print())
                             .andExpect(jsonPath("$.id").value(testDashboard.getId()))
                             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
@@ -238,7 +232,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         // Get the dashboard with widgets
         restDashboardMockMvc.perform(get("/api/dashboards/{id}", dashboard.getId()))
                             .andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                             .andDo(print())
                             .andExpect(jsonPath("$.id").value(dashboard.getId()))
                             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
@@ -275,7 +269,6 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         // Get the dashboard with widgets
         restDashboardMockMvc.perform(get("/api/dashboards/{id}", dashboard.getId()))
                             .andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                             .andDo(print())
                             .andExpect(jsonPath("$.id").value(dashboard.getId()))
                             .andExpect(jsonPath("$.name").value(UPDATED_NAME))
@@ -377,7 +370,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         // Get all the dashboardList
         restDashboardMockMvc.perform(get("/api/dashboards?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(dashboard.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].owner").value(hasItem(DEFAULT_OWNER)))
@@ -406,7 +399,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         restDashboardMockMvc.perform(get("/api/dashboards/{id}/widgets", dashboard.getId()))
             .andExpect(status().isOk())
             .andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(widget.getId().intValue())))
             .andExpect(jsonPath("$.[*].selector").value(hasItem(DEFAULT_SELECTOR)))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
@@ -424,7 +417,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         // Get the dashboard
         restDashboardMockMvc.perform(get("/api/dashboards/{id}", dashboard.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(dashboard.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.owner").value(DEFAULT_OWNER))
@@ -548,11 +541,11 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     @Test
     @Transactional
     public void testDashboardImportToEmptyDB() throws Exception {
-
+        dashboardRepository.deleteAll(dashboardRepository.findAll());
         // Get the dashboard with widgets
         restDashboardMockMvc.perform(get("/api/dashboards", dashboard.getId()))
                             .andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                             .andDo(print())
                             .andExpect(jsonPath("$").value(hasSize(0)))
         ;
@@ -565,7 +558,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
 
         restDashboardMockMvc.perform(get("/api/dashboards"))
                             .andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                             .andDo(print())
                             .andExpect(jsonPath("$").value(hasSize(1)))
                             .andExpect(jsonPath("$.[0].id").value(any(Integer.class)))
@@ -581,6 +574,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     @Test
     @Transactional
     public void testDashboardImportNotEmptyDB() throws Exception {
+        dashboardRepository.deleteAll(dashboardRepository.findAll());
 
         // pre populate DB with Dashboard:
         Widget widget = createWidget();
@@ -593,7 +587,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         // Get the dashboard with widgets
         restDashboardMockMvc.perform(get("/api/dashboards", dashboard.getId()))
                             .andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                             .andDo(print())
                             .andExpect(jsonPath("$").value(hasSize(1)))
                             .andExpect(jsonPath("$.[0].name").value(DEFAULT_NAME))
@@ -609,7 +603,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         // Check that old IDs does not returned, so old dashboards and widgets wass deleted
         restDashboardMockMvc.perform(get("/api/dashboards"))
                             .andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                             .andDo(print())
                             .andExpect(jsonPath("$").value(hasSize(1)))
                             .andExpect(jsonPath("$.[0].id").value(any(Integer.class)))

@@ -11,8 +11,8 @@ import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -99,7 +99,7 @@ public class AuditIntTest extends AbstractSpringBootTest {
     private MockMvc restWidgetMockMvc;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         DashboardResource dashboardResourceMock = new DashboardResource(dashboardService,

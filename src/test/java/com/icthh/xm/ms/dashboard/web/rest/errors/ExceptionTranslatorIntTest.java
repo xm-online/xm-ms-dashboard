@@ -7,27 +7,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.icthh.xm.commons.exceptions.ErrorConstants;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 
 /**
  * Test class for the ExceptionTranslator controller advice.
  *
  * @see ExceptionTranslator
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
-public class ExceptionTranslatorIntTest {
+public class ExceptionTranslatorIntTest extends AbstractSpringBootTest {
 
     @Autowired
     private ExceptionTranslatorTestController controller;
@@ -37,7 +30,7 @@ public class ExceptionTranslatorIntTest {
 
     private MockMvc mockMvc;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
             .setControllerAdvice(exceptionTranslator)

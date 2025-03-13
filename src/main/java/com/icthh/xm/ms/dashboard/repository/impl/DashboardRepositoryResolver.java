@@ -36,7 +36,7 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
     }
 
     @Override
-    public <S extends Dashboard> S save(S dashboard) {
+    public Dashboard save(Dashboard dashboard) {
         return retrieveRepository().save(dashboard);
     }
 
@@ -66,7 +66,7 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
     }
 
     @Override
-    public <S extends Dashboard> List<S> saveAll(Iterable<S> dashboardEntities) {
+    public List<Dashboard> saveAll(Iterable<Dashboard> dashboardEntities) {
         return retrieveRepository().saveAll(dashboardEntities);
     }
 
@@ -87,7 +87,7 @@ public class DashboardRepositoryResolver extends RepositoryResolver<DashboardRep
     }
 
     @Override
-    public Object findResourceById(Object id) {
-        return findOneById((Long) id);
+    public Dashboard findResourceById(Long id) {
+        return findOneById(id);
     }
 }

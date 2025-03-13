@@ -105,6 +105,7 @@ spring:
     liquibase:
         default-schema: XM
         change-log: classpath:config/liquibase/master.xml
+        enabled: true
     messages:
         basename: i18n/messages
     thymeleaf:

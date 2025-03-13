@@ -46,7 +46,7 @@ public class ConfigDashboardRepository implements DashboardRepository {
     }
 
     @Override
-    public <S extends Dashboard> S save(S dashboard) {
+    public Dashboard save(Dashboard dashboard) {
         validate(dashboard);
 
         Long oldDashboardId = dashboard.getId();
@@ -117,8 +117,8 @@ public class ConfigDashboardRepository implements DashboardRepository {
     }
 
     @Override
-    public <S extends Dashboard> List<S> saveAll(Iterable<S> dashboardEntities) {
-        List<S> saved = new ArrayList<>();
+    public List<Dashboard> saveAll(Iterable<Dashboard> dashboardEntities) {
+        List<Dashboard> saved = new ArrayList<>();
         dashboardEntities.forEach(dashboard -> {
             saved.add(save(dashboard));
         });
@@ -126,17 +126,17 @@ public class ConfigDashboardRepository implements DashboardRepository {
     }
 
     @Override
-    public Object findResourceById(Object id) {
-        return findOneById((Long) id);
+    public Dashboard findResourceById(Long id) {
+        return findOneById(id);
     }
 
-    private <S extends Dashboard> void validate(S dashboard) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        Set<ConstraintViolation<S>> constraintViolations = validator.validate(dashboard);
-        if (!constraintViolations.isEmpty()) {
-            throw new ValidationException(constraintViolations.toString());
+    private void validate(Dashboard dashboard) {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<Dashboard>> constraintViolations = validator.validate(dashboard);
+            if (!constraintViolations.isEmpty()) {
+                throw new ValidationException(constraintViolations.toString());
+            }
         }
     }
 

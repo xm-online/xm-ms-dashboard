@@ -42,7 +42,7 @@ public class RevInfo implements Serializable {
      */
     @NotNull
     @RevisionTimestamp
-    @Column(name = "REVTSTMP", nullable = false)
+    @Column(name = "REVTSTMP", nullable = false, columnDefinition = "timestamp with time zone")
     private Date revtstmp;
 
     @LastModifiedBy

@@ -214,7 +214,7 @@
     <rule ref="rulesets/java/naming.xml/MethodNamingConventions">
         <properties>
             <property name="violationSuppressXPath" value=".[
-                ../../Annotation/*[Name[@Image='Test'] and count(//ImportDeclaration/Name[@Image='org.junit.Test']) = 1]
+                ../../Annotation/*[Name[@Image='Test'] and count(//ImportDeclaration/Name[@Image='org.junit.jupiter.api.Test']) = 1]
                 or
                 //ClassOrInterfaceDeclaration[matches(@Image,'.*Test$')]
             ]"/>
@@ -232,7 +232,7 @@
     <rule ref="rulesets/java/strictexception.xml/SignatureDeclareThrowsException">
         <properties>
             <property name="violationSuppressXPath" value=".[
-                ../../../Annotation/*[Name[@Image='Test'] and count(//ImportDeclaration/Name[@Image='org.junit.Test']) = 1]
+                ../../../Annotation/*[Name[@Image='Test'] and count(//ImportDeclaration/Name[@Image='org.junit.jupiter.api.Test']) = 1]
                 or
                 //ClassOrInterfaceDeclaration[matches(@Image,'.*Test$')]
             ]"/>

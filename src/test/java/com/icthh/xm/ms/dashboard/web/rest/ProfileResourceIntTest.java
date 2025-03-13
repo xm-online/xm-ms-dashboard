@@ -19,23 +19,18 @@ import jakarta.persistence.EntityManager;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Profile;
 import com.icthh.xm.ms.dashboard.service.ProfileService;
@@ -73,7 +68,7 @@ public class ProfileResourceIntTest extends AbstractSpringBootTest {
 
     private Profile profile;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         ProfileResource profileResourceMock = new ProfileResource(profileService, profileResource);
@@ -101,7 +96,7 @@ public class ProfileResourceIntTest extends AbstractSpringBootTest {
         return profile;
     }
 
-    @Before
+    @BeforeEach
     public void initTest() {
         profile = createEntity(em);
     }
@@ -170,7 +165,7 @@ public class ProfileResourceIntTest extends AbstractSpringBootTest {
         // Get all the profileList
         restProfileMockMvc.perform(get("/api/profiles?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(profile.getId().intValue())))
             .andExpect(jsonPath("$.[*].userKey").value(hasItem(DEFAULT_USER_KEY)));
     }
@@ -184,7 +179,7 @@ public class ProfileResourceIntTest extends AbstractSpringBootTest {
         // Get the profile
         restProfileMockMvc.perform(get("/api/profiles/{id}", profile.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(profile.getId().intValue()))
             .andExpect(jsonPath("$.userKey").value(DEFAULT_USER_KEY));
     }

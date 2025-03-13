@@ -5,6 +5,7 @@ import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.repository.DefaultProfileRepository;
+import com.icthh.xm.ms.dashboard.repository.impl.permitted.DefaultProfilePermittedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,7 @@ import java.util.List;
 public class DefaultProfileService {
 
     private final DefaultProfileRepository defaultProfileRepository;
-    private final PermittedRepository permittedRepository;
+    private final DefaultProfilePermittedRepository permittedRepository;
 
     /**
      * Save a defaultProfile.

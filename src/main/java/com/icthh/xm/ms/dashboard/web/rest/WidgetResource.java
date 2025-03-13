@@ -6,6 +6,7 @@ import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import jakarta.validation.Valid;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Widget.
@@ -116,7 +116,7 @@ public class WidgetResource {
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'WIDGET.GET_LIST.ITEM')")
     @PrivilegeDescription("Privilege to get the widget by id")
     public ResponseEntity<WidgetDto> getWidget(@PathVariable Long id) {
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(widgetService.findOne(id)));
+        return RespContentUtil.wrapOrNotFound(Optional.ofNullable(widgetService.findOne(id)));
     }
 
     /**

@@ -18,24 +18,19 @@ import jakarta.persistence.EntityManager;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.ImmutableMap;
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 
@@ -83,7 +78,7 @@ public class WidgetResourceIntTest extends AbstractSpringBootTest {
 
     private Widget widget;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         WidgetResource widgetResourceMock = new WidgetResource(widgetService, widgetResource);
@@ -108,7 +103,7 @@ public class WidgetResourceIntTest extends AbstractSpringBootTest {
         return widget;
     }
 
-    @Before
+    @BeforeEach
     public void initTest() {
         widget = createEntity(em);
     }
@@ -198,7 +193,7 @@ public class WidgetResourceIntTest extends AbstractSpringBootTest {
         // Get all the widgetList
         restWidgetMockMvc.perform(get("/api/widgets?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(widget.getId().intValue())))
             .andExpect(jsonPath("$.[*].selector").value(hasItem(DEFAULT_SELECTOR.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
@@ -215,7 +210,7 @@ public class WidgetResourceIntTest extends AbstractSpringBootTest {
         // Get the widget
         restWidgetMockMvc.perform(get("/api/widgets/{id}", widget.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(widget.getId().intValue()))
             .andExpect(jsonPath("$.selector").value(DEFAULT_SELECTOR.toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))

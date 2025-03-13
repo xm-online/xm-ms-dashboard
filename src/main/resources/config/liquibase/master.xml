@@ -17,5 +17,6 @@
     <include file="classpath:config/liquibase/changelog/20171025000000_added_dashboard_type_key.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20230913162100_dashboard_aud.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20230913163400_widget_aud.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20250313112200_rename_seq.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

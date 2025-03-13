@@ -10,9 +10,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest(classes = {
         TestLepConfiguration.class,
-        SecurityBeanOverrideConfiguration.class,
         DashboardApp.class,
-        IntegrationTestConfiguration.class
+        SecurityBeanOverrideConfiguration.class,
+        IntegrationTestConfiguration.class,
 })
 @Tag("com.icthh.xm.ms.dashboard.AbstractSpringBootTest")
 @ExtendWith(SpringExtension.class)

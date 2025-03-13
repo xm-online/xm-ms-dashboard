@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 import java.util.Optional;
 
-public interface WidgetRepository extends ResourceRepository {
+public interface WidgetRepository extends ResourceRepository<Widget, Long> {
 
     Widget save(Widget widget);
 

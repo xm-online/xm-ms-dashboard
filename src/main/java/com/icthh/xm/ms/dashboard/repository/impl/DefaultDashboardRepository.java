@@ -19,5 +19,5 @@ public interface DefaultDashboardRepository extends JpaRepository<Dashboard, Lon
 
     void deleteAllByIdIn(Collection<Long> ids);
 
-    Object findResourceById(Object id);
+    Dashboard findResourceById(Long id);
 }

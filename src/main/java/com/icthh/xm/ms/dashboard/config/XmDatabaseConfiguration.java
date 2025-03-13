@@ -18,7 +18,7 @@ import java.sql.SQLException;
 @Slf4j
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "springSecurityAuditorAware")
-@EnableJpaRepositories({"com.icthh.xm.ms.dashboard.repository"})
+@EnableJpaRepositories(value = {"com.icthh.xm.ms.dashboard.repository"})
 public class XmDatabaseConfiguration extends DatabaseConfiguration {
 
     private static final String JPA_PACKAGES = "com.icthh.xm.ms.dashboard.domain";

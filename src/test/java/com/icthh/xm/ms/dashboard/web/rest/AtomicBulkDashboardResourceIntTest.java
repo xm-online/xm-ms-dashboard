@@ -9,8 +9,8 @@ import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -48,7 +48,7 @@ public class AtomicBulkDashboardResourceIntTest extends AbstractSpringBootTest {
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    @Before
+    @BeforeEach
     public void setup() {
         httpMock = standaloneSetup(dashboardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
