@@ -45,4 +45,3 @@ branches:
        only:
          - master
          - main
-         - feature/update_java21_2
