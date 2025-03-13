@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+@WithMockUser(authorities = "SUPER-ADMIN")
 public class AtomicBulkDashboardResourceIntTest extends AbstractSpringBootTest {
 
     private final ObjectMapper mapper = new ObjectMapper();

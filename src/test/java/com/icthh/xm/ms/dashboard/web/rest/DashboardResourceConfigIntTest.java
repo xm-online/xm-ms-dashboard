@@ -27,13 +27,14 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.test.context.support.WithMockUser;
 
 /**
  * Test class for the DashboardResource REST controller for Config dashboard store type.
  *
  * @see DashboardResource
  */
-
+@WithMockUser(authorities = "SUPER-ADMIN")
 public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
 
     public static final String CONFIG_SPECS_PATH = "/config/specs/dashboardspec.yml";

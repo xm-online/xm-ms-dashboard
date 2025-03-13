@@ -45,4 +45,3 @@ branches:
        only:
          - master
          - main
-         - feature/java_21_migrations
