@@ -64,7 +64,7 @@ public class DefaultDashboardRepositoryWrapper implements DashboardRepository {
     }
 
     @Override
-    public <S extends Dashboard> List<S> saveAll(Iterable<S> entities) {
+    public List<Dashboard> saveAll(Iterable<Dashboard> entities) {
         return defaultDashboardRepository.saveAll(entities);
     }
 
@@ -99,7 +99,7 @@ public class DefaultDashboardRepositoryWrapper implements DashboardRepository {
     }
 
     @Override
-    public Object findResourceById(Object id) {
+    public Dashboard findResourceById(Long id) {
         return defaultDashboardRepository.findResourceById(id);
     }
 }

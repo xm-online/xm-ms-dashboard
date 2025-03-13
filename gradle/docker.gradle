@@ -1,9 +1,9 @@
 jib {
     from {
-        image = "adoptopenjdk:11-jre-hotspot"
+        image = "eclipse-temurin:21-jre-alpine"
     }
     to {
-        image = "gate:latest"
+        image = "dashboard:latest"
     }
     container {
         entrypoint = ["bash", "-c", "chmod +x /entrypoint.sh && sync && /entrypoint.sh"]

@@ -1,11 +1,5 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icthh.xm.commons.gen.api.TenantsApi;
 import com.icthh.xm.commons.gen.api.TenantsApiController;
@@ -13,27 +7,26 @@ import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.commons.tenantendpoint.TenantManager;
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
+import jakarta.transaction.Transactional;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import javax.transaction.Transactional;
 import java.sql.SQLException;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
-public class TenantsApiIntTest {
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+public class TenantsApiIntTest extends AbstractSpringBootTest {
 
     private MockMvc mvc;
 
@@ -46,7 +39,7 @@ public class TenantsApiIntTest {
     @Autowired
     private TenantContextHolder tenantContextHolder;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
@@ -62,7 +55,7 @@ public class TenantsApiIntTest {
     @Transactional
     public void testAddTenant() throws Exception {
         ObjectMapper om = new ObjectMapper();
-        mvc.perform(post("/tenants").content(om.writeValueAsBytes(new Tenant().tenantKey("testadd"))).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(post("/api/tenants").content(om.writeValueAsBytes(new Tenant().tenantKey("testadd"))).contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
         assertExistSchema("testadd");
     }
@@ -85,7 +78,7 @@ public class TenantsApiIntTest {
     @Transactional
     public void testDeleteTenant() throws Exception {
         testAddTenant();
-        mvc.perform(delete("/tenants/testadd")).andExpect(status().isOk());
+        mvc.perform(delete("/api/tenants/testadd")).andExpect(status().isOk());
         assertNotExistSchema("testadd");
     }
 

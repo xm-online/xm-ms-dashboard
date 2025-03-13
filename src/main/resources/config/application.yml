@@ -1,55 +1,51 @@
-# ===================================================================
-# Spring Boot configuration.
-#
-# This configuration will be overridden by the Spring profile you use,
-# for example application-dev.yml if you use the "dev" profile.
-#
-# More information on profiles: https://www.jhipster.tech/profiles/
-# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
-# ===================================================================
-
-# ===================================================================
-# Standard Spring Boot properties.
-# Full reference is available at:
-# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
-# ===================================================================
-
-feign:
-    hystrix:
-        enabled: true
-#    client:
-#        config:
-#            default:
-#                connectTimeout: 5000
-#                readTimeout: 5000
-
-# See https://github.com/Netflix/Hystrix/wiki/Configuration
-hystrix:
-    command:
-        default:
-            execution:
-                isolation:
-                    strategy: SEMAPHORE
-# See https://github.com/spring-cloud/spring-cloud-netflix/issues/1330
-#                    thread:
-#                        timeoutInMilliseconds: 10000
-    shareSecurityContext: true
-
 management:
     endpoints:
         web:
             base-path: /management
             exposure:
-                include: ["configprops", "env", "health", "info", "threaddump", "logfile", "jhimetrics", "prometheus" ]
+                include:
+                    - configprops
+                    - env
+                    - health
+                    - info
+                    - jhimetrics
+                    - jhiopenapigroups
+                    - logfile
+                    - loggers
+                    - prometheus
+                    - threaddump
+                    - caches
+                    - metrics
+                    - liquibase
     endpoint:
         health:
-            show-details: when-authorized
+            show-details: when_authorized
+            roles: 'SUPER-ADMIN'
+            probes:
+                enabled: true
+            group:
+                liveness:
+                    include: livenessState
+                readiness:
+                    include: readinessState,db
+        jhimetrics:
+            enabled: true
     info:
         git:
             mode: full
+        env:
+            enabled: true
     health:
         mail:
             enabled: false # When using the MailService, configure an SMTP server and set this to true
+    observations:
+        key-values:
+            application: ${spring.application.name}
+    prometheus:
+        metrics:
+            export:
+                enabled: true
+                step: 60
     metrics:
         enable:
             http: true
@@ -57,24 +53,31 @@ management:
             logback: true
             process: true
             system: true
-        export:
-            prometheus:
-                enabled: true
-                step: 60
+        distribution:
+            percentiles-histogram:
+                all: true
+            percentiles:
+                all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
+        tags:
+            application: ${spring.application.name}
+
 spring:
     application:
         name: dashboard
     main:
         allow-bean-definition-overriding: true
+        web-application-type: servlet
     cloud:
         inetutils:
             preferredNetworks:
                 - 192.168.
                 - 10.
         consul:
+            enabled: true
             discovery:
                 healthCheckPath: /management/health
-                instanceId: ${spring.application.name}:${spring.application.instance-id:${random.value}}
+                instanceId: dashboard:${spring.application.instance-id:${random.value}}
+                service-name: dashboard
             config:
                 watch:
                     enabled: false
@@ -87,7 +90,7 @@ spring:
         hibernate:
             ddl-auto: none
             naming:
-                physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+                physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         properties:
             hibernate:
@@ -102,22 +105,15 @@ spring:
     liquibase:
         default-schema: XM
         change-log: classpath:config/liquibase/master.xml
+        enabled: true
     messages:
         basename: i18n/messages
-    mvc:
-        favicon:
-            enabled: false
     thymeleaf:
-        mode: XHTML
+        mode: HTML
     kafka:
         producer:
             key-serializer: org.apache.kafka.common.serialization.StringSerializer
             value-serializer: org.apache.kafka.common.serialization.StringSerializer
-
-security:
-    oauth2:
-        resource:
-            filter-order: 3
 
 server:
     servlet:
@@ -141,17 +137,7 @@ jhipster:
         core-pool-size: 2
         max-pool-size: 50
         queue-capacity: 10000
-    # By default CORS is disabled. Uncomment to enable.
-    #cors:
-        #allowed-origins: "*"
-        #allowed-methods: "*"
-        #allowed-headers: "*"
-        #exposed-headers: "Authorization,Link,X-Total-Count"
-        #allow-credentials: true
-        #max-age: 1800
-    mail:
-        from: dashboard@localhost
-    swagger:
+    api-docs:
         default-include-pattern: /api/.*
         title: dashboard API
         description: dashboard API documentation

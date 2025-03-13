@@ -66,6 +66,7 @@ spring:
     liquibase:
         contexts: test
         change-log: classpath:config/liquibase/master.xml
+        enabled: true
     mail:
         host: localhost
     messages:
@@ -88,36 +89,12 @@ server:
 # ===================================================================
 
 jhipster:
-    async:
-        core-pool-size: 1
-        max-pool-size: 50
-        queue-capacity: 10000
-    # To test logstash appender
-    logging:
-        logstash:
-            enabled: true
-            host: localhost
-            port: 5000
-            queue-size: 512
-    security:
-        authentication:
-            jwt:
-                secret: ae82b9bc3a1142c211212838861488c40e9ae111
-                # Token is valid 24 hours
-                token-validity-in-seconds: 86400
-        client-authorization:
-            access-token-uri: http://uaa/oauth/token
-            token-service-id: uaa
-            client-id: internal
-            client-secret: internal
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
+
 management:
-    metrics:
-        export:
-            prometheus:
-                enabled: true
+    prometheus:
+        metrics:
+            export:
+                enabled: false
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
@@ -134,6 +111,7 @@ application:
     timeline-ignored-http-methods:
     kafka-enabled: false
     kafka-system-queue: system_queue
+    tenant-ignored-path-list: /v2/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
 
     specification-name: dashboardspec.yml
     specification-path-pattern: /config/tenants/{tenantName}/dashboard/${application.specification-name}

@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -7,17 +8,17 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.verify;
 
+import com.icthh.xm.ms.dashboard.AbstractUnitTest;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -25,7 +26,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collection;
 import java.util.List;
 
-public class ImportDashboardServiceUnitTest {
+public class ImportDashboardServiceUnitTest extends AbstractUnitTest {
 
     @Mock
     AtomicBulkDashboardService atomicBulkDashboardService;
@@ -33,7 +34,7 @@ public class ImportDashboardServiceUnitTest {
     DashboardRepository dashboardRepository;
     ImportDashboardService importDashboardService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         importDashboardService = new ImportDashboardService(atomicBulkDashboardService, dashboardRepository);

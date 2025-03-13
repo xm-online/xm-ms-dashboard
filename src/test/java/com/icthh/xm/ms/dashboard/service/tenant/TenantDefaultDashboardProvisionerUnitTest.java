@@ -1,22 +1,16 @@
 package com.icthh.xm.ms.dashboard.service.tenant;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
 import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.internal.DefaultTenantContextHolder;
+import com.icthh.xm.ms.dashboard.AbstractUnitTest;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.config.tenant.TenantManagerConfiguration;
-
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -26,7 +20,12 @@ import org.mockito.Spy;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class TenantDefaultDashboardProvisionerUnitTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
+
+public class TenantDefaultDashboardProvisionerUnitTest extends AbstractUnitTest {
     @Mock
     private ImportDashboardService importDashboardService;
 
@@ -41,7 +40,7 @@ public class TenantDefaultDashboardProvisionerUnitTest {
 
     private TenantDefaultDashboardProvisioner provisioner;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         provisioner = new TenantDefaultDashboardProvisioner(importDashboardService,
@@ -77,15 +76,15 @@ public class TenantDefaultDashboardProvisionerUnitTest {
     @Test
     public void manageTenant() {
         provisioner.manageTenant("NEWTENANT", "ACTIVE");
-        Mockito.verifyZeroInteractions(tenantContextHolder);
-        Mockito.verifyZeroInteractions(importDashboardService);
+        Mockito.verifyNoInteractions(tenantContextHolder);
+        Mockito.verifyNoInteractions(importDashboardService);
     }
 
     @Test
     public void deleteTenant() {
         provisioner.deleteTenant("NEWTENANT");
-        Mockito.verifyZeroInteractions(tenantContextHolder);
-        Mockito.verifyZeroInteractions(importDashboardService);
+        Mockito.verifyNoInteractions(tenantContextHolder);
+        Mockito.verifyNoInteractions(importDashboardService);
     }
 
 }

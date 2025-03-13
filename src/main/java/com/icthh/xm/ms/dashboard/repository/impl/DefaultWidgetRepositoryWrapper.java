@@ -77,7 +77,7 @@ public class DefaultWidgetRepositoryWrapper implements WidgetRepository {
     }
 
     @Override
-    public Object findResourceById(Object id) {
+    public Widget findResourceById(Long id) {
         return defaultWidgetRepository.findResourceById(id);
     }
 }

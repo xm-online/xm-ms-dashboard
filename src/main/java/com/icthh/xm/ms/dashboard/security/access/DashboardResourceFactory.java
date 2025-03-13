@@ -8,7 +8,7 @@ import com.icthh.xm.ms.dashboard.repository.ProfileRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 

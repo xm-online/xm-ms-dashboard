@@ -66,7 +66,7 @@ public class WidgetRepositoryResolver extends RepositoryResolver<WidgetRepositor
     }
 
     @Override
-    public Object findResourceById(Object id) {
+    public Widget findResourceById(Long id) {
         return retrieveRepository().findResourceById(id);
     }
 }

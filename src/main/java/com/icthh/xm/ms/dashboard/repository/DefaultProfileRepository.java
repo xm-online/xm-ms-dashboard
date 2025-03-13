@@ -13,7 +13,8 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DefaultProfileRepository extends JpaRepository<DefaultProfile,Long>, ResourceRepository {
+public interface DefaultProfileRepository extends JpaRepository<DefaultProfile, Long>,
+    ResourceRepository<DefaultProfile, Long> {
 
     List<DefaultProfile> findByRoleKey(String roleKey);
 }

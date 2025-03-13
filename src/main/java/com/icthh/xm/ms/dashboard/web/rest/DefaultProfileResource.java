@@ -5,7 +5,7 @@ import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.service.DefaultProfileService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
-import io.github.jhipster.web.util.ResponseUtil;
+import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -23,7 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * REST controller for managing DefaultProfile.
@@ -111,7 +111,7 @@ public class DefaultProfileResource {
     @PrivilegeDescription("Privilege to get the default dashboard per role configuration by id. Tenant admin can configure default dashboard")
     public ResponseEntity<DefaultProfile> getDefaultProfile(@PathVariable Long id) {
         DefaultProfile defaultProfile = defaultProfileService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(defaultProfile));
+        return RespContentUtil.wrapOrNotFound(Optional.ofNullable(defaultProfile));
     }
 
     /**

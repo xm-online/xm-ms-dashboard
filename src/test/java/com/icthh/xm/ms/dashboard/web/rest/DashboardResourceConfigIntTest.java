@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +59,8 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
 
     private TenantContextHolder tenantContextHolder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
         TenantContext tenantContext = mock(TenantContext.class);
         when(tenantContext.getTenantKey()).thenReturn(Optional.of(TenantKey.valueOf("XM")));
 

@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 
-public interface DashboardRepository extends ResourceRepository {
+public interface DashboardRepository extends ResourceRepository<Dashboard, Long> {
 
     Dashboard findOneById(Long id);
 
-    <S extends Dashboard> S save(S dashboard);
+    Dashboard save(Dashboard dashboard);
 
     Dashboard saveAndFlush(Dashboard dashboard);
 
@@ -26,7 +26,7 @@ public interface DashboardRepository extends ResourceRepository {
 
     List<Dashboard> findAllById(Set<Long> ids);
 
-    <S extends Dashboard> List<S> saveAll(Iterable<S> entities);
+    List<Dashboard> saveAll(Iterable<Dashboard> entities);
 
     Page<Map<String, Object>> findAllAudits(Pageable pageable);
 

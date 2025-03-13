@@ -4,38 +4,26 @@ import com.icthh.xm.commons.logging.util.MdcUtils;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.commons.tenant.TenantKey;
-import com.icthh.xm.ms.dashboard.client.OAuth2InterceptedFeignConfiguration;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
-import com.icthh.xm.ms.dashboard.config.DefaultProfileUtil;
-
-import io.github.jhipster.config.JHipsterConstants;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.env.Environment;
+import tech.jhipster.config.DefaultProfileUtil;
+import tech.jhipster.config.JHipsterConstants;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.core.env.Environment;
-
-@ComponentScan(
-    value = "com.icthh.xm",
-    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-        classes = OAuth2InterceptedFeignConfiguration.class)
-)
+@SpringBootApplication(scanBasePackages = "com.icthh.xm")
 @EnableConfigurationProperties({LiquibaseProperties.class, ApplicationProperties.class})
-@EnableAutoConfiguration
-@EnableDiscoveryClient
 public class DashboardApp {
 
     private static final Logger log = LoggerFactory.getLogger(DashboardApp.class);
