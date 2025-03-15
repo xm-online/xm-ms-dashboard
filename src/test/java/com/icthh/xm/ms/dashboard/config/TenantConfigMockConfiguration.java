@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.icthh.xm.commons.config.client.config.XmConfigProperties;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
 import com.icthh.xm.commons.config.client.repository.TenantListRepository;
+import com.icthh.xm.commons.config.client.service.TenantConfigService;
 import com.icthh.xm.commons.web.spring.TenantVerifyInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,11 @@ public class TenantConfigMockConfiguration {
         doAnswer(mvc -> tenants.remove(mvc.getArguments()[0].toString())).when(mockTenantListRepository).deleteTenant(any());
         when(mockTenantListRepository.getTenants()).thenReturn(tenants);
         return  mockTenantListRepository;
+    }
+
+    @Bean
+    public TenantConfigService tenantConfigService() {
+        return mock(TenantConfigService.class);
     }
 
     @Bean
