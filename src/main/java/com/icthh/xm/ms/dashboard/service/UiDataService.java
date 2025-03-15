@@ -52,8 +52,6 @@ public class UiDataService {
     }
 
     @Transactional(readOnly = true)
-    @FindWithPermission("UI_DATA.GET_LIST")
-    @PrivilegeDescription("Privilege to get all the UiData-s")
     public Page<UiDataDto> findAll(String typeKey, Pageable pageable) {
         String owner = getOwner();
         return uiDataRepository.findAllByTypeKeyAndOwner(typeKey, owner, pageable).map(UiDataDto::new);

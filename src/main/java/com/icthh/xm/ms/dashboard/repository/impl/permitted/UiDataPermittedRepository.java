@@ -34,7 +34,7 @@ public class UiDataPermittedRepository extends PermittedRepository {
             conditions.add(ownerCondition);
             conditionParams.put("owner", owner);
         }
-        String whereCondition = CollectionUtils.isNotEmpty(conditions) ? String.join(" AND ", conditions) : "";
+        String whereCondition = CollectionUtils.isNotEmpty(conditions) ? String.join(" AND ", conditions) : " id is not null ";
 
         return findByCondition(whereCondition, conditionParams, pageable, UiData.class, privilegeKey);
     }

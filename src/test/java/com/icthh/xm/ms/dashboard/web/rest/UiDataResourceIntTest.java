@@ -187,7 +187,7 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
         uiDataRepository.saveAndFlush(uiData);
         int databaseSizeBeforeUpdate = uiDataRepository.findAll().size();
 
-        UiData updatedUiData = uiDataRepository.findById(uiData.getId()).get();
+        UiData updatedUiData = new UiDataDto(uiDataRepository.findById(uiData.getId()).get()).toEntity();
         updatedUiData.setOwner(UPDATED_OWNER);
         updatedUiData.setTypeKey(DEFAULT_TYPE_KEY);
         updatedUiData.setData(new HashMap<>(UPDATED_DATA));

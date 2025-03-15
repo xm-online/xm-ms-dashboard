@@ -40,12 +40,10 @@ public class UiDataDto {
         return uiData;
     }
 
-    public UiData updateEntity(UiData uiData) {
-        uiData.setOwner(this.owner);
+    public void updateEntity(UiData uiData) {
         uiData.setTypeKey(this.typeKey);
         uiData.setData(this.data);
         uiData.setUpdateDate(Instant.now());
-        return uiData;
     }
 
 }
