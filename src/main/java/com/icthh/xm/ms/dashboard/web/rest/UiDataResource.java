@@ -37,6 +37,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UiDataResource {
 
+    public static final String UI_DATA_PATH = "/api/ui/data";
+
     private final UiDataService uiDataService;
 
     @PostMapping("/data")
@@ -67,7 +69,7 @@ public class UiDataResource {
                                                         @RequestParam(required = false) String key,
                                                         @RequestParam(required = false) String owner) {
         Page<UiDataDto> page = uiDataService.findAll(typeKey, key, owner, null, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ui/data");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, UI_DATA_PATH);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -79,7 +81,7 @@ public class UiDataResource {
                                                         @RequestParam(required = false) String typeKey,
                                                         @RequestParam(required = false) String key) {
         Page<UiDataDto> page = uiDataService.findAll(typeKey, key, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ui/data");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, UI_DATA_PATH);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -108,7 +110,7 @@ public class UiDataResource {
                                                           @PathVariable String typeKey,
                                                           @PathVariable String key) {
         Page<UiDataDto> page = uiDataService.findByKey(typeKey, key, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ui/data");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, UI_DATA_PATH);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
