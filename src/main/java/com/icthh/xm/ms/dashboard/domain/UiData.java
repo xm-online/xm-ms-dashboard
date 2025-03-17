@@ -9,8 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -34,7 +37,11 @@ public class UiData implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "owner")
+    @Column(name = "data_key", nullable = false)
+    private String key;
+
+    @NotNull
+    @Column(name = "owner", nullable = false)
     private String owner;
 
     @NotNull
@@ -52,5 +59,9 @@ public class UiData implements Serializable {
     @LastModifiedDate
     @Column(name = "update_date")
     private Instant updateDate = Instant.now();
+
+    @Column(name = "version")
+    @Version
+    private Integer version;
 
 }

@@ -43,7 +43,7 @@ public class UiDataResource {
     @Timed
     @PreAuthorize("hasPermission({'uiData': #uiData}, 'UI_DATA.CREATE')")
     @PrivilegeDescription("Privilege to create a new uiData")
-    public ResponseEntity<UiDataDto> createUiData(@Valid @RequestBody UiDataDto uiData) throws URISyntaxException {
+    public ResponseEntity<UiDataDto> createUiData(@RequestBody UiDataDto uiData) throws URISyntaxException {
         if (uiData.getId() != null) {
             throw new BusinessException("error.post.with.id", "A new uiData cannot already have an ID");
         }
@@ -55,7 +55,7 @@ public class UiDataResource {
     @Timed
     @PreAuthorize("hasPermission({'uiData': #uiData}, 'uiData', 'UI_DATA.UPDATE')")
     @PrivilegeDescription("Privilege to updates an existing uiData")
-    public ResponseEntity<UiDataDto> updateUiData(@Valid @RequestBody UiDataDto uiData) {
+    public ResponseEntity<UiDataDto> updateUiData(@RequestBody UiDataDto uiData) {
         UiDataDto result = uiDataService.save(uiData);
         return ResponseEntity.ok().body(result);
     }
@@ -64,19 +64,21 @@ public class UiDataResource {
     @Timed
     public ResponseEntity<List<UiDataDto>> getAllUiData(@ApiParam Pageable pageable,
                                                         @RequestParam(required = false) String typeKey,
+                                                        @RequestParam(required = false) String key,
                                                         @RequestParam(required = false) String owner) {
-        Page<UiDataDto> page = uiDataService.findAll(typeKey, owner, null, pageable);
+        Page<UiDataDto> page = uiDataService.findAll(typeKey, key, owner, null, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ui/data");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/data/owned")
+    @GetMapping("/data/own")
     @Timed
     @PreAuthorize("hasPermission({'typeKey': #typeKey}, 'data', 'UI_DATA.GET_LIST.OWNED')")
     @PrivilegeDescription("Privilege to get the uiData by typeKey then where user owner")
-    public ResponseEntity<List<UiDataDto>> getAllUiData(@ApiParam Pageable pageable,
-                                                        @RequestParam(required = false) String typeKey) {
-        Page<UiDataDto> page = uiDataService.findAll(typeKey, pageable);
+    public ResponseEntity<List<UiDataDto>> getOwnUiData(@ApiParam Pageable pageable,
+                                                        @RequestParam(required = false) String typeKey,
+                                                        @RequestParam(required = false) String key) {
+        Page<UiDataDto> page = uiDataService.findAll(typeKey, key, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ui/data");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -98,4 +100,16 @@ public class UiDataResource {
         uiDataService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/data/{typeKey}/{key}")
+    @Timed
+    @PreAuthorize("hasPermission({'typeKey': #typeKey, 'key': #key}, 'data', 'UI_DATA.GET_LIST.ITEM_BY_KEY')")
+    public ResponseEntity<List<UiDataDto>> getUiDataByKey(@ApiParam Pageable pageable,
+                                                          @PathVariable String typeKey,
+                                                          @PathVariable String key) {
+        Page<UiDataDto> page = uiDataService.findByKey(typeKey, key, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/ui/data");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 }

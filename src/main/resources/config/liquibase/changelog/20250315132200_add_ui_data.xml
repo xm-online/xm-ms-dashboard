@@ -8,9 +8,13 @@
     <property name="textType" value="text" dbms="oracle"/>
 
     <changeSet id="20250315132200" author="ssenko">
+
         <createTable tableName="ui_data">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="data_key" type="varchar(255)">
+                <constraints nullable="false"/>
             </column>
             <column name="owner" type="varchar(255)">
                 <constraints nullable="false"/>
@@ -27,7 +31,22 @@
             <column name="update_date" type="timestamp">
                 <constraints nullable="false"/>
             </column>
+            <column name="version" type="int" defaultValueNumeric="0">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
+
+        <createIndex tableName="ui_data" indexName="idx_ui_data_type_key">
+            <column name="type_key"/>
+        </createIndex>
+
+        <createIndex tableName="ui_data" indexName="idx_ui_data_key">
+            <column name="data_key"/>
+        </createIndex>
+
+        <createIndex tableName="ui_data" indexName="idx_ui_data_owner">
+            <column name="owner"/>
+        </createIndex>
 
     </changeSet>
 

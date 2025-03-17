@@ -94,6 +94,7 @@ spring:
                 implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         properties:
             hibernate:
+                globally_quoted_identifiers: true
                 integration:
                     envers:
                         enabled: ${application.storage.audit-support:false}

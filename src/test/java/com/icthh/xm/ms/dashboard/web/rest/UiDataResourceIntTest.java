@@ -45,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(authorities = "SUPER-ADMIN")
 public class UiDataResourceIntTest extends AbstractSpringBootTest {
 
+    private static final String DEFAULT_KEY = "testKey";
     private static final String DEFAULT_OWNER = "testOwner";
     private static final String UPDATED_OWNER = "updatedOwner";
 
@@ -84,6 +85,7 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
     public static UiData createEntity() {
         UiData uiData = new UiData();
         uiData.setOwner(DEFAULT_OWNER);
+        uiData.setKey(DEFAULT_KEY);
         uiData.setTypeKey(DEFAULT_TYPE_KEY);
         uiData.setData(new HashMap<>(DEFAULT_DATA));
         return uiData;
@@ -255,10 +257,24 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
     public void getAllOwnedUiData() throws Exception {
         uiDataRepository.saveAndFlush(uiData);
 
-        restUiDataMockMvc.perform(get("/api/ui/data/owned?typeKey=" + DEFAULT_TYPE_KEY))
+        restUiDataMockMvc.perform(get("/api/ui/data/own?typeKey=" + DEFAULT_TYPE_KEY))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].typeKey").value(hasItem(DEFAULT_TYPE_KEY)))
             .andExpect(jsonPath("$.[*].owner").value(hasItem(DEFAULT_OWNER)));
     }
+
+    @Test
+    @Transactional
+    public void getUiDataByKey() throws Exception {
+        uiDataRepository.saveAndFlush(uiData);
+
+        restUiDataMockMvc.perform(get("/api/ui/data/{typeKey}/{key}", DEFAULT_TYPE_KEY, DEFAULT_KEY))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].owner").value(DEFAULT_OWNER))
+            .andExpect(jsonPath("$.[*].typeKey").value(DEFAULT_TYPE_KEY))
+            .andExpect(jsonPath("$.[*].data.key").value("value"));
+    }
+
 }

@@ -20,9 +20,10 @@ public class UiDataPermittedRepository extends PermittedRepository {
         super(permissionCheckService);
     }
 
-    public Page<UiData> findAllByTypeKeyAndOwner(String typeKey, String owner, Pageable pageable, String privilegeKey) {
+    public Page<UiData> findAllByTypeKeyAndOwner(String typeKey, String key, String owner, Pageable pageable, String privilegeKey) {
         String typeKeyCondition = "typeKey = :typeKey";
         String ownerCondition = "owner = :owner";
+        String keyCondition = "key = :key";
 
         Map<String, Object> conditionParams = new HashMap<>();
         List<String> conditions = new ArrayList<>();
@@ -33,6 +34,10 @@ public class UiDataPermittedRepository extends PermittedRepository {
         if (StringUtils.isNotBlank(owner)) {
             conditions.add(ownerCondition);
             conditionParams.put("owner", owner);
+        }
+        if (StringUtils.isNotBlank(key)) {
+            conditions.add(keyCondition);
+            conditionParams.put("key", key);
         }
         String whereCondition = CollectionUtils.isNotEmpty(conditions) ? String.join(" AND ", conditions) : " id is not null ";
 
