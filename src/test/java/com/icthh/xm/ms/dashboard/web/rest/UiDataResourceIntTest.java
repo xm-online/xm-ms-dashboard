@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
+import com.icthh.xm.commons.lep.api.LepManagementService;
 import com.icthh.xm.commons.security.XmAuthenticationContext;
 import com.icthh.xm.commons.security.XmAuthenticationContextHolder;
+import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.domain.UiData;
 import com.icthh.xm.ms.dashboard.domain.spec.UiDataSpec;
@@ -13,6 +15,7 @@ import com.icthh.xm.ms.dashboard.domain.spec.UiDataSpecs;
 import com.icthh.xm.ms.dashboard.repository.UiDataRepository;
 import com.icthh.xm.ms.dashboard.service.UiDataSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.UiDataDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -56,21 +59,18 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
 
     @Autowired
     private UiDataRepository uiDataRepository;
-
     @Autowired
     private UiDataResource uiDataResource;
-
     @Autowired
     private UiDataSpecService uiDataSpecService;
-
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
-
     @Autowired
     private ExceptionTranslator exceptionTranslator;
-
     @Autowired
     private org.springframework.http.converter.json.MappingJackson2HttpMessageConverter jacksonMessageConverter;
+    @Autowired
+    private LepManagementService lepManagementService;
 
     @MockBean
     private XmAuthenticationContextHolder xmAuthenticationContextHolder;
@@ -101,6 +101,12 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
         var authContext = mock(XmAuthenticationContext.class);
         when(authContext.getUserKey()).thenReturn(Optional.of(DEFAULT_OWNER));
         when(xmAuthenticationContextHolder.getContext()).thenReturn(authContext);
+        lepManagementService.beginThreadContext();
+    }
+
+    @AfterEach
+    public void destroy() {
+        lepManagementService.endThreadContext();
     }
 
     @BeforeEach

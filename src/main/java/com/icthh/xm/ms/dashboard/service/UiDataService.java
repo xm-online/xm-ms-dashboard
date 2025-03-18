@@ -13,6 +13,8 @@ import com.icthh.xm.ms.dashboard.repository.UiDataRepository;
 import com.icthh.xm.ms.dashboard.repository.impl.permitted.UiDataPermittedRepository;
 import com.icthh.xm.ms.dashboard.service.dto.UiDataDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,14 +26,16 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Service
 @LepService(group = "service.uidata")
 @Transactional
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class UiDataService {
 
     private final UiDataPermittedRepository permittedRepository;
     private final UiDataRepository uiDataRepository;
     private final XmAuthenticationContextHolder authContextHolder;
     private final UiDataSpecService uiDataSpecService;
+    private final UiDataService self;
 
+    @LogicExtensionPoint(value = "Save", resolver = UiDataTypeKeyResolver.class)
     public UiDataDto save(UiDataDto uiDataDto) {
         UiDataSpec uiDataSpec = uiDataSpecService.getSpecByKeyAndTenant(uiDataDto.getTypeKey())
             .orElseThrow(() -> new BusinessException("UiData spec not found by type key " + uiDataDto.getTypeKey()));
@@ -42,7 +46,7 @@ public class UiDataService {
         if (uiDataDto.getId() == null) {
             UiData uiData = uiDataDto.toEntity();
             uiData.setKey(isBlank(uiData.getKey()) ? randomUUID().toString() : uiData.getKey());
-            uiData.setOwner(getOwner(uiData.getTypeKey()));
+            uiData.setOwner(self.getOwner(uiData.getTypeKey()));
             return new UiDataDto(uiDataRepository.save(uiData));
         }  else {
             UiData existingUiData = getUiData(uiDataDto);
@@ -57,8 +61,9 @@ public class UiDataService {
     }
 
     @Transactional(readOnly = true)
+    @LogicExtensionPoint(value = "FindAllOwn", resolver = TypeKeyResolver.class)
     public Page<UiDataDto> findAll(String typeKey, String key, Pageable pageable) {
-        String owner = getOwner(typeKey);
+        String owner = self.getOwner(typeKey);
         return uiDataRepository.findAllByTypeKeyAndKeyAndOwner(typeKey, key, owner, pageable).map(UiDataDto::new);
     }
 
@@ -69,20 +74,24 @@ public class UiDataService {
     }
 
     @Transactional(readOnly = true)
+    @LogicExtensionPoint(value = "FindAll", resolver = TypeKeyResolver.class)
     public Page<UiDataDto> findAll(String typeKey, String key, String owner, String privilegeKey, Pageable pageable) {
         return permittedRepository.findAllByTypeKeyAndOwner(typeKey, key, owner, pageable, privilegeKey).map(UiDataDto::new);
     }
 
     @Transactional(readOnly = true)
+    @LogicExtensionPoint(value = "FindOne")
     public UiDataDto findOne(Long id) {
         return uiDataRepository.findById(id).map(UiDataDto::new).orElse(null);
     }
 
+    @LogicExtensionPoint("Delete")
     public void delete(Long id) {
         uiDataRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)
+    @LogicExtensionPoint(value = "FindByKey", resolver = TypeKeyResolver.class)
     public Page<UiDataDto> findByKey(String typeKey, String key, Pageable pageable) {
         return uiDataRepository.findByTypeKeyAndKey(typeKey, key, pageable).map(UiDataDto::new);
     }

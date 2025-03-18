@@ -12,6 +12,10 @@ public class TypeKeyResolver implements LepKeyResolver {
 
     @Override
     public List<String> segments(LepMethod method) {
-        return List.of(method.getParameter("typeKey", String.class));
+        String typeKey = method.getParameter("typeKey", String.class);
+        if (typeKey == null) {
+            return List.of();
+        }
+        return List.of(typeKey);
     }
 }
