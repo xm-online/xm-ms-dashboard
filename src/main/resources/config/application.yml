@@ -47,17 +47,19 @@ management:
                 enabled: true
                 step: 60
     metrics:
+        distribution:
+            percentiles-histogram:
+                http: true
+                jvm: true
+                logback: true
+                process: true
+                system: true
         enable:
             http: true
             jvm: true
             logback: true
             process: true
             system: true
-        distribution:
-            percentiles-histogram:
-                all: true
-            percentiles:
-                all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
         tags:
             application: ${spring.application.name}
 
@@ -134,7 +136,7 @@ info:
 
 jhipster:
     clientApp:
-        name: 'mstemplateApp'
+        name: 'dashboardApp'
     api-docs:
         default-include-pattern: ${server.servlet.context-path:}/api/**
         management-include-pattern: ${server.servlet.context-path:}/management/**
