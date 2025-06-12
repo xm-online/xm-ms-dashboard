@@ -7,7 +7,7 @@ import com.icthh.xm.ms.dashboard.service.UiDataService;
 import com.icthh.xm.ms.dashboard.service.dto.UiDataDto;
 import com.icthh.xm.ms.dashboard.web.rest.util.PaginationUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -64,7 +64,7 @@ public class UiDataResource {
 
     @GetMapping("/data")
     @Timed
-    public ResponseEntity<List<UiDataDto>> getAllUiData(@ApiParam Pageable pageable,
+    public ResponseEntity<List<UiDataDto>> getAllUiData(@Parameter Pageable pageable,
                                                         @RequestParam(required = false) String typeKey,
                                                         @RequestParam(required = false) String key,
                                                         @RequestParam(required = false) String owner) {
@@ -77,7 +77,7 @@ public class UiDataResource {
     @Timed
     @PreAuthorize("hasPermission({'typeKey': #typeKey}, 'data', 'UI_DATA.GET_LIST.OWNED')")
     @PrivilegeDescription("Privilege to get the uiData by typeKey then where user owner")
-    public ResponseEntity<List<UiDataDto>> getOwnUiData(@ApiParam Pageable pageable,
+    public ResponseEntity<List<UiDataDto>> getOwnUiData(@Parameter Pageable pageable,
                                                         @RequestParam(required = false) String typeKey,
                                                         @RequestParam(required = false) String key) {
         Page<UiDataDto> page = uiDataService.findAll(typeKey, key, pageable);
@@ -106,7 +106,7 @@ public class UiDataResource {
     @GetMapping("/data/{typeKey}/{key}")
     @Timed
     @PreAuthorize("hasPermission({'typeKey': #typeKey, 'key': #key}, 'data', 'UI_DATA.GET_LIST.ITEM_BY_KEY')")
-    public ResponseEntity<List<UiDataDto>> getUiDataByKey(@ApiParam Pageable pageable,
+    public ResponseEntity<List<UiDataDto>> getUiDataByKey(@Parameter Pageable pageable,
                                                           @PathVariable String typeKey,
                                                           @PathVariable String key) {
         Page<UiDataDto> page = uiDataService.findByKey(typeKey, key, pageable);
