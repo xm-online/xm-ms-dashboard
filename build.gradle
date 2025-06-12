@@ -232,11 +232,13 @@ dependencies {
     implementation "org.springframework.security:spring-security-data"
     implementation "org.springframework.security:spring-security-web"
 
-    implementation "io.swagger:swagger-annotations:${swaggerVersion}"
     implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocOpenapiVersion}"
     implementation ("io.springfox:springfox-swagger2:3.0.0") {
         exclude module: "mapstruct"
     }
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:${swagger3Version}"
+    implementation "io.swagger.core.v3:swagger-core-jakarta:${swagger3Version}"
+    implementation "io.swagger.core.v3:swagger-models-jakarta:${swagger3Version}"
 
     implementation 'io.micrometer:micrometer-tracing'
     implementation 'io.micrometer:micrometer-core'
