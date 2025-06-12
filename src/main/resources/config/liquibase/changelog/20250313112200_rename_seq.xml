@@ -11,8 +11,8 @@
                 <not><dbms type="h2"/></not>
             </and>
         </preConditions>
-<!--        <renameSequence newSequenceName="sequencegenerator"-->
-<!--                        oldSequenceName="hibernate_sequence"/>-->
+        <renameSequence newSequenceName="sequencegenerator"
+                        oldSequenceName="hibernate_sequence"/>
     </changeSet>
 
     <changeSet id="20250313112200-1" author="ssenko" context="test">
