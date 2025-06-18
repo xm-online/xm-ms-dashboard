@@ -5,6 +5,10 @@ import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.commons.tenantendpoint.provisioner.TenantProvisioner;
+import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
+import com.icthh.xm.ms.dashboard.config.tenant.TenantManagerConfiguration;
+import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
+import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import lombok.AllArgsConstructor;
@@ -22,6 +26,9 @@ public class TenantDefaultDashboardProvisioner implements TenantProvisioner {
 
     private final ImportDashboardService importDashboardService;
     private final TenantContextHolder tenantContextHolder;
+    private final DashboardSpecService dashboardSpecService;
+    private final ApplicationProperties applicationProperties;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -31,10 +38,26 @@ public class TenantDefaultDashboardProvisioner implements TenantProvisioner {
      */
     @Override
     public void createTenant(final Tenant tenant) {
+
         ImportDashboardDto dashboards = readDefaultDashboards();
         tenantContextHolder.getPrivilegedContext()
                            .execute(TenantContextUtils.buildTenant(tenant.getTenantKey()),
-                                    () -> importDashboardService.importDashboards(dashboards));
+                                    () -> {
+                                        ensureDashboardSpecUpdated(tenant);
+                                        importDashboardService.importDashboards(dashboards);
+                                    });
+    }
+
+    private void ensureDashboardSpecUpdated(Tenant tenant) {
+        boolean specCreated = dashboardSpecService.getDashboardSpec()
+                                                  .map(DashboardSpec::getDashboardStoreType)
+                                                  .isPresent();
+        if (!specCreated) {
+            String configKey = applicationProperties.getSpecificationPathPattern()
+                                                    .replace("{tenantName}", tenant.getTenantKey().toUpperCase());
+            dashboardSpecService.onInit(configKey, TenantManagerConfiguration.readSpecResource());
+            log.info("updated dashboard spec config by key: {}", configKey);
+        }
     }
 
     @SneakyThrows

@@ -1,18 +1,18 @@
 package com.icthh.xm.ms.dashboard.domain;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Default dashboard per role configuration. Tenant admin can configure it.
  */
-@ApiModel(description = "Default dashboard per role configuration. Tenant admin can configure it.")
+@Schema(description = "Default dashboard per role configuration. Tenant admin can configure it.")
 @Entity
 @Table(name = "default_profile")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

@@ -6,8 +6,10 @@ import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import io.github.jhipster.web.util.ResponseUtil;
+import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,8 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * REST controller for managing Widget.
@@ -113,7 +116,7 @@ public class WidgetResource {
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'WIDGET.GET_LIST.ITEM')")
     @PrivilegeDescription("Privilege to get the widget by id")
     public ResponseEntity<WidgetDto> getWidget(@PathVariable Long id) {
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(widgetService.findOne(id)));
+        return RespContentUtil.wrapOrNotFound(Optional.ofNullable(widgetService.findOne(id)));
     }
 
     /**
@@ -129,5 +132,15 @@ public class WidgetResource {
     public ResponseEntity<Void> deleteWidget(@PathVariable Long id) {
         widgetService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    @GetMapping("/widgets-audit/{id}")
+    public ResponseEntity<Page<Map<String, Object>>> getWidgetAuditById(@PathVariable Long id, Pageable pageable) {
+        return ResponseEntity.ok(widgetService.findAuditsById(id, pageable));
+    }
+
+    @GetMapping("/widgets-audit")
+    public ResponseEntity<Page<Map<String, Object>>> getAllWidgetAudits(Pageable pageable) {
+        return ResponseEntity.ok(widgetService.findAllAudits(pageable));
     }
 }

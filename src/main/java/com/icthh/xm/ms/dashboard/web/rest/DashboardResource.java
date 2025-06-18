@@ -13,6 +13,8 @@ import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,10 +27,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -166,6 +169,16 @@ public class DashboardResource {
     public ResponseEntity<Void> importDashboards(@Valid @RequestBody ImportDashboardDto dashboard) {
         importDashboardService.importDashboards(dashboard);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/dashboards-audit/{id}")
+    public ResponseEntity<Page<Map<String, Object>>> getDashboardAuditById(@PathVariable Long id, Pageable pageable) {
+        return ResponseEntity.ok(dashboardService.findAuditsById(id, pageable));
+    }
+
+    @GetMapping("/dashboards-audit")
+    public ResponseEntity<Page<Map<String, Object>>> getAllDashboardsAudits(Pageable pageable) {
+        return ResponseEntity.ok(dashboardService.findAllAudits(pageable));
     }
 
 }

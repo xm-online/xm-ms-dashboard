@@ -1,11 +1,11 @@
 package com.icthh.xm.ms.dashboard.domain;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.Objects;
  * User's Dashboard container. Here user can customize which dashboards should be displayed. If user does not define any
  * dashboard then default one will be returned from the config.
  */
-@ApiModel(description = "User's Dashboard container. Here user can customize which dashboards should be displayed. If user does not define any dashboard then default one will be returned from the config.")
+@Schema(description = "User's Dashboard container. Here user can customize which dashboards should be displayed. If user does not define any dashboard then default one will be returned from the config.")
 @Entity
 @Table(name = "profile")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

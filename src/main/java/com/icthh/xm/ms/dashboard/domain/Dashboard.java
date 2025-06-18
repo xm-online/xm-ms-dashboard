@@ -1,18 +1,18 @@
 package com.icthh.xm.ms.dashboard.domain;
 
-import static javax.persistence.CascadeType.MERGE;
-import static javax.persistence.CascadeType.PERSIST;
-import static javax.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REMOVE;
 
 import com.icthh.xm.ms.dashboard.domain.converter.MapToStringConverter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -20,11 +20,12 @@ import java.util.function.BiConsumer;
 /**
  * Dashboard is a user web page which collates information about a business via set of widgets.
  */
-@ApiModel(description = "Dashboard is a user web page which collates information about a business via set of widgets.")
+@Schema(description = "Dashboard is a user web page which collates information about a business via set of widgets.")
 @Entity
+@Audited
 @Table(name = "dashboard")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Dashboard implements Serializable {
+public class Dashboard extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +38,7 @@ public class Dashboard implements Serializable {
      * Dashboard display name.
      */
     @NotNull
-    @ApiModelProperty(value = "Dashboard display name.", required = true)
+    @Schema(description = "Dashboard display name.", required = true)
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -45,7 +46,7 @@ public class Dashboard implements Serializable {
      * Dashboard owner user key.
      */
     @NotNull
-    @ApiModelProperty(value = "Dashboard owner user key.", required = true)
+    @Schema(description = "Dashboard owner user key.", required = true)
     @Column(name = "owner", nullable = false)
     private String owner;
 
@@ -53,14 +54,14 @@ public class Dashboard implements Serializable {
      * Dashboard type key.
      */
     @NotNull
-    @ApiModelProperty(value = "Dashboard type key.", required = true)
+    @Schema(description = "Dashboard type key.", required = true)
     @Column(name = "type_key", nullable = false)
     private String typeKey;
 
     /**
      * Dashboard layout configuration. Format on API level is JSON. Format on Java level is Map<String, Object>
      */
-    @ApiModelProperty(value = "Dashboard layout configuration. Format on API level is JSON. Format on Java level is Map<String, Object>")
+    @Schema(description = "Dashboard layout configuration. Format on API level is JSON. Format on Java level is Map<String, Object>")
     @Convert(converter = MapToStringConverter.class)
     @Column(name = "layout")
     private Map<String, Object> layout = new HashMap<>();
@@ -69,7 +70,7 @@ public class Dashboard implements Serializable {
      * Particular dashboard configuration that is not related to the layout. Format on API level is JSON. Format on Java
      * level is Map<String, Object>
      */
-    @ApiModelProperty(value = "Particular dashboard configuration that is not related to the layout. Format on API level is JSON. Format on Java level is Map<String, Object>")
+    @Schema(description = "Particular dashboard configuration that is not related to the layout. Format on API level is JSON. Format on Java level is Map<String, Object>")
     @Convert(converter = MapToStringConverter.class)
     @Column(name = "config")
     private Map<String, Object> config = new HashMap<>();
@@ -77,7 +78,7 @@ public class Dashboard implements Serializable {
     /**
      * Public dashboard could be shown for not authorized users. At same time, only public widgets should be shown.
      */
-    @ApiModelProperty(value = "Public dashboard could be shown for not authorized users. At same time, only public widgets should be shown.")
+    @Schema(description = "Public dashboard could be shown for not authorized users. At same time, only public widgets should be shown.")
     @Column(name = "is_public")
     private Boolean isPublic;
 

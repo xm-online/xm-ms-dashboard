@@ -11,39 +11,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.service.DefaultProfileService;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  * Test class for the DefaultProfileResource REST controller.
  *
  * @see DefaultProfileResource
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
 @WithMockUser(authorities = "SUPER-ADMIN")
-public class DefaultProfileResourceIntTest {
+public class DefaultProfileResourceIntTest extends AbstractSpringBootTest {
 
     private static final String DEFAULT_ROLE_KEY = "AAAAAAAAAA";
     private static final String UPDATED_ROLE_KEY = "BBBBBBBBBB";
@@ -70,7 +64,7 @@ public class DefaultProfileResourceIntTest {
 
     private DefaultProfile defaultProfile;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         DefaultProfileResource resource = new DefaultProfileResource(defaultProfileService, defaultProfileResource);
@@ -97,7 +91,7 @@ public class DefaultProfileResourceIntTest {
         return defaultProfile;
     }
 
-    @Before
+    @BeforeEach
     public void initTest() {
         defaultProfile = createEntity(em);
     }
@@ -166,7 +160,7 @@ public class DefaultProfileResourceIntTest {
         // Get all the defaultProfileList
         restDefaultProfileMockMvc.perform(get("/api/default-profiles?sort=id,desc"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(defaultProfile.getId().intValue())))
             .andExpect(jsonPath("$.[*].roleKey").value(hasItem(DEFAULT_ROLE_KEY.toString())));
     }
@@ -180,7 +174,7 @@ public class DefaultProfileResourceIntTest {
         // Get the defaultProfile
         restDefaultProfileMockMvc.perform(get("/api/default-profiles/{id}", defaultProfile.getId()))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(defaultProfile.getId().intValue()))
             .andExpect(jsonPath("$.roleKey").value(DEFAULT_ROLE_KEY.toString()));
     }

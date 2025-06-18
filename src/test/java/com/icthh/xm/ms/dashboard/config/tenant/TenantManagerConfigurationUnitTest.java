@@ -11,20 +11,18 @@ import com.icthh.xm.commons.tenantendpoint.TenantManager;
 import com.icthh.xm.commons.tenantendpoint.provisioner.TenantAbilityCheckerProvisioner;
 import com.icthh.xm.commons.tenantendpoint.provisioner.TenantConfigProvisioner;
 import com.icthh.xm.commons.tenantendpoint.provisioner.TenantListProvisioner;
+import com.icthh.xm.ms.dashboard.AbstractUnitTest;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.service.tenant.TenantDefaultDashboardProvisioner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class TenantManagerConfigurationUnitTest {
+public class TenantManagerConfigurationUnitTest extends AbstractUnitTest {
 
     private TenantManager tenantManager;
 
@@ -47,7 +45,7 @@ public class TenantManagerConfigurationUnitTest {
     private TenantConfigProvisioner tenantConfigProvisioner;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
 

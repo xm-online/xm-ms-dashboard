@@ -1,7 +1,7 @@
 package com.icthh.xm.ms.dashboard.repository;
 
 
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import com.icthh.xm.commons.permission.repository.PermittedRepository;
 import com.icthh.xm.commons.permission.service.PermissionCheckService;

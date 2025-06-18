@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.icthh.xm.ms.dashboard.domain.converter.MapToStringConverter;
 import com.icthh.xm.ms.dashboard.domain.idresolver.DashboardIdResolver;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.HashMap;
 import java.util.Map;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -21,11 +21,12 @@ import java.util.Objects;
  * Widget is a web component intended to be used within dashboards. Widgets could communication with each other only via
  * event manager. Widget can be of particular type.
  */
-@ApiModel(description = "Widget is a web component intended to be used within dashboards. Widgets could communication with each other only via event manager. Widget can be of particular type.")
+@Schema(description = "Widget is a web component intended to be used within dashboards. Widgets could communication with each other only via event manager. Widget can be of particular type.")
 @Entity
+@Audited
 @Table(name = "widget")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class Widget implements Serializable {
+public class Widget extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,7 +39,7 @@ public class Widget implements Serializable {
      * Widget unique web component selector. Examples: xm-widget-map, xm-widget-profile, xm-widget-last-viewed, etc.
      */
     @NotNull
-    @ApiModelProperty(value = "Widget unique web component selector. Examples: xm-widget-map, xm-widget-profile, xm-widget-last-viewed, etc.", required = true)
+    @Schema(description = "Widget unique web component selector. Examples: xm-widget-map, xm-widget-profile, xm-widget-last-viewed, etc.", required = true)
     @Column(name = "selector", nullable = false)
     private String selector;
 
@@ -46,14 +47,14 @@ public class Widget implements Serializable {
      * Widget display name.
      */
     @NotNull
-    @ApiModelProperty(value = "Widget display name.", required = true)
+    @Schema(description = "Widget display name.", required = true)
     @Column(name = "name", nullable = false)
     private String name;
 
     /**
      * Widget configuration in JSON format. Format on Java level is Map<String, Object>
      */
-    @ApiModelProperty(value = "Widget configuration in JSON format. Format on Java level is Map<String, Object>")
+    @Schema(description = "Widget configuration in JSON format. Format on Java level is Map<String, Object>")
     @Convert(converter = MapToStringConverter.class)
     @Column(name = "config")
     private Map<String, Object> config = new HashMap<>();
@@ -61,7 +62,7 @@ public class Widget implements Serializable {
     /**
      * Public widgets could be shown for not authorized users.
      */
-    @ApiModelProperty(value = "Public widgets could be shown for not authorized users.")
+    @Schema(description = "Public widgets could be shown for not authorized users.")
     @Column(name = "is_public")
     private Boolean isPublic;
 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="20230913163400-1" author="dbahazhkov">
+        <addColumn tableName="widget">
+            <column name="created_by" type="varchar(256)"/>
+            <column name="created_date" type="timestamp with time zone"/>
+            <column name="last_modified_by" type="varchar(256)"/>
+            <column name="last_modified_date" type="timestamp with time zone"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20230913163400-2" author="dbahazhkov">
+        <createTable tableName="widget_aud">
+            <column name="id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="revision" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation" type="tinyint">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="selector" type="varchar(255)" />
+            <column name="name" type="varchar(255)" />
+            <column name="config" type="${textType}" />
+            <column name="is_public" type="boolean" />
+            <column name="dashboard_id" type="bigint" />
+            <column name="created_by" type="varchar(256)"/>
+            <column name="created_date" type="timestamp with time zone"/>
+            <column name="last_modified_by" type="varchar(256)"/>
+            <column name="last_modified_date" type="timestamp with time zone"/>
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>

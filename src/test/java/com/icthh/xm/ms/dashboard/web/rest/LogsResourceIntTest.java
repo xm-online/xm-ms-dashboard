@@ -1,19 +1,15 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.icthh.xm.commons.logging.web.rest.LogsResource;
-import com.icthh.xm.ms.dashboard.DashboardApp;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
+import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.web.rest.vm.LoggerVM;
 import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.LoggerContext;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -28,13 +24,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  *
  * @see LogsResource
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {DashboardApp.class, SecurityBeanOverrideConfiguration.class})
-public class LogsResourceIntTest {
+public class LogsResourceIntTest extends AbstractSpringBootTest {
 
     private MockMvc restLogsMockMvc;
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
@@ -48,7 +42,7 @@ public class LogsResourceIntTest {
     public void getAllLogs()throws Exception {
         restLogsMockMvc.perform(get("/management/logs"))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @Test

@@ -18,17 +18,18 @@ import com.icthh.xm.ms.dashboard.repository.impl.ConfigDashboardRefreshableRepos
 import com.icthh.xm.ms.dashboard.repository.impl.IdRefreshableRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import java.util.Optional;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 
 /**
  * Test class for the BulkDashboardResource REST controller for Config dashboard store type.
  *
  * @see BulkDashboardResource
  */
-
+@WithMockUser(authorities = "SUPER-ADMIN")
 public class AtomicBulkDashboardResourceConfigIntTest extends AtomicBulkDashboardResourceIntTest {
 
     @Autowired
@@ -51,7 +52,7 @@ public class AtomicBulkDashboardResourceConfigIntTest extends AtomicBulkDashboar
 
     private TenantContextHolder tenantContextHolder;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         TenantContext tenantContext = mock(TenantContext.class);

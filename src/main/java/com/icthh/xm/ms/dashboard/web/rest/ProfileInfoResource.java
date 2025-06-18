@@ -1,12 +1,12 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
-import com.icthh.xm.ms.dashboard.config.DefaultProfileUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.icthh.xm.ms.dashboard.config.DefaultProfileUtil;
 import lombok.Getter;
 import org.springframework.core.env.Environment;
 import org.springframework.security.access.prepost.PostAuthorize;

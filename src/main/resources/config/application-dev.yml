@@ -20,15 +20,9 @@ logging:
         com.icthh.xm.ms.dashboard: DEBUG
 
 spring:
-    profiles:
-        active: dev
-        include:
-            - swagger
-            # Uncomment to activate TLS for the dev profile
-            #- tls
     devtools:
         restart:
-            enabled: true
+            enabled: false
             additional-exclude: .h2.server.properties
         livereload:
             enabled: false # we use Webpack dev server + BrowserSync for livereload
@@ -89,48 +83,13 @@ server:
     http2:
         enabled: false # To use HTTP/2 you will need SSL support (see above the "server.ssl" configuration)
 
-# ===================================================================
-# JHipster specific properties
-#
-# Full reference is available at: https://www.jhipster.tech/common-application-properties/
-# ===================================================================
-
 jhipster:
-    # CORS is only enabled by default with the "dev" profile, so BrowserSync can access the API
-    cors:
-        allowed-origins: "*"
-        allowed-methods: GET, PUT, POST, DELETE, OPTIONS
-        allowed-headers: "*"
-        exposed-headers:
-        allow-credentials: true
-        max-age: 1800
-    security:
-        client-authorization:
-            access-token-uri: http://uaa/oauth/token
-            token-service-id: uaa
-            client-id: internal
-            client-secret: internal
-    mail: # specific JHipster mail property, for standard properties see MailProperties
-        from: dashboard@localhost
-        base-url: http://127.0.0.1:8082
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        logs: # Reports Dropwizard metrics in the logs
-            enabled: false
     logging:
+        use-json-format: false # By default, logs are not in Json format
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
             enabled: false
             host: localhost
             port: 5000
-            queue-size: 512
-
-
-# ===================================================================
-# Application specific properties
-# Add your own application properties here, see the ApplicationProperties class
-# to have type-safe configuration, like in the JHipsterProperties above
-#
-# More documentation is available at:
-# https://www.jhipster.tech/common-application-properties/
-# ===================================================================
+            ring-buffer-size: 512
 
 application:
