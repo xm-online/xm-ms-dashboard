@@ -4,6 +4,7 @@ import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.commons.exceptions.EntityNotFoundException;
 import com.icthh.xm.commons.lep.LogicExtensionPoint;
 import com.icthh.xm.commons.lep.spring.LepService;
+import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.security.XmAuthenticationContext;
 import com.icthh.xm.commons.security.XmAuthenticationContextHolder;
 import com.icthh.xm.commons.utils.JsonValidationUtils;
@@ -74,8 +75,9 @@ public class UiDataService {
     }
 
     @Transactional(readOnly = true)
+    @FindWithPermission("UI_DATA.GET_ALL")
     @LogicExtensionPoint(value = "FindAll", resolver = TypeKeyResolver.class)
-    public Page<UiDataDto> findAll(String typeKey, String key, String owner, String privilegeKey, Pageable pageable) {
+    public Page<UiDataDto> findAll(String typeKey, String key, String owner, Pageable pageable, String privilegeKey) {
         return permittedRepository.findAllByTypeKeyAndOwner(typeKey, key, owner, pageable, privilegeKey).map(UiDataDto::new);
     }
 

@@ -68,7 +68,7 @@ public class UiDataResource {
                                                         @RequestParam(required = false) String typeKey,
                                                         @RequestParam(required = false) String key,
                                                         @RequestParam(required = false) String owner) {
-        Page<UiDataDto> page = uiDataService.findAll(typeKey, key, owner, null, pageable);
+        Page<UiDataDto> page = uiDataService.findAll(typeKey, key, owner, pageable, null);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, UI_DATA_PATH);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
