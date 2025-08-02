@@ -1,5 +1,7 @@
 package com.icthh.xm.ms.dashboard.service;
 
+import com.icthh.xm.commons.lep.LogicExtensionPoint;
+import com.icthh.xm.commons.lep.spring.LepService;
 import com.icthh.xm.commons.permission.annotation.FindWithPermission;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@LepService(group = "service.widget")
 public class WidgetService {
 
     private final WidgetRepository widgetRepository;
@@ -66,6 +69,7 @@ public class WidgetService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
+    @LogicExtensionPoint(value = "FindOne")
     public WidgetDto findOne(Long id) {
         Widget widget = widgetRepository.findById(id).orElse(null);
         return widget != null ? new WidgetDto(widget) : null;
@@ -88,6 +92,7 @@ public class WidgetService {
     @Transactional(readOnly = true)
     @FindWithPermission("WIDGET.GET_LIST.ITEM")
     @PrivilegeDescription("Privilege to finds widgets by dashboard")
+    @LogicExtensionPoint(value = "FindByDashboardId")
     public List<Widget> findByDashboardId(Long id, String privilegeKey) {
         return widgetPermittedRepository.findByDashboardId(id, privilegeKey);
     }
