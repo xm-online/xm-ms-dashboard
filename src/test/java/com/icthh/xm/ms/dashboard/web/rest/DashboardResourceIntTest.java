@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
+import com.icthh.xm.commons.lep.api.LepManagementService;
 import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -33,6 +34,8 @@ import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +110,9 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     @Autowired
     private DashboardMapper dashboardMapper;
 
+    @Autowired
+    private LepManagementService lepManagementService;
+
     private MockMvc restDashboardMockMvc;
 
     private Dashboard dashboard;
@@ -119,6 +125,13 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+
+        lepManagementService.beginThreadContext();
+    }
+
+    @AfterEach
+    public void destroy() {
+        lepManagementService.endThreadContext();
     }
 
     /**
