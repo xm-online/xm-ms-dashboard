@@ -2,6 +2,7 @@ package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
+import com.icthh.xm.commons.lep.api.LepManagementService;
 import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -11,6 +12,7 @@ import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -90,6 +92,9 @@ public class AuditIntTest extends AbstractSpringBootTest {
     private ExceptionTranslator exceptionTranslator;
 
     @Autowired
+    private LepManagementService lepManagementService;
+
+    @Autowired
     private DashboardMapper dashboardMapper;
 
     @Autowired
@@ -113,6 +118,13 @@ public class AuditIntTest extends AbstractSpringBootTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+
+        lepManagementService.beginThreadContext();
+    }
+
+    @AfterEach
+    public void destroy() {
+        lepManagementService.endThreadContext();
     }
 
     public static Dashboard createDashboard() {

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
+import com.icthh.xm.commons.lep.api.LepManagementService;
 import com.icthh.xm.commons.tenant.TenantContext;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantKey;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -45,6 +47,9 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
 
     @Autowired
     private DashboardSpecService dashboardSpecService;
+
+    @Autowired
+    private LepManagementService lepManagementService;
 
     @Autowired
     private ConfigDashboardRefreshableRepository refreshableRepository;
@@ -73,6 +78,13 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
 
         mockTenantConfigRepository(refreshableRepository, idRefreshableRepository, tenantConfigRepository);
         cleanDashboardRepository(dashboardRepository);
+
+        lepManagementService.beginThreadContext();
+    }
+
+    @AfterEach
+    public void destroy() {
+        lepManagementService.endThreadContext();
     }
 
     public static void mockTenantConfigRepository(ConfigDashboardRefreshableRepository refreshableRepository,
