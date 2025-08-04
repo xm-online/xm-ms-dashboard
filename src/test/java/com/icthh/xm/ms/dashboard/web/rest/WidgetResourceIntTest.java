@@ -13,11 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Map;
 
+import com.icthh.xm.commons.lep.api.LepManagementService;
 import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import jakarta.persistence.EntityManager;
 
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -72,6 +74,9 @@ public class WidgetResourceIntTest extends AbstractSpringBootTest {
     private ExceptionTranslator exceptionTranslator;
 
     @Autowired
+    private LepManagementService lepManagementService;
+
+    @Autowired
     private EntityManager em;
 
     private MockMvc restWidgetMockMvc;
@@ -86,6 +91,12 @@ public class WidgetResourceIntTest extends AbstractSpringBootTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setMessageConverters(jacksonMessageConverter).build();
+        lepManagementService.beginThreadContext();
+    }
+
+    @AfterEach
+    public void destroy() {
+        lepManagementService.endThreadContext();
     }
 
     /**
