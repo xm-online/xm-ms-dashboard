@@ -40,6 +40,7 @@ public class DashboardService {
      * @param dashboard the entity to save
      * @return the persisted entity
      */
+    @LogicExtensionPoint(value = "Save")
     public Dashboard save(Dashboard dashboard) {
         dashboard.updateDashboardReference(dashboard.getWidgets(), Widget::setDashboard);
         return dashboardRepository.save(dashboard);
