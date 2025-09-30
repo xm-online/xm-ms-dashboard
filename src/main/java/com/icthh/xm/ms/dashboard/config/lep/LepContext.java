@@ -5,16 +5,23 @@ import com.icthh.xm.ms.dashboard.service.DashboardService;
 import com.icthh.xm.ms.dashboard.service.ProfileService;
 import com.icthh.xm.ms.dashboard.service.UiDataService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
+import org.springframework.web.client.RestTemplate;
 
 public class LepContext extends BaseLepContext {
 
     public LepServices services;
+    public LepTemplates templates;
 
     public static class LepServices {
         public DashboardService dashboardService;
         public WidgetService widgetService;
         public UiDataService uiDataService;
         public ProfileService profileService;
+    }
+
+    public static class LepTemplates {
+        public RestTemplate rest;
+        public RestTemplate plainRest;
     }
 
 }
