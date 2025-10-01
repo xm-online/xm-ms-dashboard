@@ -1,7 +1,6 @@
 package com.icthh.xm.ms.dashboard;
 
 import com.icthh.xm.ms.dashboard.config.IntegrationTestConfiguration;
-import com.icthh.xm.ms.dashboard.config.SecurityBeanOverrideConfiguration;
 import com.icthh.xm.ms.dashboard.config.TestLepConfiguration;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @SpringBootTest(classes = {
         TestLepConfiguration.class,
         DashboardApp.class,
-        SecurityBeanOverrideConfiguration.class,
         IntegrationTestConfiguration.class,
 })
 @Tag("com.icthh.xm.ms.dashboard.AbstractSpringBootTest")

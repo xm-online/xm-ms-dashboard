@@ -9,6 +9,7 @@ import com.icthh.xm.ms.dashboard.service.UiDataService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
@@ -18,12 +19,15 @@ public class LepContextListener implements LepContextFactory {
     private final WidgetService widgetService;
     private final UiDataService uiDataService;
     private final ProfileService profileService;
+    private final RestTemplate loadBalancedRestTemplate;
+    private final RestTemplate plainRestTemplate;
 
     @Override
     public BaseLepContext buildLepContext(LepMethod lepMethod) {
         LepContext lepContext = new LepContext();
 
         lepContext.services = buildLepContextServices();
+        lepContext.templates = buildLepContextTemplates();
 
         return lepContext;
     }
@@ -37,5 +41,14 @@ public class LepContextListener implements LepContextFactory {
         lepServices.profileService = profileService;
 
         return lepServices;
+    }
+
+    private LepContext.LepTemplates buildLepContextTemplates() {
+        LepContext.LepTemplates lepTemplates = new LepContext.LepTemplates();
+
+        lepTemplates.rest = loadBalancedRestTemplate;
+        lepTemplates.plainRest = plainRestTemplate;
+
+        return lepTemplates;
     }
 }
