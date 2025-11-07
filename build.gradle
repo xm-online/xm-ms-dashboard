@@ -244,7 +244,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-core'
     implementation 'io.micrometer:micrometer-observation'
     implementation "io.micrometer:micrometer-tracing-bridge-brave"
-    implementation "org.postgresql:postgresql"
+    implementation "org.postgresql:postgresql:${postgresqlVersion}"
 
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
@@ -280,6 +280,33 @@ dependencies {
     testImplementation "com.h2database:h2"
     developmentOnly "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
+
+
+    constraints {
+        implementation("org.apache.commons:commons-compress:${apacheCommonCompress}")
+        implementation("io.github.classgraph:classgraph:${gitClassGraph}")
+
+        implementation("io.undertow:undertow-core") {
+            version {
+                strictly("${undertowVersion}")
+            }
+        }
+        implementation("io.undertow:undertow-servlet") {
+            version {
+                strictly("${undertowVersion}")
+            }
+        }
+        implementation("io.undertow:undertow-websockets-jsr") {
+            version {
+                strictly("${undertowVersion}")
+            }
+        }
+        implementation("org.jboss.xnio:xnio-api") {
+            version {
+                strictly("${xnioApiVersion}")
+            }
+        }
+    }
 }
 
 task cleanResources(type: Delete) {
