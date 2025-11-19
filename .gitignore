@@ -142,4 +142,8 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+
 src/main/generated
+src/main/lep-sandbox
+src/main/lep/
+src/test/lep/

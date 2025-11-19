@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.config.lep;
 
+import com.icthh.xm.commons.config.client.service.TenantConfigService;
 import com.icthh.xm.commons.lep.api.BaseLepContext;
 import com.icthh.xm.commons.permission.service.PermissionCheckService;
 import com.icthh.xm.ms.dashboard.service.DashboardService;
@@ -19,6 +20,7 @@ public class LepContext extends BaseLepContext {
         public UiDataService uiDataService;
         public ProfileService profileService;
         public PermissionCheckService permissionService;
+        public TenantConfigService tenantConfigService;
     }
 
     public static class LepTemplates {
