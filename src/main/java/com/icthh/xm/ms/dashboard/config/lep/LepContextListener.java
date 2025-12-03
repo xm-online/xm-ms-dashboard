@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.config.lep;
 
+import com.icthh.xm.commons.config.client.service.TenantConfigService;
 import com.icthh.xm.commons.lep.api.BaseLepContext;
 import com.icthh.xm.commons.lep.api.LepContextFactory;
 import com.icthh.xm.commons.permission.service.PermissionCheckService;
@@ -23,6 +24,7 @@ public class LepContextListener implements LepContextFactory {
     private final PermissionCheckService permissionCheckService;
     private final RestTemplate loadBalancedRestTemplate;
     private final RestTemplate plainRestTemplate;
+    private final TenantConfigService tenantConfigService;
 
     @Override
     public BaseLepContext buildLepContext(LepMethod lepMethod) {
@@ -42,6 +44,7 @@ public class LepContextListener implements LepContextFactory {
         lepServices.uiDataService = uiDataService;
         lepServices.profileService = profileService;
         lepServices.permissionService = permissionCheckService;
+        lepServices.tenantConfigService = tenantConfigService;
 
         return lepServices;
     }
