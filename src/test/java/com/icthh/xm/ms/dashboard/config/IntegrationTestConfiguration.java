@@ -3,6 +3,7 @@ package com.icthh.xm.ms.dashboard.config;
 import com.icthh.xm.commons.config.client.repository.CommonConfigRepository;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
 import com.icthh.xm.commons.config.client.repository.TenantListRepository;
+import com.icthh.xm.commons.config.client.service.CommonConfigService;
 import com.icthh.xm.commons.config.client.service.TenantAliasService;
 import com.icthh.xm.commons.config.client.service.TenantAliasServiceImpl;
 import com.icthh.xm.commons.security.jwt.TokenProvider;
@@ -60,6 +61,16 @@ public class IntegrationTestConfiguration {
     // TODO remove implementation
     public JwtVerificationKeyClient jwtVerificationKeyClient() {
         return () -> readFile("config/public.cer");
+    }
+
+    @Bean
+    public CommonConfigRepository commonConfigRepository() {
+        return mock(CommonConfigRepository.class);
+    }
+
+    @Bean
+    public CommonConfigService commonConfigService() {
+        return mock(CommonConfigService.class);
     }
 
     @Bean
