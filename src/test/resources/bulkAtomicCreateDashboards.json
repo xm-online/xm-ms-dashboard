@@ -38,7 +38,7 @@
     {
         "name": "Bulk atomic crate second",
         "owner": "me",
-        "typeKey": "TYPE_KEY",
+        "typeKey": "TYPE_KEY-2",
         "isPublic": false,
         "config": {
             "hidden": true,
