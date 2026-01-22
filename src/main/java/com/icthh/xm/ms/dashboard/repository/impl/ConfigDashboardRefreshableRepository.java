@@ -95,19 +95,34 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public <S extends Dashboard> S saveDashboard(S dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
-        String specPath = msConfigProperties.getTenantDashboardsFolderPathPattern();
-        specPath = resolvePathWithTenant(tenant, specPath, dashboard);
-        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(specPath);
+        String dashboardConfigApiPath = dashboardsByTenantByFile.getOrDefault(tenant, Map.of())
+                .entrySet()
+                .stream()
+                .filter(it -> it.getValue() != null && it.getValue().getDashboardDto() != null)
+                .filter(it -> isEqualsTypeKey(dashboard, it))
+                .map(this::getApiFullPath)
+                .findFirst()
+                .orElse(fullPath);
+
+        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(dashboardConfigApiPath);
+
         String oldConfigHash = "";
         if (dashboardConfig != null) {
             oldConfigHash = dashboardConfig.getOldHash();
         }
         tenantConfigRepository.updateConfigFullPath(tenant,
-                                                    fullPath,
+                                                    dashboardConfigApiPath,
                                                     mapper.writeValueAsString(dashboard),
                                                     oldConfigHash);
         return dashboard;
+    }
+
+    private static <S extends Dashboard> boolean isEqualsTypeKey(S dashboard, Map.Entry<String, DashboardConfig> it) {
+        return it.getValue().getDashboardDto().getTypeKey().equals(dashboard.getTypeKey());
+    }
+
+    private String getApiFullPath(Map.Entry<String, DashboardConfig> entry) {
+        return "/api" + entry.getKey();
     }
 
     private String resolvePathWithTenant(String tenantKey, String specPath, Dashboard dashboard) {
