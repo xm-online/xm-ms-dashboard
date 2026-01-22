@@ -95,16 +95,16 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public <S extends Dashboard> S saveDashboard(S dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        String dashboardConfigApiPath = getDashboardConfigApiPath(dashboard, tenant, fullPath);
+        String dashboardConfigPath = getDashboardConfigApiPath(dashboard, tenant, fullPath);
 
-        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(dashboardConfigApiPath);
+        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(dashboardConfigPath);
 
         String oldConfigHash = "";
         if (dashboardConfig != null) {
             oldConfigHash = dashboardConfig.getOldHash();
         }
         tenantConfigRepository.updateConfigFullPath(tenant,
-                                                    dashboardConfigApiPath,
+                                                    getApiFullPath(dashboardConfigPath),
                                                     mapper.writeValueAsString(dashboard),
                                                     oldConfigHash);
         return dashboard;
@@ -116,7 +116,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
                 .stream()
                 .filter(it -> it.getValue() != null && it.getValue().getDashboardDto() != null)
                 .filter(it -> isEqualsTypeKey(dashboard, it))
-                .map(this::getApiFullPath)
+                .map(Map.Entry::getKey)
                 .findFirst()
                 .orElse(fullPath);
     }
@@ -125,8 +125,8 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         return it.getValue().getDashboardDto().getTypeKey().equals(dashboard.getTypeKey());
     }
 
-    private String getApiFullPath(Map.Entry<String, DashboardConfig> entry) {
-        return "/api" + entry.getKey();
+    private String getApiFullPath(String fullPath) {
+        return "/api" + fullPath;
     }
 
     private String resolvePathWithTenant(String tenantKey, String specPath, Dashboard dashboard) {
