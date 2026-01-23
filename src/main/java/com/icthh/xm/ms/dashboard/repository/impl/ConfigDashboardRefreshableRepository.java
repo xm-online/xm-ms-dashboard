@@ -15,6 +15,7 @@ import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -95,19 +96,41 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public <S extends Dashboard> S saveDashboard(S dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
-        String specPath = msConfigProperties.getTenantDashboardsFolderPathPattern();
-        specPath = resolvePathWithTenant(tenant, specPath, dashboard);
-        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(specPath);
+        String dashboardConfigPath = getDashboardConfigApiPath(dashboard, tenant, fullPath);
+
+        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(dashboardConfigPath);
+
         String oldConfigHash = "";
         if (dashboardConfig != null) {
             oldConfigHash = dashboardConfig.getOldHash();
         }
         tenantConfigRepository.updateConfigFullPath(tenant,
-                                                    fullPath,
+                                                    getApiFullPath(dashboardConfigPath),
                                                     mapper.writeValueAsString(dashboard),
                                                     oldConfigHash);
         return dashboard;
+    }
+
+    private <S extends Dashboard> String getDashboardConfigApiPath(S dashboard, String tenant, String fullPath) {
+        return dashboardsByTenantByFile.getOrDefault(tenant, Map.of())
+                .entrySet()
+                .stream()
+                .filter(it -> isEqualsTypeKey(dashboard, it))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(fullPath);
+    }
+
+    private static <S extends Dashboard> boolean isEqualsTypeKey(S dashboard, Map.Entry<String, DashboardConfig> it) {
+        return Optional.ofNullable(it.getValue())
+                .filter(dashboardConfig -> dashboardConfig.getDashboardDto() != null)
+                .map(DashboardConfig::getDashboardDto)
+                .stream()
+                .anyMatch(dashboardDto -> dashboardDto.getTypeKey().equals(dashboard.getTypeKey()));
+    }
+
+    private String getApiFullPath(String fullPath) {
+        return "/api" + fullPath;
     }
 
     private String resolvePathWithTenant(String tenantKey, String specPath, Dashboard dashboard) {
@@ -122,7 +145,8 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public void deleteDashboard(Dashboard dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        tenantConfigRepository.deleteConfigFullPath(tenant, fullPath);
+        String dashboardConfigApiPath = getDashboardConfigApiPath(dashboard, tenant, fullPath);
+        tenantConfigRepository.deleteConfigFullPath(tenant, dashboardConfigApiPath);
 
     }
 
