@@ -15,6 +15,7 @@ import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -114,7 +115,6 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         return dashboardsByTenantByFile.getOrDefault(tenant, Map.of())
                 .entrySet()
                 .stream()
-                .filter(it -> it.getValue() != null && it.getValue().getDashboardDto() != null)
                 .filter(it -> isEqualsTypeKey(dashboard, it))
                 .map(Map.Entry::getKey)
                 .findFirst()
@@ -122,7 +122,11 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     }
 
     private static <S extends Dashboard> boolean isEqualsTypeKey(S dashboard, Map.Entry<String, DashboardConfig> it) {
-        return it.getValue().getDashboardDto().getTypeKey().equals(dashboard.getTypeKey());
+        return Optional.ofNullable(it.getValue())
+                .filter(dashboardConfig -> dashboardConfig.getDashboardDto() != null)
+                .map(DashboardConfig::getDashboardDto)
+                .stream()
+                .anyMatch(dashboardDto -> dashboardDto.getTypeKey().equals(dashboard.getTypeKey()));
     }
 
     private String getApiFullPath(String fullPath) {
