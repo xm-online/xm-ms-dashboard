@@ -6,6 +6,7 @@ import lombok.Data;
 public class DashboardSpec {
 
     private DashboardStoreType dashboardStoreType;
+    private Boolean overrideId;
 
     public enum DashboardStoreType {
         RDBMS, MSCONFG

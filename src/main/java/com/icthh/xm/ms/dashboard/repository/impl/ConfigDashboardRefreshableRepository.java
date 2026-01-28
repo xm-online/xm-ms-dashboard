@@ -11,11 +11,16 @@ import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.MsConfigStorageProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
+import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
+import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
+import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,6 +48,9 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
     private final TenantConfigRepository tenantConfigRepository;
+    private final IdRefreshableRepository idRefreshableRepository;
+    private final DashboardSpecService dashboardSpecService;
+    private final DashboardMapper dashboardMapper;
 
     @Override
     public void onRefresh(String updatedKey, String config) {
@@ -68,7 +76,34 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         }
 
         DashboardDto dashboard = mapper.readValue(config, DashboardDto.class);
-        dashboards.put(updatedKey, new DashboardConfig(dashboard, DigestUtils.sha1Hex(config)));
+        dashboardSpecService.getDashboardSpec().ifPresentOrElse(dashboardSpec -> {
+            boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
+            Boolean isOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
+            if (isMsConfigType && isOverrideId) {
+                updateDashboardIdIfUsed(dashboard);
+                Dashboard entity = dashboardMapper.toFullEntity(dashboard);
+                dashboards.put(updatedKey, new DashboardConfig(dashboard, DigestUtils.sha1Hex(config)));
+                saveDashboard(entity);
+            }
+        }, () -> dashboards.put(updatedKey, new DashboardConfig(dashboard, DigestUtils.sha1Hex(config))));
+    }
+
+    private void updateDashboardIdIfUsed(DashboardDto dashboard) {
+        Set<WidgetDto> widgets = dashboard.getWidgets();
+        boolean isAlreadyUsedDashboardId = getDashboards().stream().anyMatch(it -> it.getId().equals(dashboard.getId()));
+        if (isAlreadyUsedDashboardId) {
+            final Long nextId = idRefreshableRepository.getNextId();
+            dashboard.setId(nextId);
+        }
+
+        updateDashboardIdForWidget(widgets, dashboard.getId());
+
+    }
+
+    private void updateDashboardIdForWidget(Set<WidgetDto> widgets, Long nextId) {
+        widgets.stream()
+                .filter(widgetDto -> getDashboards().stream().anyMatch(it -> it.getId().equals(widgetDto.getId())))
+                .forEach(widgetDto -> widgetDto.setDashboard(nextId));
     }
 
     @Override
