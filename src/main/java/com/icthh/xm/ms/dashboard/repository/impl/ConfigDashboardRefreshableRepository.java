@@ -121,24 +121,15 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         if (widgets != null) {
             boolean widgetsUpdated = widgets.stream()
                     .filter(Objects::nonNull)
-                    .anyMatch(widget -> {
-                        if (!dashboard.getId().equals(widget.getDashboard())) {
-                            widget.setDashboard(dashboard.getId());
-                            return true;
-                        }
-                        return false;
-                    });
+                    .filter(widget -> !dashboard.getId().equals(widget.getDashboard()))
+                    .peek(widget -> widget.setDashboard(dashboard.getId()))
+                    .findAny()
+                    .isPresent();
 
             wasUpdated = wasUpdated || widgetsUpdated;
         }
 
         return wasUpdated;
-    }
-
-    private void updateDashboardIdForWidget(Set<WidgetDto> widgets, Long nextId) {
-        widgets.stream()
-                .filter(widgetDto -> getDashboards().stream().anyMatch(it -> it.getId().equals(widgetDto.getId())))
-                .forEach(widgetDto -> widgetDto.setDashboard(nextId));
     }
 
     @Override
