@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -17,6 +18,7 @@ import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.impl.ConfigDashboardRefreshableRepository;
 import com.icthh.xm.ms.dashboard.repository.impl.IdRefreshableRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
+import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +26,14 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Test class for the DashboardResource REST controller for Config dashboard store type.

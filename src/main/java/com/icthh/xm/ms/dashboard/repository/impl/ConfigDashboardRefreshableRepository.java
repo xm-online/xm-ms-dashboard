@@ -96,7 +96,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public <S extends Dashboard> S saveDashboard(S dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        String dashboardConfigPath = getDashboardConfigApiPath(dashboard, tenant, fullPath);
+        String dashboardConfigPath = getDashboardConfigApiPath(dashboard.getTypeKey(), tenant, fullPath);
 
         DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(dashboardConfigPath);
 
@@ -111,22 +111,22 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         return dashboard;
     }
 
-    private <S extends Dashboard> String getDashboardConfigApiPath(S dashboard, String tenant, String fullPath) {
+    public <S extends Dashboard> String getDashboardConfigApiPath(String dashBoardTypeKey, String tenant, String fullPath) {
         return dashboardsByTenantByFile.getOrDefault(tenant, Map.of())
                 .entrySet()
                 .stream()
-                .filter(it -> isEqualsTypeKey(dashboard, it))
+                .filter(it -> isEqualsTypeKey(dashBoardTypeKey, it))
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .orElse(fullPath);
     }
 
-    private static <S extends Dashboard> boolean isEqualsTypeKey(S dashboard, Map.Entry<String, DashboardConfig> it) {
+    private static <S extends Dashboard> boolean isEqualsTypeKey(String dashBoardTypeKey, Map.Entry<String, DashboardConfig> it) {
         return Optional.ofNullable(it.getValue())
                 .filter(dashboardConfig -> dashboardConfig.getDashboardDto() != null)
                 .map(DashboardConfig::getDashboardDto)
                 .stream()
-                .anyMatch(dashboardDto -> dashboardDto.getTypeKey().equals(dashboard.getTypeKey()));
+                .anyMatch(dashboardDto -> dashboardDto.getTypeKey().equals(dashBoardTypeKey));
     }
 
     private String getApiFullPath(String fullPath) {
@@ -145,7 +145,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     public void deleteDashboard(Dashboard dashboard) {
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
-        String dashboardConfigApiPath = getDashboardConfigApiPath(dashboard, tenant, fullPath);
+        String dashboardConfigApiPath = getDashboardConfigApiPath(dashboard.getTypeKey(), tenant, fullPath);
         tenantConfigRepository.deleteConfigFullPath(tenant, dashboardConfigApiPath);
 
     }
