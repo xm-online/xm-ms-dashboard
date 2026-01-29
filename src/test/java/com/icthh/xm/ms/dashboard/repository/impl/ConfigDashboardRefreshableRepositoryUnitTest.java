@@ -1,14 +1,19 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
+import static com.icthh.xm.ms.dashboard.web.rest.DashboardResourceConfigIntTest.loadFile;
+import static com.icthh.xm.ms.dashboard.web.rest.DashboardResourceIntTest.createDashboard;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
@@ -25,6 +30,7 @@ import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -152,10 +158,7 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         spec.setOverrideId(true);
         when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
 
-        when(idRefreshableRepository.getNextId())
-                .thenReturn(2L)
-                .thenReturn(201L)
-                .thenReturn(202L);
+        when(idRefreshableRepository.getNextId()).thenReturn(2L);
 
         repository.onRefresh(configPath1, dashboard1Yaml);
 
@@ -233,5 +236,47 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
                 .hasSize(1)
                 .contains(updatedDashboard.getId());
 
+    }
+
+    @Test
+    public void updateByFileState_When_NameFileIsNotEqualTypeKeyAndIdDashboardWidgetsNotEqualIdDashboard_ShouldHasCorrectId() throws Exception {
+        String configPath = "/config/tenants/XM/dashboard/unique-dashboard.yml";
+        String dashboardYaml = "id: 100\n" +
+                "name: \"Unique Dashboard3\"\n" +
+                "typeKey: \"TEST3\"\n" +
+                "owner: \"user1\"\n" +
+                "widgets:\n" +
+                "  - id: 1011\n" +
+                "    name: \"Widget 1\"\n" +
+                "    dashboard: 2001\n" +
+                "  - id: 1012\n" +
+                "    name: \"Widget 3\"\n" +
+                "    dashboard: 1001\n";
+
+        DashboardSpec spec = new DashboardSpec();
+        spec.setDashboardStoreType(DashboardSpec.DashboardStoreType.MSCONFG);
+        spec.setOverrideId(true);
+        when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
+
+        repository.onRefresh(configPath, dashboardYaml);
+
+        verify(tenantConfigRepository).updateConfigFullPath(
+                eq("XM"),
+                eq("/api" + configPath),
+                configContentCaptor.capture(),
+                anyString()
+        );
+
+        String updatedConfig = configContentCaptor.getValue();
+        DashboardDto updatedDashboard = yamlMapper.readValue(updatedConfig, DashboardDto.class);
+        assertThat(updatedDashboard.getId()).isEqualTo(100L);
+
+
+        Set<WidgetDto> widgets = updatedDashboard.getWidgets();
+        assertThat(widgets.size()).isEqualTo(2);
+
+       updatedDashboard.getWidgets().stream()
+                .map(WidgetDto::getDashboard)
+                .forEach(it -> assertThat(it).isEqualTo(updatedDashboard.getId()));
     }
 }
