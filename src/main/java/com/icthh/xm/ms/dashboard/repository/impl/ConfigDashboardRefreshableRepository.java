@@ -12,7 +12,6 @@ import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.MsConfigStorageProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
-import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
@@ -145,7 +144,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
             oldConfigHash = dashboardConfig.getOldHash();
         }
         tenantConfigRepository.updateConfigFullPath(tenant,
-                                                    getApiFullPath(dashboardConfigPath),
+                                                    dashboardConfigPath,
                                                     mapper.writeValueAsString(dashboard),
                                                     oldConfigHash);
         return dashboard;
@@ -156,7 +155,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
                 .entrySet()
                 .stream()
                 .filter(it -> isEqualsTypeKey(dashboard, it))
-                .map(Map.Entry::getKey)
+                .map(it -> mapApiFullPath(it.getKey()))
                 .findFirst()
                 .orElse(fullPath);
     }
@@ -169,7 +168,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
                 .anyMatch(dashboardDto -> dashboardDto.getTypeKey().equals(dashboard.getTypeKey()));
     }
 
-    private String getApiFullPath(String fullPath) {
+    private String mapApiFullPath(String fullPath) {
         return "/api" + fullPath;
     }
 
