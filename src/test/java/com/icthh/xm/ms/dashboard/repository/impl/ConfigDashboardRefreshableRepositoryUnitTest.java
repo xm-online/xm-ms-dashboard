@@ -1,30 +1,17 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
-import static com.icthh.xm.ms.dashboard.web.rest.DashboardResourceConfigIntTest.loadFile;
-import static com.icthh.xm.ms.dashboard.web.rest.DashboardResourceIntTest.createDashboard;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
 import com.icthh.xm.commons.tenant.TenantContext;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantKey;
 import com.icthh.xm.ms.dashboard.AbstractUnitTest;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
-import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
-import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
@@ -35,12 +22,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -64,9 +48,6 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
     private TenantConfigRepository tenantConfigRepository;
 
     @Mock
-    private IdRefreshableRepository idRefreshableRepository;
-
-    @Mock
     private DashboardSpecService dashboardSpecService;
 
     @Mock
@@ -78,10 +59,6 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
     @InjectMocks
     private ConfigDashboardRefreshableRepository repository;
 
-    @Captor
-    private ArgumentCaptor<String> configContentCaptor;
-
-    private final ObjectMapper yamlMapper = new ObjectMapper(new YAMLFactory());
 
     @BeforeEach
     public void setUp() {
@@ -89,39 +66,11 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         when(storage.getMsConfig()).thenReturn(msConfig);
         when(msConfig.getTenantDashboardsFolderPathPattern())
                 .thenReturn("/config/tenants/{tenantName}/dashboard/*.yml");
-        when(msConfig.getTenantDashboardsFolderPath()).thenReturn("/config/tenants/{tenantName}/dashboard");
 
 
         TenantContext tenantContext = mock(TenantContext.class);
         when(tenantContext.getTenantKey()).thenReturn(Optional.of(TenantKey.valueOf("XM")));
         when(tenantContextHolder.getContext()).thenReturn(tenantContext);
-
-        when(dashboardMapper.toFullEntity(any(DashboardDto.class))).thenAnswer(invocation -> {
-            DashboardDto dto = invocation.getArgument(0);
-            Dashboard dashboard = new Dashboard();
-            dashboard.setId(dto.getId());
-            dashboard.setName(dto.getName());
-            dashboard.setTypeKey(dto.getTypeKey());
-            dashboard.setOwner(dto.getOwner());
-            dashboard.setConfig(dto.getConfig());
-            dashboard.setLayout(dto.getLayout());
-            dashboard.setIsPublic(dto.getIsPublic());
-
-            if (dto.getWidgets() != null) {
-                Set<Widget> widgets = new HashSet<>();
-                for (WidgetDto widgetDto : dto.getWidgets()) {
-                    Widget widget = new Widget();
-                    widget.setId(widgetDto.getId());
-                    widget.setName(widgetDto.getName());
-                    widget.setConfig(widgetDto.getConfig());
-                    widget.setDashboard(dashboard);
-                    widgets.add(widget);
-                }
-                dashboard.setWidgets(widgets);
-            }
-            
-            return dashboard;
-        });
     }
 
     @Test
@@ -158,23 +107,17 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         spec.setOverrideId(true);
         when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
 
-        when(idRefreshableRepository.getNextId()).thenReturn(2L);
-
         repository.onRefresh(configPath1, dashboard1Yaml);
 
         reset(tenantConfigRepository);
 
         repository.onRefresh(configPath2, dashboard2Yaml);
 
-        verify(tenantConfigRepository).updateConfigFullPath(
-                eq("XM"),
-                eq("/api" + configPath2),
-                configContentCaptor.capture(),
-                anyString()
-        );
+        repository.refreshFinished(List.of(configPath1, configPath2));
 
-        String updatedConfig = configContentCaptor.getValue();
-        DashboardDto updatedDashboard = yamlMapper.readValue(updatedConfig, DashboardDto.class);
+        DashboardDto updatedDashboard = repository.getDashboards().stream()
+                        .filter(it -> !it.getId().equals(1L))
+                                .findFirst().get();
 
         assertThat(updatedDashboard.getId()).isEqualTo(2L);
 
@@ -212,18 +155,12 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
 
         repository.onRefresh(configPath, dashboardYaml);
+        repository.refreshFinished(List.of(configPath));
 
-        verify(tenantConfigRepository).updateConfigFullPath(
-                eq("XM"),
-                eq("/api" + configPath),
-                configContentCaptor.capture(),
-                anyString()
-        );
-
-        String updatedConfig = configContentCaptor.getValue();
-        DashboardDto updatedDashboard = yamlMapper.readValue(updatedConfig, DashboardDto.class);
+        List<DashboardDto> dashboards = repository.getDashboards();
+        assertThat(dashboards.size()).isEqualTo(1);
+        DashboardDto updatedDashboard = dashboards.getFirst();
         assertThat(updatedDashboard.getId()).isEqualTo(100L);
-
 
         Set<WidgetDto> widgets = updatedDashboard.getWidgets();
         assertThat(widgets.size()).isEqualTo(2);
@@ -259,16 +196,12 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
 
         repository.onRefresh(configPath, dashboardYaml);
+        repository.refreshFinished(List.of(configPath));
 
-        verify(tenantConfigRepository).updateConfigFullPath(
-                eq("XM"),
-                eq("/api" + configPath),
-                configContentCaptor.capture(),
-                anyString()
-        );
+        List<DashboardDto> dashboards = repository.getDashboards();
+        assertThat(dashboards.size()).isEqualTo(1);
+        DashboardDto updatedDashboard = dashboards.getFirst();
 
-        String updatedConfig = configContentCaptor.getValue();
-        DashboardDto updatedDashboard = yamlMapper.readValue(updatedConfig, DashboardDto.class);
         assertThat(updatedDashboard.getId()).isEqualTo(100L);
 
 

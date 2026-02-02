@@ -13,10 +13,13 @@ import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.MsConfigSt
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
-import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import com.icthh.xm.ms.dashboard.util.ServiceUtil;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
 
 @Transactional
 @Slf4j
@@ -50,9 +55,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
     private final TenantConfigRepository tenantConfigRepository;
-    private final IdRefreshableRepository idRefreshableRepository;
     private final DashboardSpecService dashboardSpecService;
-    private final DashboardMapper dashboardMapper;
 
     @Override
     public void onRefresh(String updatedKey, String config) {
@@ -67,6 +70,33 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         }
     }
 
+    @Override
+    public void refreshFinished(Collection<String> paths) {
+        dashboardSpecService.getDashboardSpec().ifPresent(dashboardSpec -> {
+
+            boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
+            Boolean isOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
+
+            if (isMsConfigType && isOverrideId) {
+                Set<Long> usedIds = new HashSet<>();
+                List<DashboardDto> dashboards = getDashboards().stream()
+                        .sorted(Comparator.comparing(DashboardDto::getTypeKey))
+                        .toList();
+
+                Set<Long> allIds = dashboards.stream().map(DashboardDto::getId).collect(Collectors.toSet());
+
+                for (DashboardDto dashboard : dashboards) {
+                    if (usedIds.contains(dashboard.getId())) {
+                        updatedDashboardId(dashboard, allIds, usedIds);
+                    } else {
+                        usedIds.add(dashboard.getId());
+                        updateWidgetsDashboardId(dashboard);
+                    }
+                }
+            }
+        });
+    }
+
     @SneakyThrows
     private void updateByFileState(String updatedKey, String config, String tenant) {
         Map<String, DashboardConfig> dashboards = dashboardsByTenantByFile
@@ -78,58 +108,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         }
 
         DashboardDto dashboard = mapper.readValue(config, DashboardDto.class);
-        String configHash = DigestUtils.sha1Hex(config);
-        
-        dashboardSpecService.getDashboardSpec().ifPresentOrElse(dashboardSpec -> {
-            checkAndOverrideDashboardIds(updatedKey, dashboardSpec, dashboard, dashboards, configHash);
-        }, () -> updateDashboard(dashboards, updatedKey, dashboard, configHash));
-    }
-
-    private void checkAndOverrideDashboardIds(String updatedKey, DashboardSpec dashboardSpec, DashboardDto dashboard,
-                                              Map<String, DashboardConfig> dashboards, String configHash) {
-        boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
-        Boolean isOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
-        if (isMsConfigType && isOverrideId) {
-            boolean updatedDashboardId = updatedDashboardIdIfUsed(dashboard);
-            updateDashboard(dashboards, updatedKey, dashboard, configHash);
-            if (updatedDashboardId) {
-                Dashboard entity = dashboardMapper.toFullEntity(dashboard);
-                saveDashboard(entity);
-            }
-        } else {
-            updateDashboard(dashboards, updatedKey, dashboard, configHash);
-        }
-    }
-
-    private void updateDashboard(Map<String, DashboardConfig> dashboards, String key, DashboardDto dashboard, String configHash) {
-        dashboards.put(key, new DashboardConfig(dashboard, configHash));
-    }
-
-    private boolean updatedDashboardIdIfUsed(DashboardDto dashboard) {
-        Set<WidgetDto> widgets = dashboard.getWidgets();
-        List<DashboardDto> dashboards = getDashboards();
-        boolean isAlreadyUsedDashboardId = dashboards.stream().anyMatch(it -> it.getId().equals(dashboard.getId()));
-
-        boolean wasUpdated = false;
-
-        if (isAlreadyUsedDashboardId) {
-            final Long nextId = idRefreshableRepository.getNextId();
-            dashboard.setId(nextId);
-            wasUpdated = true;
-        }
-
-        if (widgets != null) {
-            boolean widgetsUpdated = widgets.stream()
-                    .filter(Objects::nonNull)
-                    .filter(widget -> !dashboard.getId().equals(widget.getDashboard()))
-                    .peek(widget -> widget.setDashboard(dashboard.getId()))
-                    .findAny()
-                    .isPresent();
-
-            wasUpdated = wasUpdated || widgetsUpdated;
-        }
-
-        return wasUpdated;
+        dashboards.put(updatedKey, new DashboardConfig(dashboard, DigestUtils.sha1Hex(config)));
     }
 
     @Override
@@ -194,11 +173,6 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         return "/api" + fullPath;
     }
 
-    private String resolvePathWithTenant(String tenantKey, String specPath, Dashboard dashboard) {
-        return specPath.replace("*.yml", dashboard.getTypeKey() + "-" + dashboard.getId() + ".yml")
-                       .replace("{" + TENANT_NAME + "}", tenantKey);
-    }
-
     private String getTenantKeyValue() {
         return TenantContextUtils.getRequiredTenantKeyValue(tenantContextHolder).toUpperCase();
     }
@@ -220,6 +194,25 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
             + "-"
             + dashboard.getId()
             + ".yml";
+    }
+
+    private void updatedDashboardId(DashboardDto dashboard, Set<Long> allIds, Set<Long> usedIds) {
+        Long overrideId = ServiceUtil.getNotExistValueCompareSet(allIds, dashboard.getId());
+        dashboard.setId(overrideId);
+        usedIds.add(overrideId);
+
+        updateWidgetsDashboardId(dashboard);
+    }
+
+    private void updateWidgetsDashboardId(DashboardDto dashboard) {
+        Set<WidgetDto> widgets = dashboard.getWidgets();
+
+        if (!CollectionUtils.isEmpty(widgets)) {
+            widgets.stream()
+                    .filter(Objects::nonNull)
+                    .filter(widget -> !dashboard.getId().equals(widget.getDashboard()))
+                    .forEach(widget -> widget.setDashboard(dashboard.getId()));
+        }
     }
 
     @Data

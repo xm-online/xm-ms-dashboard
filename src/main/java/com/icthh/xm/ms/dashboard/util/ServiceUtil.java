@@ -3,6 +3,7 @@ package com.icthh.xm.ms.dashboard.util;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.domain.Profile;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -64,5 +65,19 @@ public final class ServiceUtil {
             result.add(resultEntry);
         }
         return new PageImpl<>(result, pageable, totalCount);
+    }
+
+    public static Long getNotExistValueCompareSet(Set<Long> allValues, Long value) {
+        if (CollectionUtils.isEmpty(allValues)) {
+            return value;
+        }
+
+        Long candidate = value;
+
+        while (allValues.contains(candidate)) {
+            candidate++;
+        }
+
+        return candidate;
     }
 }
