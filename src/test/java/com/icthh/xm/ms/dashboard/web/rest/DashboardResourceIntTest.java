@@ -185,6 +185,8 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
 
         String filePath = "/config/tenants/XM/dashboard/dashboards/test-dashboard.yml";
 
+        refreshableRepository.onRefresh(filePath, dashboardYaml);
+
         Dashboard createdDashboard = dashboardService.saveAndFlush(new Dashboard()
                 .name("Test Dashboard")
                 .typeKey("DemoTest")
@@ -193,8 +195,6 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
                 .layout(Map.of())
                 .config(Map.of())
         );
-
-        refreshableRepository.onRefresh(filePath, dashboardYaml);
 
         DashboardDto dashboardDto = dashboardService.findOne(createdDashboard.getId());
         assertThat(dashboardDto.getName()).isEqualTo("Test Dashboard");
@@ -217,7 +217,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
 
         String dashboardConfigApiPathAfter = refreshableRepository.getDashboardConfigApiPath(updatedDashboard.getTypeKey(), "XM", fullPath);
 
-        assertEquals(filePath, dashboardConfigApiPathAfter);
+        assertEquals("/api" + filePath, dashboardConfigApiPathAfter);
     }
 
     @Test
