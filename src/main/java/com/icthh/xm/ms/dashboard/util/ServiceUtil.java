@@ -67,14 +67,14 @@ public final class ServiceUtil {
         return new PageImpl<>(result, pageable, totalCount);
     }
 
-    public static Long getNotExistValueCompareSet(Set<Long> allValues, Long value) {
+    public static Long getNotExistValueCompareSet(Set<Long> allValues, Set<Long> usedValues, Long value) {
         if (CollectionUtils.isEmpty(allValues)) {
             return value;
         }
 
         Long candidate = value;
 
-        while (allValues.contains(candidate)) {
+        while (allValues.contains(candidate) || usedValues.contains(candidate)) {
             candidate++;
         }
 

@@ -71,27 +71,34 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     @Override
     public void refreshFinished(Collection<String> paths) {
-        dashboardSpecService.getDashboardSpec().ifPresent(dashboardSpec -> {
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String pathPattern = msConfigProperties.getTenantDashboardsFolderPathPattern();
 
-            boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
-            Boolean isOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
+        paths.forEach(path -> {
+            String tenant = matcher.extractUriTemplateVariables(pathPattern, path).get(TENANT_NAME);
+            if (StringUtils.isNotBlank(tenant)) {
+                dashboardSpecService.getDashboardSpec(tenant).ifPresent(dashboardSpec -> {
+                    boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
+                    Boolean isOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
 
-            if (isMsConfigType && isOverrideId) {
-                Set<Long> usedIds = new HashSet<>();
-                List<DashboardDto> dashboards = getDashboards().stream()
-                        .sorted(Comparator.comparing(DashboardDto::getTypeKey))
-                        .toList();
+                    if (isMsConfigType && isOverrideId) {
+                        Set<Long> usedIds = new HashSet<>();
+                        List<DashboardDto> dashboards = getDashboards(tenant).stream()
+                                .sorted(Comparator.comparing(DashboardDto::getTypeKey))
+                                .toList();
 
-                Set<Long> allIds = dashboards.stream().map(DashboardDto::getId).collect(Collectors.toSet());
+                        Set<Long> allDashboardIds = dashboards.stream().map(DashboardDto::getId).collect(Collectors.toSet());
 
-                for (DashboardDto dashboard : dashboards) {
-                    if (usedIds.contains(dashboard.getId())) {
-                        updatedDashboardId(dashboard, allIds, usedIds);
-                    } else {
-                        usedIds.add(dashboard.getId());
-                        updateWidgetsDashboardId(dashboard);
+                        for (DashboardDto dashboard : dashboards) {
+                            if (usedIds.contains(dashboard.getId())) {
+                                updatedDashboardId(dashboard, allDashboardIds, usedIds);
+                            } else {
+                                usedIds.add(dashboard.getId());
+                                updateWidgetsDashboardId(dashboard);
+                            }
+                        }
                     }
-                }
+                });
             }
         });
     }
@@ -124,6 +131,14 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     public List<DashboardDto> getDashboards() {
         String tenant = getTenantKeyValue();
+        return dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).values()
+            .stream()
+            .map(DashboardConfig::getDashboardDto)
+            .collect(toList());
+
+    }
+
+    public List<DashboardDto> getDashboards(String tenant) {
         return dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).values()
             .stream()
             .map(DashboardConfig::getDashboardDto)
@@ -196,7 +211,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     }
 
     private void updatedDashboardId(DashboardDto dashboard, Set<Long> allIds, Set<Long> usedIds) {
-        Long overrideId = ServiceUtil.getNotExistValueCompareSet(allIds, dashboard.getId());
+        Long overrideId = ServiceUtil.getNotExistValueCompareSet(allIds, usedIds, dashboard.getId());
         dashboard.setId(overrideId);
         usedIds.add(overrideId);
 

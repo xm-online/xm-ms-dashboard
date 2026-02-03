@@ -42,19 +42,10 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
     private ApplicationProperties.Storage.MsConfigStorageProperties msConfig;
 
     @Mock
-    private TenantContextHolder tenantContextHolder;
-
-    @Mock
     private TenantConfigRepository tenantConfigRepository;
 
     @Mock
     private DashboardSpecService dashboardSpecService;
-
-    @Mock
-    private DashboardRepository dashboardRepository;
-
-    @Mock
-    private DashboardMapper dashboardMapper;
 
     @InjectMocks
     private ConfigDashboardRefreshableRepository repository;
@@ -66,11 +57,6 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         when(storage.getMsConfig()).thenReturn(msConfig);
         when(msConfig.getTenantDashboardsFolderPathPattern())
                 .thenReturn("/config/tenants/{tenantName}/dashboard/*.yml");
-
-
-        TenantContext tenantContext = mock(TenantContext.class);
-        when(tenantContext.getTenantKey()).thenReturn(Optional.of(TenantKey.valueOf("XM")));
-        when(tenantContextHolder.getContext()).thenReturn(tenantContext);
     }
 
     @Test
@@ -105,7 +91,7 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         DashboardSpec spec = new DashboardSpec();
         spec.setDashboardStoreType(DashboardSpec.DashboardStoreType.MSCONFG);
         spec.setOverrideId(true);
-        when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
+        when(dashboardSpecService.getDashboardSpec("XM")).thenReturn(Optional.of(spec));
 
         repository.onRefresh(configPath1, dashboard1Yaml);
 
@@ -115,7 +101,7 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
 
         repository.refreshFinished(List.of(configPath1, configPath2));
 
-        DashboardDto updatedDashboard = repository.getDashboards().stream()
+        DashboardDto updatedDashboard = repository.getDashboards("XM").stream()
                         .filter(it -> !it.getId().equals(1L))
                                 .findFirst().get();
 
@@ -152,12 +138,12 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         DashboardSpec spec = new DashboardSpec();
         spec.setDashboardStoreType(DashboardSpec.DashboardStoreType.MSCONFG);
         spec.setOverrideId(true);
-        when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
+        when(dashboardSpecService.getDashboardSpec("XM")).thenReturn(Optional.of(spec));
 
         repository.onRefresh(configPath, dashboardYaml);
         repository.refreshFinished(List.of(configPath));
 
-        List<DashboardDto> dashboards = repository.getDashboards();
+        List<DashboardDto> dashboards = repository.getDashboards("XM");
         assertThat(dashboards.size()).isEqualTo(1);
         DashboardDto updatedDashboard = dashboards.getFirst();
         assertThat(updatedDashboard.getId()).isEqualTo(100L);
@@ -193,12 +179,12 @@ public class ConfigDashboardRefreshableRepositoryUnitTest extends AbstractUnitTe
         DashboardSpec spec = new DashboardSpec();
         spec.setDashboardStoreType(DashboardSpec.DashboardStoreType.MSCONFG);
         spec.setOverrideId(true);
-        when(dashboardSpecService.getDashboardSpec()).thenReturn(Optional.of(spec));
+        when(dashboardSpecService.getDashboardSpec("XM")).thenReturn(Optional.of(spec));
 
         repository.onRefresh(configPath, dashboardYaml);
         repository.refreshFinished(List.of(configPath));
 
-        List<DashboardDto> dashboards = repository.getDashboards();
+        List<DashboardDto> dashboards = repository.getDashboards("XM");
         assertThat(dashboards.size()).isEqualTo(1);
         DashboardDto updatedDashboard = dashboards.getFirst();
 
