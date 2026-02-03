@@ -80,16 +80,17 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private void processTenantPath(String path, String pathPattern) {
         String tenant = matcher.extractUriTemplateVariables(pathPattern, path).get(TENANT_NAME);
         if (StringUtils.isNotBlank(tenant)) {
-            dashboardSpecService.getDashboardSpec(tenant).ifPresent(dashboardSpec -> {
-                boolean isNotMsConfigType = !dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
-                boolean notEnableOverrideId = !Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
-
-                if (isNotMsConfigType && notEnableOverrideId) {
-                    return;
-                }
-                processOverrideDashboardId(tenant);
-            });
+            dashboardSpecService.getDashboardSpec(tenant)
+                    .filter(this::isOverrideIdEnabled)
+                    .ifPresent(dashboardSpec -> processOverrideDashboardId(tenant));
         }
+    }
+
+    private boolean isOverrideIdEnabled(DashboardSpec dashboardSpec) {
+        boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
+        boolean enableOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
+
+        return isMsConfigType && enableOverrideId;
     }
 
     private void processOverrideDashboardId(String tenant) {
