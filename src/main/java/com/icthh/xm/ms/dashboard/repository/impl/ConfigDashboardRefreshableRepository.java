@@ -105,7 +105,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
             oldConfigHash = dashboardConfig.getOldHash();
         }
         tenantConfigRepository.updateConfigFullPath(tenant,
-                                                    getApiFullPath(dashboardConfigPath),
+                                                    dashboardConfigPath,
                                                     mapper.writeValueAsString(dashboard),
                                                     oldConfigHash);
         return dashboard;
@@ -116,7 +116,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
                 .entrySet()
                 .stream()
                 .filter(it -> isEqualsTypeKey(dashBoardTypeKey, it))
-                .map(Map.Entry::getKey)
+                .map(it -> mapApiFullPath(it.getKey()))
                 .findFirst()
                 .orElse(fullPath);
     }
@@ -129,7 +129,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
                 .anyMatch(dashboardDto -> dashboardDto.getTypeKey().equals(dashBoardTypeKey));
     }
 
-    private String getApiFullPath(String fullPath) {
+    private String mapApiFullPath(String fullPath) {
         return "/api" + fullPath;
     }
 
