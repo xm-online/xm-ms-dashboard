@@ -74,33 +74,40 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
         String pathPattern = msConfigProperties.getTenantDashboardsFolderPathPattern();
 
-        paths.forEach(path -> {
-            String tenant = matcher.extractUriTemplateVariables(pathPattern, path).get(TENANT_NAME);
-            if (StringUtils.isNotBlank(tenant)) {
-                dashboardSpecService.getDashboardSpec(tenant).ifPresent(dashboardSpec -> {
-                    boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
-                    Boolean isOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
+        paths.forEach(path -> processTenantPath(path, pathPattern));
+    }
 
-                    if (isMsConfigType && isOverrideId) {
-                        Set<Long> usedIds = new HashSet<>();
-                        List<DashboardDto> dashboards = getDashboards(tenant).stream()
-                                .sorted(Comparator.comparing(DashboardDto::getTypeKey))
-                                .toList();
+    private void processTenantPath(String path, String pathPattern) {
+        String tenant = matcher.extractUriTemplateVariables(pathPattern, path).get(TENANT_NAME);
+        if (StringUtils.isNotBlank(tenant)) {
+            dashboardSpecService.getDashboardSpec(tenant).ifPresent(dashboardSpec -> {
+                boolean isNotMsConfigType = !dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
+                boolean notEnableOverrideId = !Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
 
-                        Set<Long> allDashboardIds = dashboards.stream().map(DashboardDto::getId).collect(Collectors.toSet());
+                if (isNotMsConfigType && notEnableOverrideId) {
+                    return;
+                }
+                processOverrideDashboardId(tenant);
+            });
+        }
+    }
 
-                        for (DashboardDto dashboard : dashboards) {
-                            if (usedIds.contains(dashboard.getId())) {
-                                updatedDashboardId(dashboard, allDashboardIds, usedIds);
-                            } else {
-                                usedIds.add(dashboard.getId());
-                                updateWidgetsDashboardId(dashboard);
-                            }
-                        }
-                    }
-                });
+    private void processOverrideDashboardId(String tenant) {
+        Set<Long> usedIds = new HashSet<>();
+        List<DashboardDto> dashboards = getDashboards(tenant).stream()
+                .sorted(Comparator.comparing(DashboardDto::getTypeKey))
+                .toList();
+
+        Set<Long> allDashboardIds = dashboards.stream().map(DashboardDto::getId).collect(Collectors.toSet());
+
+        for (DashboardDto dashboard : dashboards) {
+            if (usedIds.contains(dashboard.getId())) {
+                updatedDashboardId(dashboard, allDashboardIds, usedIds);
+            } else {
+                usedIds.add(dashboard.getId());
+                updateWidgetsDashboardId(dashboard);
             }
-        });
+        }
     }
 
     @SneakyThrows
