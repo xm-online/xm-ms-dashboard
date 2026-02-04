@@ -66,6 +66,10 @@ public class DashboardSpecService implements RefreshableConfiguration {
         return Optional.ofNullable(dashboardSpec.get(tenant));
     }
 
+    public Optional<DashboardSpec> getDashboardSpec(String tenant) {
+        return Optional.ofNullable(dashboardSpec.get(tenant));
+    }
+
     private String getTenantKeyValue() {
         return TenantContextUtils.getRequiredTenantKeyValue(tenantContextHolder).toUpperCase();
     }

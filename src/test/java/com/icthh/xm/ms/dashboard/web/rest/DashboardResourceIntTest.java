@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,6 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.commons.lep.api.LepManagementService;
@@ -25,6 +28,7 @@ import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import com.icthh.xm.ms.dashboard.repository.WidgetRepository;
+import com.icthh.xm.ms.dashboard.repository.impl.ConfigDashboardRefreshableRepository;
 import com.icthh.xm.ms.dashboard.service.DashboardService;
 import com.icthh.xm.ms.dashboard.service.ImportDashboardService;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
@@ -35,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -113,9 +118,13 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     @Autowired
     private LepManagementService lepManagementService;
 
+    @Autowired
+    private ConfigDashboardRefreshableRepository refreshableRepository;
+
     private MockMvc restDashboardMockMvc;
 
     private Dashboard dashboard;
+    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
     @BeforeEach
     public void setup() {
@@ -161,6 +170,83 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     @BeforeEach
     public void initTest() {
         dashboard = createDashboard();
+    }
+
+    @Test
+    @Transactional
+    public void updateDashboardName_WhenDashBoardFileNotEqTypeKeyName_Exp_UpdateDashboardNameAndPathSame() throws Exception {
+        Dashboard config = new Dashboard()
+                .name("Test Dashboard")
+                .typeKey("DemoTest")
+                .owner("admin")
+                .isPublic(true)
+                .layout(Map.of())
+                .config(Map.of());
+
+
+        String filePath = "/config/tenants/XM/dashboard/dashboards/test-dashboard.yml";
+
+        refreshableRepository.onRefresh(filePath, mapper.writeValueAsString(config));
+        refreshableRepository.refreshFinished(Set.of(filePath));
+
+        config = dashboardService.save(config);
+
+        DashboardDto dashboardDto = dashboardService.findOne(config.getId());
+        assertThat(dashboardDto.getName()).isEqualTo("Test Dashboard");
+        assertThat(dashboardDto.getTypeKey()).isEqualTo("DemoTest");
+
+        String fullPath = refreshableRepository.getFullPath(config);
+        dashboardDto.setName("Updated Dashboard Name");
+        restDashboardMockMvc.perform(put("/api/dashboards")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(TestUtil.convertObjectToJsonBytes(dashboardDto)))
+                .andExpect(status().isOk());
+
+        refreshableRepository.onRefresh(filePath, mapper.writeValueAsString(dashboardDto));
+        refreshableRepository.refreshFinished(Set.of(filePath));
+
+        DashboardDto updatedDashboard = dashboardService.findOne(config.getId());
+        assertThat(updatedDashboard.getName()).isEqualTo("Updated Dashboard Name");
+        assertThat(updatedDashboard.getTypeKey()).isEqualTo("DemoTest");
+
+        String dashboardConfigApiPathAfter = refreshableRepository.getDashboardConfigApiPath(updatedDashboard.getTypeKey(), "XM", fullPath);
+        assertEquals("/api" + filePath, dashboardConfigApiPathAfter);
+    }
+
+    @Test
+    @Transactional
+    public void deleteDashboard_WhenDashBoardFileNotEqTypeKeyName_Exp_DeleteDashboardAndFile() throws Exception {
+        String filePath = "/config/tenants/XM/dashboard/dashboards/test-delete-dashboard.yml";
+        Dashboard testDashboard = new Dashboard()
+                .name("Test Dashboard To Delete")
+                .typeKey("DemoDelete")
+                .owner("admin")
+                .isPublic(true)
+                .layout(Map.of())
+                .config(Map.of());
+
+        refreshableRepository.onRefresh(filePath, mapper.writeValueAsString(testDashboard));
+        refreshableRepository.refreshFinished(Set.of(filePath));
+
+        testDashboard = dashboardService.save(testDashboard);
+        DashboardDto findByIdDashboard = dashboardService.findOne(testDashboard.getId());
+
+        assertThat(findByIdDashboard.getName()).isEqualTo("Test Dashboard To Delete");
+        assertThat(findByIdDashboard.getTypeKey()).isEqualTo("DemoDelete");
+
+        Long dashboardId = findByIdDashboard.getId();
+        restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboardId)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        refreshableRepository.onRefresh(filePath, null);
+        refreshableRepository.refreshFinished(Set.of(filePath));
+
+        assertThat(dashboardRepository.findOneById(dashboardId)).isNull();
+
+        String fullPath = refreshableRepository.getFullPath(testDashboard);
+        String dashboardConfigApiPath = refreshableRepository.getDashboardConfigApiPath(testDashboard.getTypeKey(), "XM", fullPath);
+        assertEquals(fullPath, dashboardConfigApiPath); // if true - dashboard deleted from config (check logic getDashboardConfigApiPath())
     }
 
     @Test
