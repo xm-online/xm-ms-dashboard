@@ -16,6 +16,7 @@ import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
 import com.icthh.xm.ms.dashboard.util.ServiceUtil;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
@@ -207,14 +209,6 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         return fullPath;
     }
 
-    private static <S extends Dashboard> boolean isEqualsTypeKey(String dashBoardTypeKey, Map.Entry<String, DashboardConfig> it) {
-        return Optional.ofNullable(it.getValue())
-                .filter(dashboardConfig -> dashboardConfig.getDashboardDto() != null)
-                .map(DashboardConfig::getDashboardDto)
-                .stream()
-                .anyMatch(dashboardDto -> dashboardDto.getTypeKey().equals(dashBoardTypeKey));
-    }
-
     private String mapApiFullPath(String fullPath) {
         return "/api" + fullPath;
     }
@@ -243,7 +237,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     }
 
     private void updatedDashboardId(DashboardDto dashboard, Set<Long> allIds, Set<Long> usedIds) {
-        Long overrideId = ServiceUtil.getNotExistValueCompareSet(allIds, usedIds, dashboard.getId());
+        Long overrideId = getNotExistValueCompareSet(allIds, usedIds, dashboard.getId());
         dashboard.setId(overrideId);
         usedIds.add(overrideId);
 
@@ -259,6 +253,20 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
                     .filter(widget -> !dashboard.getId().equals(widget.getDashboard()))
                     .forEach(widget -> widget.setDashboard(dashboard.getId()));
         }
+    }
+
+    private Long getNotExistValueCompareSet(Set<Long> allValues, Set<Long> usedValues, Long value) {
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(allValues)) {
+            return value;
+        }
+
+        Long candidate = value;
+
+        while (allValues.contains(candidate) || usedValues.contains(candidate)) {
+            candidate++;
+        }
+
+        return candidate;
     }
 
     @Data
