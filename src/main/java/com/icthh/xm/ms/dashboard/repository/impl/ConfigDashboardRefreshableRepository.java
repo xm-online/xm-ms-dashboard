@@ -9,7 +9,22 @@ import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.MsConfigStorageProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
+import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
+import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
+import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import com.icthh.xm.ms.dashboard.util.ServiceUtil;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -46,6 +62,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
     private final TenantConfigRepository tenantConfigRepository;
+    private final DashboardSpecService dashboardSpecService;
 
     @Override
     public void onRefresh(String updatedKey, String config) {
@@ -62,6 +79,11 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     @Override
     public void refreshFinished(Collection<String> paths) {
+        MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
+        String pathPattern = msConfigProperties.getTenantDashboardsFolderPathPattern();
+
+        paths.forEach(path -> processTenantPath(path, pathPattern));
+
         Map<String, Map<String, String>> dashboardPathByTenantByTypeKey = new ConcurrentHashMap<>();
         dashboardsByTenantByFile.forEach((tenant, dashboardsByFile) -> {
             Map<String, String> dashboardByTypeKey = typeKeyToPath(dashboardsByFile);
@@ -79,6 +101,40 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
             }
         });
         return dashboardByTypeKey;
+    }
+
+    private void processTenantPath(String path, String pathPattern) {
+        String tenant = matcher.extractUriTemplateVariables(pathPattern, path).get(TENANT_NAME);
+        if (StringUtils.isNotBlank(tenant)) {
+            dashboardSpecService.getDashboardSpec(tenant)
+                    .filter(this::isOverrideIdEnabled)
+                    .ifPresent(dashboardSpec -> processOverrideDashboardId(tenant));
+        }
+    }
+
+    private boolean isOverrideIdEnabled(DashboardSpec dashboardSpec) {
+        boolean isMsConfigType = dashboardSpec.getDashboardStoreType().equals(DashboardSpec.DashboardStoreType.MSCONFG);
+        boolean enableOverrideId = Optional.ofNullable(dashboardSpec.getOverrideId()).orElse(true);
+
+        return isMsConfigType && enableOverrideId;
+    }
+
+    private void processOverrideDashboardId(String tenant) {
+        Set<Long> usedIds = new HashSet<>();
+        List<DashboardDto> dashboards = getDashboards(tenant).stream()
+                .sorted(Comparator.comparing(DashboardDto::getTypeKey))
+                .toList();
+
+        Set<Long> allDashboardIds = dashboards.stream().map(DashboardDto::getId).collect(Collectors.toSet());
+
+        for (DashboardDto dashboard : dashboards) {
+            if (usedIds.contains(dashboard.getId())) {
+                updatedDashboardId(dashboard, allDashboardIds, usedIds);
+            } else {
+                usedIds.add(dashboard.getId());
+                updateWidgetsDashboardId(dashboard);
+            }
+        }
     }
 
     @SneakyThrows
@@ -109,6 +165,14 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
 
     public List<DashboardDto> getDashboards() {
         String tenant = getTenantKeyValue();
+        return dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).values()
+            .stream()
+            .map(DashboardConfig::getDashboardDto)
+            .collect(toList());
+
+    }
+
+    public List<DashboardDto> getDashboards(String tenant) {
         return dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).values()
             .stream()
             .map(DashboardConfig::getDashboardDto)
@@ -155,11 +219,6 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         return "/api" + fullPath;
     }
 
-    private String resolvePathWithTenant(String tenantKey, String specPath, Dashboard dashboard) {
-        return specPath.replace("*.yml", dashboard.getTypeKey() + "-" + dashboard.getId() + ".yml")
-                       .replace("{" + TENANT_NAME + "}", tenantKey);
-    }
-
     private String getTenantKeyValue() {
         return TenantContextUtils.getRequiredTenantKeyValue(tenantContextHolder).toUpperCase();
     }
@@ -181,6 +240,25 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
             + "-"
             + dashboard.getId()
             + ".yml";
+    }
+
+    private void updatedDashboardId(DashboardDto dashboard, Set<Long> allIds, Set<Long> usedIds) {
+        Long overrideId = ServiceUtil.getNotExistValueCompareSet(allIds, usedIds, dashboard.getId());
+        dashboard.setId(overrideId);
+        usedIds.add(overrideId);
+
+        updateWidgetsDashboardId(dashboard);
+    }
+
+    private void updateWidgetsDashboardId(DashboardDto dashboard) {
+        Set<WidgetDto> widgets = dashboard.getWidgets();
+
+        if (!CollectionUtils.isEmpty(widgets)) {
+            widgets.stream()
+                    .filter(Objects::nonNull)
+                    .filter(widget -> !dashboard.getId().equals(widget.getDashboard()))
+                    .forEach(widget -> widget.setDashboard(dashboard.getId()));
+        }
     }
 
     @Data
