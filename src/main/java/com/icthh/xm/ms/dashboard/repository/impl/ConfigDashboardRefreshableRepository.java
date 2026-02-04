@@ -13,7 +13,6 @@ import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
-import com.icthh.xm.ms.dashboard.util.ServiceUtil;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -33,18 +32,10 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.stream.Collectors.toList;
 
@@ -221,7 +212,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
         String dashboardConfigApiPath = getDashboardConfigApiPath(dashboard.getTypeKey(), tenant, fullPath);
-        dashboardPathByTenantByTypeKey.getOrDefault(tenant, Map.of()).remove(dashboard.getTypeKey());
+        dashboardPathByTenantByTypeKey.getOrDefault(tenant, new HashMap<>()).remove(dashboard.getTypeKey());
         tenantConfigRepository.deleteConfigFullPath(tenant, dashboardConfigApiPath);
     }
 

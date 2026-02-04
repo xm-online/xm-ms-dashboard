@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -174,66 +175,48 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     @Test
     @Transactional
     public void updateDashboardName_WhenDashBoardFileNotEqTypeKeyName_Exp_UpdateDashboardNameAndPathSame() throws Exception {
-        String dashboardYaml = """
-            name: Test Dashboard
-            typeKey: DemoTest
-            owner: admin
-            isPublic: true
-            layout: {}
-            config: {}
-            """;
-
-        String filePath = "/config/tenants/XM/dashboard/dashboards/test-dashboard.yml";
-
-        refreshableRepository.onRefresh(filePath, dashboardYaml);
-
-        Dashboard createdDashboard = dashboardService.saveAndFlush(new Dashboard()
+        Dashboard config = new Dashboard()
                 .name("Test Dashboard")
                 .typeKey("DemoTest")
                 .owner("admin")
                 .isPublic(true)
                 .layout(Map.of())
-                .config(Map.of())
-        );
+                .config(Map.of());
 
-        DashboardDto dashboardDto = dashboardService.findOne(createdDashboard.getId());
+
+        String filePath = "/config/tenants/XM/dashboard/dashboards/test-dashboard.yml";
+
+        refreshableRepository.onRefresh(filePath, mapper.writeValueAsString(config));
+        refreshableRepository.refreshFinished(Set.of(filePath));
+
+        config = dashboardService.save(config);
+
+        DashboardDto dashboardDto = dashboardService.findOne(config.getId());
         assertThat(dashboardDto.getName()).isEqualTo("Test Dashboard");
         assertThat(dashboardDto.getTypeKey()).isEqualTo("DemoTest");
 
-        String fullPath = refreshableRepository.getFullPath(createdDashboard);
-
+        String fullPath = refreshableRepository.getFullPath(config);
         dashboardDto.setName("Updated Dashboard Name");
-
         restDashboardMockMvc.perform(put("/api/dashboards")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(TestUtil.convertObjectToJsonBytes(dashboardDto)))
                 .andExpect(status().isOk());
 
         refreshableRepository.onRefresh(filePath, mapper.writeValueAsString(dashboardDto));
+        refreshableRepository.refreshFinished(Set.of(filePath));
 
-        DashboardDto updatedDashboard = dashboardService.findOne(createdDashboard.getId());
+        DashboardDto updatedDashboard = dashboardService.findOne(config.getId());
         assertThat(updatedDashboard.getName()).isEqualTo("Updated Dashboard Name");
         assertThat(updatedDashboard.getTypeKey()).isEqualTo("DemoTest");
 
         String dashboardConfigApiPathAfter = refreshableRepository.getDashboardConfigApiPath(updatedDashboard.getTypeKey(), "XM", fullPath);
-
         assertEquals("/api" + filePath, dashboardConfigApiPathAfter);
     }
 
     @Test
     @Transactional
     public void deleteDashboard_WhenDashBoardFileNotEqTypeKeyName_Exp_DeleteDashboardAndFile() throws Exception {
-        String dashboardYaml = """
-        name: Test Dashboard To Delete
-        typeKey: DemoDelete
-        owner: admin
-        isPublic: true
-        layout: {}
-        config: {}
-        """;
-
         String filePath = "/config/tenants/XM/dashboard/dashboards/test-delete-dashboard.yml";
-
         Dashboard testDashboard = new Dashboard()
                 .name("Test Dashboard To Delete")
                 .typeKey("DemoDelete")
@@ -242,26 +225,27 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
                 .layout(Map.of())
                 .config(Map.of());
 
-        Dashboard createdDashboard = dashboardService.saveAndFlush(testDashboard);
+        refreshableRepository.onRefresh(filePath, mapper.writeValueAsString(testDashboard));
+        refreshableRepository.refreshFinished(Set.of(filePath));
 
-        refreshableRepository.onRefresh(filePath, dashboardYaml);
+        testDashboard = dashboardService.save(testDashboard);
+        DashboardDto findByIdDashboard = dashboardService.findOne(testDashboard.getId());
 
-        DashboardDto findByIdDashboard = dashboardService.findOne(createdDashboard.getId());
         assertThat(findByIdDashboard.getName()).isEqualTo("Test Dashboard To Delete");
         assertThat(findByIdDashboard.getTypeKey()).isEqualTo("DemoDelete");
 
         Long dashboardId = findByIdDashboard.getId();
-
         restDashboardMockMvc.perform(delete("/api/dashboards/{id}", dashboardId)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         refreshableRepository.onRefresh(filePath, null);
+        refreshableRepository.refreshFinished(Set.of(filePath));
 
         assertThat(dashboardRepository.findOneById(dashboardId)).isNull();
 
-        String fullPath = refreshableRepository.getFullPath(createdDashboard);
-        String dashboardConfigApiPath = refreshableRepository.getDashboardConfigApiPath(createdDashboard.getTypeKey(), "XM", fullPath);
+        String fullPath = refreshableRepository.getFullPath(testDashboard);
+        String dashboardConfigApiPath = refreshableRepository.getDashboardConfigApiPath(testDashboard.getTypeKey(), "XM", fullPath);
         assertEquals(fullPath, dashboardConfigApiPath); // if true - dashboard deleted from config (check logic getDashboardConfigApiPath())
     }
 
