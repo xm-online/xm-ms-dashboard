@@ -1,7 +1,5 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
-import static java.util.stream.Collectors.toList;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.icthh.xm.commons.config.client.api.RefreshableConfiguration;
@@ -12,11 +10,6 @@ import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties.Storage.MsConfigStorageProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +21,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.stream.Collectors.toList;
+
 @Transactional
 @Slf4j
 @Service
@@ -37,6 +39,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private static final String TENANT_NAME = "tenantName";
 
     private final Map<String, Map<String, DashboardConfig>> dashboardsByTenantByFile = new ConcurrentHashMap<>();
+    private volatile Map<String, Map<String, String>> dashboardPathByTenantByTypeKey = new ConcurrentHashMap<>();
 
     private final AntPathMatcher matcher = new AntPathMatcher();
     private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
@@ -55,6 +58,27 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         } catch (Exception e) {
             log.error("Error read xm specification from path " + updatedKey, e);
         }
+    }
+
+    @Override
+    public void refreshFinished(Collection<String> paths) {
+        Map<String, Map<String, String>> dashboardPathByTenantByTypeKey = new ConcurrentHashMap<>();
+        dashboardsByTenantByFile.forEach((tenant, dashboardsByFile) -> {
+            Map<String, String> dashboardByTypeKey = typeKeyToPath(dashboardsByFile);
+            dashboardPathByTenantByTypeKey.put(tenant, dashboardByTypeKey);
+        });
+        this.dashboardPathByTenantByTypeKey = dashboardPathByTenantByTypeKey;
+    }
+
+    private Map<String, String> typeKeyToPath(Map<String, DashboardConfig> dashboardsByFile) {
+        Map<String, String> dashboardByTypeKey = new LinkedHashMap<>();
+        dashboardsByFile.forEach((path, dashboardConfig) -> {
+            DashboardDto dashboard = dashboardConfig.getDashboardDto();
+            if (dashboard != null) {
+                dashboardByTypeKey.put(dashboard.getTypeKey(), path);
+            }
+        });
+        return dashboardByTypeKey;
     }
 
     @SneakyThrows
@@ -112,13 +136,11 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     }
 
     public <S extends Dashboard> String getDashboardConfigApiPath(String dashBoardTypeKey, String tenant, String fullPath) {
-        return dashboardsByTenantByFile.getOrDefault(tenant, Map.of())
-                .entrySet()
-                .stream()
-                .filter(it -> isEqualsTypeKey(dashBoardTypeKey, it))
-                .map(it -> mapApiFullPath(it.getKey()))
-                .findFirst()
-                .orElse(fullPath);
+        String path = dashboardPathByTenantByTypeKey.getOrDefault(tenant, Map.of()).get(dashBoardTypeKey);
+        if (path != null) {
+            return mapApiFullPath(path);
+        }
+        return fullPath;
     }
 
     private static <S extends Dashboard> boolean isEqualsTypeKey(String dashBoardTypeKey, Map.Entry<String, DashboardConfig> it) {
@@ -146,8 +168,8 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
         String dashboardConfigApiPath = getDashboardConfigApiPath(dashboard.getTypeKey(), tenant, fullPath);
+        dashboardPathByTenantByTypeKey.getOrDefault(tenant, Map.of()).remove(dashboard.getTypeKey());
         tenantConfigRepository.deleteConfigFullPath(tenant, dashboardConfigApiPath);
-
     }
 
     public  <S extends Dashboard> String getFullPath(S dashboard) {
