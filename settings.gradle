@@ -15,6 +15,7 @@ pluginManagement {
         id "io.spring.nohttp" version "${noHttpCheckstyleVersion}"
         id 'com.github.andygoossens.gradle-modernizer-plugin' version "${modernizerPluginVersion}"
         id 'com.github.spotbugs' version "${spotbugsPluginVersion}"
+        id "io.spring.dependency-management" version '1.1.4'
         //jhipster-needle-gradle-plugin-management-plugins - JHipster will add additional entries here
     }
 }
