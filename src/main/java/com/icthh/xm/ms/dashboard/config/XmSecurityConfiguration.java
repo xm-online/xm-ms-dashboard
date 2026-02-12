@@ -1,7 +1,7 @@
 package com.icthh.xm.ms.dashboard.config;
 
 import com.icthh.xm.commons.permission.access.XmPermissionEvaluator;
-import com.icthh.xm.commons.permission.constants.RoleConstant;
+
 import com.icthh.xm.commons.security.jwt.TokenProvider;
 import com.icthh.xm.commons.security.spring.config.SecurityConfiguration;
 import lombok.SneakyThrows;
