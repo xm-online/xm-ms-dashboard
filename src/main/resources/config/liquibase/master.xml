@@ -9,7 +9,6 @@
     <include file="classpath:config/liquibase/changelog/20170713130625_added_entity_Widget.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170713130626_added_entity_Profile.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170713130627_added_entity_DefaultProfile.xml" relativeToChangelogFile="false"/>
-    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20170713130625_added_entity_constraints_Widget.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170713130626_added_entity_constraints_Profile.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20170713130627_added_entity_constraints_DefaultProfile.xml" relativeToChangelogFile="false"/>
@@ -19,5 +18,5 @@
     <include file="classpath:config/liquibase/changelog/20230913163400_widget_aud.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20250313112200_rename_seq.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20250315132200_add_ui_data.xml" relativeToChangelogFile="false"/>
-    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <includeAll path="classpath:config/liquibase/changelog/extended/" errorIfMissingOrEmpty="false"/>
 </databaseChangeLog>
