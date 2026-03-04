@@ -45,7 +45,7 @@ public class ImportDashboardService {
         var dashboards = imports.getDashboards()
                                 .stream()
                                 .peek(dashboard -> {
-                                    dashboard.setWidgets(widgetByDashboard.get(dashboard.getId()));
+                                    dashboard.setWidgets(widgetByDashboard.getOrDefault(dashboard.getId(), Set.of()));
                                     dashboard.setId(null);
                                     log.info("dashboard with key: {}, name: {}, widgets.size: {} will be loaded",
                                              dashboard.getTypeKey(),

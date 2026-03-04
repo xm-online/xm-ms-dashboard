@@ -42,6 +42,44 @@ public class ImportDashboardServiceUnitTest extends AbstractUnitTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void importDashboardsWithEmptyWidgets() {
+
+        ImportDashboardDto imports = buildImportDashboardsWithEmptyWidgets();
+
+        importDashboardService.importDashboards(imports);
+
+        verify(dashboardRepository).findAll();
+        verify(dashboardRepository).deleteAll(anyCollection());
+
+        ArgumentCaptor<Collection<DashboardDto>> captor = ArgumentCaptor.forClass(Collection.class);
+
+        verify(atomicBulkDashboardService).create(captor.capture());
+
+        Collection<DashboardDto> toCreate = captor.getValue();
+        assertThat(toCreate, hasSize(2));
+        assertThat(toCreate, containsInAnyOrder(
+            allOf(
+                hasProperty("id", nullValue()),
+                hasProperty("name", is("Dashboard with widgets")),
+                hasProperty("widgets", hasSize(1)),
+                hasProperty("widgets",
+                            contains(allOf(
+                                hasProperty("id", nullValue()),
+                                hasProperty("name", is("widget 1")))
+                            )
+                )
+            ),
+            allOf(
+                hasProperty("id", nullValue()),
+                hasProperty("name", is("Dashboard without widgets")),
+                hasProperty("widgets", hasSize(0))
+            )
+        ));
+
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void importDashboards() {
 
         ImportDashboardDto imports = buildImportDashboards();
@@ -82,6 +120,27 @@ public class ImportDashboardServiceUnitTest extends AbstractUnitTest {
             )
         ));
 
+    }
+
+    private ImportDashboardDto buildImportDashboardsWithEmptyWidgets() {
+        ImportDashboardDto imports = new ImportDashboardDto();
+
+        DashboardDto dashboardWithWidgets = new DashboardDto();
+        dashboardWithWidgets.setId(1L);
+        dashboardWithWidgets.setName("Dashboard with widgets");
+
+        DashboardDto dashboardWithoutWidgets = new DashboardDto();
+        dashboardWithoutWidgets.setId(2L);
+        dashboardWithoutWidgets.setName("Dashboard without widgets");
+
+        WidgetDto widgetDto = new WidgetDto();
+        widgetDto.setName("widget 1");
+        widgetDto.setId(10L);
+        widgetDto.setDashboard(1L);
+
+        imports.getDashboards().addAll(List.of(dashboardWithWidgets, dashboardWithoutWidgets));
+        imports.getWidgets().addAll(List.of(widgetDto));
+        return imports;
     }
 
     private ImportDashboardDto buildImportDashboards() {
