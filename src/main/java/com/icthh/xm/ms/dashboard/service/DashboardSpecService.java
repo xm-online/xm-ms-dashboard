@@ -1,10 +1,10 @@
 package com.icthh.xm.ms.dashboard.service;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.icthh.xm.commons.tenant.YamlMapperUtils;
+import tools.jackson.databind.ObjectMapper;
 import com.icthh.xm.commons.config.client.api.RefreshableConfiguration;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
@@ -26,8 +26,7 @@ public class DashboardSpecService implements RefreshableConfiguration {
     private final Map<String, DashboardSpec> dashboardSpec = new ConcurrentHashMap<>();
 
     private final AntPathMatcher matcher = new AntPathMatcher();
-    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory())
-                                                .configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final ObjectMapper mapper = YamlMapperUtils.yamlDeserializationMapper(Map.of(FAIL_ON_UNKNOWN_PROPERTIES, false));
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
 

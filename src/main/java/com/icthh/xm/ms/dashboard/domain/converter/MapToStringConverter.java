@@ -1,8 +1,9 @@
 package com.icthh.xm.ms.dashboard.domain.converter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,14 +16,14 @@ import org.apache.commons.lang3.StringUtils;
 @Converter
 public class MapToStringConverter implements AttributeConverter<Map<String, Object>, String> {
 
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = JsonMapper.builder().build();
 
     @Override
     public String convertToDatabaseColumn(Map<String, Object> data) {
         String value = "";
         try {
             value = mapper.writeValueAsString(data != null ? data : new HashMap<>());
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.warn("Error during JSON to String converting", e);
         }
         return value;
@@ -31,10 +32,10 @@ public class MapToStringConverter implements AttributeConverter<Map<String, Obje
     @Override
     public Map<String, Object> convertToEntityAttribute(String data) {
         Map<String, Object> mapValue = new HashMap<>();
-        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {};
+        TypeReference<HashMap<String, Object>> typeRef = new TypeReference<>() {};
         try {
             mapValue = mapper.readValue(StringUtils.isNoneBlank(data) ? data : "{}", typeRef);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             log.warn("Error during String to JSON converting", e);
         }
         return mapValue;

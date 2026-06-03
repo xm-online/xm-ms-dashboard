@@ -84,16 +84,19 @@ spring:
                 watch:
                     enabled: false
     jackson:
-        serialization.write_dates_as_timestamps: false
         default-property-inclusion: non_empty
-        serialization.write_empty_json_arrays: false
+        serialization:
+            indent-output: true
+            write_empty_json_arrays: false
+        mapper:
+            sort-properties-alphabetically: false
     jpa:
         open-in-view: false
         hibernate:
             ddl-auto: none
             naming:
                 physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-                implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+                implicit-strategy: org.springframework.boot.hibernate.SpringImplicitNamingStrategy
         properties:
             hibernate:
                 integration:
@@ -161,6 +164,7 @@ xm-config:
     kafka-config-topic: config_topic
 
 application:
+    cache-limit: 0
     timeline-ignored-http-methods:
     tenant-ignored-path-list: /v2/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
     timelines-enabled: true

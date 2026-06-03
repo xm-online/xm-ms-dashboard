@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.SimpleObjectIdResolver;
 import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.commons.exceptions.ErrorConstants;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +17,16 @@ import org.springframework.stereotype.Component;
  * see https://stackoverflow.com/questions/41989906/jackson-referencing-an-object-as-a-property
  */
 @Slf4j
-@AllArgsConstructor
 @Component
 @Scope("prototype")
 public class DashboardIdResolver extends SimpleObjectIdResolver {
 
     DashboardRepository repository;
+
+    @Autowired
+    public DashboardIdResolver(DashboardRepository repository) {
+        this.repository = repository;
+    }
 
     public DashboardIdResolver() {
         log.debug("Calendar object id resolver inited");

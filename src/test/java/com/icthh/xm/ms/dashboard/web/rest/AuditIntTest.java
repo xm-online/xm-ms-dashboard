@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -83,7 +83,7 @@ public class AuditIntTest extends AbstractSpringBootTest {
     private WidgetService widgetService;
 
     @Autowired
-    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
+    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;

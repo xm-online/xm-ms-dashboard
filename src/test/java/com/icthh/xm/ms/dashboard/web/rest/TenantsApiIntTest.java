@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.icthh.xm.commons.gen.api.TenantsApi;
 import com.icthh.xm.commons.gen.api.TenantsApiController;
 import com.icthh.xm.commons.gen.model.Tenant;
@@ -54,7 +55,7 @@ public class TenantsApiIntTest extends AbstractSpringBootTest {
     @Test
     @Transactional
     public void testAddTenant() throws Exception {
-        ObjectMapper om = new ObjectMapper();
+        ObjectMapper om = JsonMapper.builder().build();
         mvc.perform(post("/api/tenants").content(om.writeValueAsBytes(new Tenant().tenantKey("testadd"))).contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
         assertExistSchema("testadd");

@@ -41,11 +41,11 @@ group = "com.icthh.xm.ms.dashboard"
 description = ""
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
-assert System.properties["java.specification.version"] == "21"
+assert System.properties["java.specification.version"] == "25"
 
 apply from: "gradle/docker.gradle"
 apply from: "gradle/version.gradle"
@@ -113,10 +113,13 @@ test {
     include '**/*UnitTest*'
     include '**/*IntTest*'
 
-    // to run all test that was not categorized
-    useJUnit {
-        excludeCategories(testCategories)
-    }
+    useJUnitPlatform()
+
+    jvmArgs += [
+        '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED',
+        '--add-opens', 'java.base/java.util=ALL-UNNAMED'
+    ]
 
     // uncomment if the tests reports are not generated
     // see https://github.com/jhipster/generator-jhipster/pull/2771 and https://github.com/jhipster/generator-jhipster/pull/4484
@@ -130,14 +133,15 @@ test {
 
 }
 
-task runCategorizedTests(type: Test) {
+
+tasks.register('runCategorizedTests', Test) {
     useJUnitPlatform {
         includeTags(testCategories)
     }
     testLogging testLoggingConf
 }
 
-task testReport(type: TestReport) {
+tasks.register('testReport', TestReport) {
     destinationDirectory = file("$buildDir/reports/tests")
     testResults.from(test)
 }
@@ -174,8 +178,6 @@ nohttp {
 }
 
 configurations {
-    providedRuntime
-    implementation.exclude module: "spring-boot-starter-tomcat"
     all {
         resolutionStrategy {
             // Inherited version from Spring Boot can't be used because of regressions:
@@ -196,14 +198,12 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${lombok_version}"
     annotationProcessor "org.projectlombok:lombok:${lombok_version}"
 
-    implementation platform("tech.jhipster:jhipster-dependencies:${jhipsterDependenciesVersion}")
-    implementation group: "tech.jhipster", name: "jhipster-framework"
+    implementation("tech.jhipster:jhipster-framework:${jhipsterFrameworkDependenciesVersion}")
 
     implementation "io.micrometer:micrometer-registry-prometheus"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-hppc"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate6"
-    implementation "com.fasterxml.jackson.core:jackson-annotations"
-    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "tools.jackson.datatype:jackson-datatype-hppc"
+    implementation "tools.jackson.datatype:jackson-datatype-hibernate7"
+    implementation "tools.jackson.core:jackson-databind"
     implementation "org.hibernate.orm:hibernate-core:${hibernateVersion}"
     implementation "com.zaxxer:HikariCP"
     implementation "org.apache.commons:commons-lang3"
@@ -213,16 +213,13 @@ dependencies {
     implementation "org.hibernate.orm:hibernate-envers:${hibernateVersion}"
 
 
-    implementation "org.springframework.boot:spring-boot-loader-tools"
+    implementation "org.springframework.boot:spring-boot-loader-tools:${springBootVersion}"
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 
     implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation ("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: "spring-boot-starter-tomcat"
-    }
-    implementation "org.springframework.boot:spring-boot-starter-undertow"
+    implementation "org.springframework.boot:spring-boot-starter-web"
 
     implementation "org.springframework.cloud:spring-cloud-starter"
     implementation "org.springframework.cloud:spring-cloud-starter-bootstrap"
@@ -240,10 +237,8 @@ dependencies {
     implementation "io.swagger.core.v3:swagger-core-jakarta:${swagger3Version}"
     implementation "io.swagger.core.v3:swagger-models-jakarta:${swagger3Version}"
 
-    implementation 'io.micrometer:micrometer-tracing'
-    implementation 'io.micrometer:micrometer-core'
-    implementation 'io.micrometer:micrometer-observation'
-    implementation "io.micrometer:micrometer-tracing-bridge-brave"
+    implementation "com.icthh.xm.commons:xm-commons-metric-lep:${xm_commons_version}"
+    implementation "org.apache.httpcomponents.core5:httpcore5:${httpCore5Version}"
     implementation "org.postgresql:postgresql:${postgresqlVersion}"
 
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
@@ -270,7 +265,7 @@ dependencies {
 
     testCompileOnly "org.projectlombok:lombok:${lombok_version}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
-    testImplementation "org.testcontainers:postgresql"
+    testImplementation "org.testcontainers:postgresql:${testPsqlContainer}"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.springframework.security:spring-security-test"
     testImplementation "org.springframework.boot:spring-boot-test"
@@ -285,36 +280,21 @@ dependencies {
     constraints {
         implementation("org.apache.commons:commons-compress:${apacheCommonCompress}")
         implementation("io.github.classgraph:classgraph:${gitClassGraph}")
-
-        implementation("io.undertow:undertow-core") {
-            version {
-                strictly("${undertowVersion}")
-            }
-        }
-        implementation("io.undertow:undertow-servlet") {
-            version {
-                strictly("${undertowVersion}")
-            }
-        }
-        implementation("io.undertow:undertow-websockets-jsr") {
-            version {
-                strictly("${undertowVersion}")
-            }
-        }
-        implementation("org.jboss.xnio:xnio-api") {
-            version {
-                strictly("${xnioApiVersion}")
-            }
-        }
     }
 }
 
-task cleanResources(type: Delete) {
+tasks.register('cleanResources', Delete) {
     delete "build/resources"
 }
 
+tasks.register('preCompileLep', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.icthh.xm.commons.lep.groovy.LepCompiler'
+    args = findProperty('exportArgs')?.split(' ')?.toList() ?: []
+}
+
 wrapper {
-    gradleVersion = "8.9"
+    gradleVersion = "9.2.1"
 }
 
 compileJava {

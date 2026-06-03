@@ -32,6 +32,8 @@ public class ApplicationProperties {
     private String specificationName;
     private final Storage storage = new Storage();
 
+    private Integer cacheLimit;
+
     @Getter
     @Setter
     public static class Amazon {

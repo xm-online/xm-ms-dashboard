@@ -1,11 +1,13 @@
 version: '2'
 services:
     dashboard-postgresql:
-        image: postgres:10.4
+        image: postgres:18.4
         # volumes:
         #     - ~/volumes/jhipster/dashboard/postgresql/:/var/lib/postgresql/data/
         environment:
             - POSTGRES_USER=dashboard
             - POSTGRES_PASSWORD=
+            - POSTGRES_DB=dashboard
+            - POSTGRES_HOST_AUTH_METHOD=trust
         ports:
-            - 5432:5432
+            - "127.0.0.1:${POSTGRES_PORT}:5432"

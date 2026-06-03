@@ -17,8 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.icthh.xm.commons.tenant.YamlMapperUtils;
+import tools.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.commons.lep.api.LepManagementService;
@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -98,7 +98,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     private WidgetService widgetService;
 
     @Autowired
-    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
+    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
@@ -124,7 +124,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     private MockMvc restDashboardMockMvc;
 
     private Dashboard dashboard;
-    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    private final ObjectMapper mapper = YamlMapperUtils.yamlDefaultMapper();
 
     @BeforeEach
     public void setup() {

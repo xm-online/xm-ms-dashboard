@@ -1,7 +1,7 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.icthh.xm.commons.tenant.YamlMapperUtils;
+import tools.jackson.databind.ObjectMapper;
 import com.icthh.xm.commons.config.client.api.RefreshableConfiguration;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
@@ -51,7 +51,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private volatile Map<String, Map<String, String>> dashboardPathByTenantByTypeKey = new ConcurrentHashMap<>();
 
     private final AntPathMatcher matcher = new AntPathMatcher();
-    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    private final ObjectMapper mapper = YamlMapperUtils.yamlDefaultMapper();
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
     private final TenantConfigRepository tenantConfigRepository;

@@ -27,7 +27,10 @@ spring:
         consul:
             enabled: false
     jackson:
-        serialization.write_dates_as_timestamps: false
+        serialization:
+            indent-output: true
+        mapper:
+            sort-properties-alphabetically: false
     cache:
         type: none
     datasource:
@@ -44,8 +47,8 @@ spring:
         hibernate:
             ddl-auto: none
             naming:
-                physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-                implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+                physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+                implicit-strategy: org.springframework.boot.hibernate.SpringImplicitNamingStrategy
         properties:
             hibernate:
                 integration:
@@ -101,6 +104,21 @@ jhipster:
 
 
 management:
+    tracing:
+        export:
+            enabled: false
+    otlp:
+        metrics:
+            export:
+                enabled: false
+    opentelemetry:
+        tracing:
+            export:
+                enabled: false
+        otlp:
+            metrics:
+                export:
+                    enabled: false
     prometheus:
         metrics:
             export:

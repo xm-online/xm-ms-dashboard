@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.Widget;
@@ -12,6 +12,7 @@ import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.ImportDashboardDto;
 import com.icthh.xm.ms.dashboard.web.rest.util.HeaderUtil;
 import com.icthh.xm.ms.dashboard.web.rest.util.RespContentUtil;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -70,7 +71,6 @@ public class DashboardResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/dashboards")
-    @Timed
     @PreAuthorize("hasPermission({'dashboard': #dashboard}, 'DASHBOARD.CREATE')")
     @PrivilegeDescription("Privilege to create a new dashboard")
     public ResponseEntity<Dashboard> createDashboard(@Valid @RequestBody Dashboard dashboard) throws URISyntaxException {
@@ -93,7 +93,6 @@ public class DashboardResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/dashboards")
-    @Timed
     @PreAuthorize("hasPermission({'id': #dashboardDto.id, 'newDashboard': #dashboardDto}, 'dashboard', 'DASHBOARD.UPDATE')")
     @PrivilegeDescription("Privilege to updates an existing dashboard")
     public ResponseEntity<Dashboard> updateDashboard(@Valid @RequestBody DashboardDto dashboardDto) throws URISyntaxException {
@@ -114,7 +113,6 @@ public class DashboardResource {
      * @return the ResponseEntity with status 200 (OK) and the list of dashboards in body
      */
     @GetMapping("/dashboards")
-    @Timed
     public List<Dashboard> getAllDashboards() {
         return dashboardService.findAll(null);
     }
@@ -126,7 +124,6 @@ public class DashboardResource {
      * @return the ResponseEntity with status 200 (OK) and with body the dashboard, or with status 404 (Not Found)
      */
     @GetMapping("/dashboards/{id}")
-    @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'DASHBOARD.GET_LIST.ITEM')")
     @PrivilegeDescription("Privilege to get the dashboard by id")
     public ResponseEntity<DashboardDto> getDashboard(@PathVariable Long id) {
@@ -141,7 +138,6 @@ public class DashboardResource {
      * @return the ResponseEntity with status 200 (OK) and with widgets in body
      */
     @GetMapping("/dashboards/{id}/widgets")
-    @Timed
     public List<Widget> getWidgets(@PathVariable Long id) {
         return widgetService.findByDashboardId(id, null);
     }
@@ -153,7 +149,6 @@ public class DashboardResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/dashboards/{id}")
-    @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'dashboard', 'DASHBOARD.DELETE')")
     @PrivilegeDescription("Privilege to delete the dashboard by id")
     public ResponseEntity<Void> deleteDashboard(@PathVariable Long id) {
@@ -163,7 +158,6 @@ public class DashboardResource {
 
 
     @PostMapping("/dashboards/import")
-    @Timed
     @PreAuthorize("hasPermission({'dashboard': #dashboard}, 'DASHBOARD.IMPORT')")
     @PrivilegeDescription("Privilege to import dashboards")
     public ResponseEntity<Void> importDashboards(@Valid @RequestBody ImportDashboardDto dashboard) {

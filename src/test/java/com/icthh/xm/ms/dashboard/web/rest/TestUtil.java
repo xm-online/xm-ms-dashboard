@@ -1,13 +1,12 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.springframework.http.MediaType;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
@@ -30,15 +29,11 @@ public class TestUtil {
      * @param object
      *            the object to convert
      * @return the JSON byte array
-     * @throws IOException
      */
-    public static byte[] convertObjectToJsonBytes(Object object)
-            throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-        JavaTimeModule module = new JavaTimeModule();
-        mapper.registerModule(module);
+    public static byte[] convertObjectToJsonBytes(Object object) {
+        ObjectMapper mapper = JsonMapper.builder()
+             .changeDefaultPropertyInclusion(it -> it.withValueInclusion(JsonInclude.Include.NON_NULL))
+            .build();
 
         return mapper.writeValueAsBytes(object);
     }

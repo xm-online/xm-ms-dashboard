@@ -1,7 +1,9 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
@@ -13,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -23,7 +25,6 @@ import java.util.stream.Stream;
 import static com.icthh.xm.ms.dashboard.util.FileUtils.readAsString;
 import static java.util.stream.Collectors.toList;
 import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 @WithMockUser(authorities = "SUPER-ADMIN")
 public class AtomicBulkDashboardResourceIntTest extends AbstractSpringBootTest {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = JsonMapper.builder().build();
 
     private MockMvc httpMock;
     @Autowired
@@ -45,7 +46,7 @@ public class AtomicBulkDashboardResourceIntTest extends AbstractSpringBootTest {
     @Autowired
     private BulkDashboardResource dashboardResource;
     @Autowired
-    private MappingJackson2HttpMessageConverter jacksonMessageConverter;
+    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
@@ -135,7 +136,6 @@ public class AtomicBulkDashboardResourceIntTest extends AbstractSpringBootTest {
     }
 
     void assertNulls(Long... ids) {
-        Stream.of(ids)
-            .forEach(id -> assertNull(dashboardRepository.findOneById(id)));
+        Stream.of(ids).forEach(id -> Assertions.assertNull(dashboardRepository.findOneById(id)));
     }
 }

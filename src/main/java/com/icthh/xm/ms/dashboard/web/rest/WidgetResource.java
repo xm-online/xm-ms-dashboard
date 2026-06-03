@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.Widget;
 import com.icthh.xm.ms.dashboard.service.WidgetService;
@@ -57,7 +57,6 @@ public class WidgetResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/widgets")
-    @Timed
     @PreAuthorize("hasPermission({'widget': #widget}, 'WIDGET.CREATE')")
     @PrivilegeDescription("Privilege to create a new widget")
     public ResponseEntity<Widget> createWidget(@Valid @RequestBody Widget widget) throws URISyntaxException {
@@ -80,7 +79,6 @@ public class WidgetResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/widgets")
-    @Timed
     @PreAuthorize("hasPermission({'id': #widget.id, 'newWidget': #widget}, 'widget', 'WIDGET.UPDATE')")
     @PrivilegeDescription("Privilege to updates an existing widget")
     public ResponseEntity<Widget> updateWidget(@Valid @RequestBody Widget widget) throws URISyntaxException {
@@ -100,7 +98,6 @@ public class WidgetResource {
      * @return the ResponseEntity with status 200 (OK) and the list of widgets in body
      */
     @GetMapping("/widgets")
-    @Timed
     public List<WidgetDto> getAllWidgets() {
         return widgetService.findAll(null);
     }
@@ -112,7 +109,6 @@ public class WidgetResource {
      * @return the ResponseEntity with status 200 (OK) and with body the widget, or with status 404 (Not Found)
      */
     @GetMapping("/widgets/{id}")
-    @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'WIDGET.GET_LIST.ITEM')")
     @PrivilegeDescription("Privilege to get the widget by id")
     public ResponseEntity<WidgetDto> getWidget(@PathVariable Long id) {
@@ -126,7 +122,6 @@ public class WidgetResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/widgets/{id}")
-    @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'widget', 'WIDGET.DELETE')")
     @PrivilegeDescription("Privilege to delete the widget by id")
     public ResponseEntity<Void> deleteWidget(@PathVariable Long id) {
