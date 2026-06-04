@@ -111,14 +111,6 @@ management:
         metrics:
             export:
                 enabled: false
-    opentelemetry:
-        tracing:
-            export:
-                enabled: false
-        otlp:
-            metrics:
-                export:
-                    enabled: false
     prometheus:
         metrics:
             export:
