@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.SimpleObjectIdResolver;
 import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.commons.exceptions.ErrorConstants;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,14 +20,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Scope("prototype")
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class DashboardIdResolver extends SimpleObjectIdResolver {
 
     DashboardRepository repository;
-
-    @Autowired
-    public DashboardIdResolver(DashboardRepository repository) {
-        this.repository = repository;
-    }
 
     public DashboardIdResolver() {
         log.debug("Calendar object id resolver inited");
