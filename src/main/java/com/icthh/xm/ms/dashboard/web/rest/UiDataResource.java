@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+
 import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.service.UiDataService;
@@ -42,7 +42,6 @@ public class UiDataResource {
     private final UiDataService uiDataService;
 
     @PostMapping("/data")
-    @Timed
     @PreAuthorize("hasPermission({'uiData': #uiData}, 'UI_DATA.CREATE')")
     @PrivilegeDescription("Privilege to create a new uiData")
     public ResponseEntity<UiDataDto> createUiData(@RequestBody UiDataDto uiData) throws URISyntaxException {
@@ -54,7 +53,6 @@ public class UiDataResource {
     }
 
     @PutMapping("/data")
-    @Timed
     @PreAuthorize("hasPermission({'uiData': #uiData}, 'uiData', 'UI_DATA.UPDATE')")
     @PrivilegeDescription("Privilege to updates an existing uiData")
     public ResponseEntity<UiDataDto> updateUiData(@RequestBody UiDataDto uiData) {
@@ -63,7 +61,6 @@ public class UiDataResource {
     }
 
     @GetMapping("/data")
-    @Timed
     public ResponseEntity<List<UiDataDto>> getAllUiData(@Parameter Pageable pageable,
                                                         @RequestParam(required = false) String typeKey,
                                                         @RequestParam(required = false) String key,
@@ -74,7 +71,6 @@ public class UiDataResource {
     }
 
     @GetMapping("/data/own")
-    @Timed
     @PreAuthorize("hasPermission({'typeKey': #typeKey}, 'data', 'UI_DATA.GET_LIST.OWNED')")
     @PrivilegeDescription("Privilege to get the uiData by typeKey then where user owner")
     public ResponseEntity<List<UiDataDto>> getOwnUiData(@Parameter Pageable pageable,
@@ -86,7 +82,6 @@ public class UiDataResource {
     }
 
     @GetMapping("/data/{id}")
-    @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'UI_DATA.GET_LIST.ITEM')")
     @PrivilegeDescription("Privilege to get the uiData by id")
     public ResponseEntity<UiDataDto> getUiData(@PathVariable Long id) {
@@ -95,7 +90,6 @@ public class UiDataResource {
     }
 
     @DeleteMapping("/data/{id}")
-    @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'data', 'UI_DATA.DELETE')")
     @PrivilegeDescription("Privilege to delete the uiData by id")
     public ResponseEntity<Void> deleteUiData(@PathVariable Long id) {
@@ -104,7 +98,6 @@ public class UiDataResource {
     }
 
     @GetMapping("/data/{typeKey}/{key}")
-    @Timed
     @PreAuthorize("hasPermission({'typeKey': #typeKey, 'key': #key}, 'data', 'UI_DATA.GET_LIST.ITEM_BY_KEY')")
     public ResponseEntity<List<UiDataDto>> getUiDataByKey(@Parameter Pageable pageable,
                                                           @PathVariable String typeKey,

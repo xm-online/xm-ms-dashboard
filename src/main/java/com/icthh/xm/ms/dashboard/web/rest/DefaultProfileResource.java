@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.service.DefaultProfileService;
@@ -52,7 +52,6 @@ public class DefaultProfileResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/default-profiles")
-    @Timed
     @PreAuthorize("hasPermission({'defaultProfile': #defaultProfile}, 'DEFAULT_PROFILE.CREATE')")
     @PrivilegeDescription("Privilege to create a new default dashboard per role configuration. Tenant admin can configure default dashboard")
     public ResponseEntity<DefaultProfile> createDefaultProfile(@Valid @RequestBody DefaultProfile defaultProfile) throws URISyntaxException {
@@ -75,7 +74,6 @@ public class DefaultProfileResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/default-profiles")
-    @Timed
     @PreAuthorize("hasPermission({'id': #defaultProfile.id, 'newDefaultProfile': #defaultProfile}, 'defaultProfile', 'DEFAULT_PROFILE.UPDATE')")
     @PrivilegeDescription("Privilege to updates an existing default dashboard per role configuration. Tenant admin can configure default dashboard")
     public ResponseEntity<DefaultProfile> updateDefaultProfile(@Valid @RequestBody DefaultProfile defaultProfile) throws URISyntaxException {
@@ -94,7 +92,6 @@ public class DefaultProfileResource {
      * @return the ResponseEntity with status 200 (OK) and the list of defaultProfiles in body
      */
     @GetMapping("/default-profiles")
-    @Timed
     public List<DefaultProfile> getAllDefaultProfiles() {
         return defaultProfileService.findAll(null);
     }
@@ -106,7 +103,6 @@ public class DefaultProfileResource {
      * @return the ResponseEntity with status 200 (OK) and with body the defaultProfile, or with status 404 (Not Found)
      */
     @GetMapping("/default-profiles/{id}")
-    @Timed
     @PostAuthorize("hasPermission({'returnObject': returnObject.body}, 'DEFAULT_PROFILE.GET_LIST.ITEM')")
     @PrivilegeDescription("Privilege to get the default dashboard per role configuration by id. Tenant admin can configure default dashboard")
     public ResponseEntity<DefaultProfile> getDefaultProfile(@PathVariable Long id) {
@@ -121,7 +117,6 @@ public class DefaultProfileResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/default-profiles/{id}")
-    @Timed
     @PreAuthorize("hasPermission({'id': #id}, 'defaultProfile', 'DEFAULT_PROFILE.DELETE')")
     @PrivilegeDescription("Privilege to delete the default dashboard per role configuration by id. Tenant admin can configure default dashboard")
     public ResponseEntity<Void> deleteDefaultProfile(@PathVariable Long id) {

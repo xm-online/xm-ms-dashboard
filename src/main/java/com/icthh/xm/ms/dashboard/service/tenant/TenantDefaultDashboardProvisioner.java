@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.service.tenant;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.icthh.xm.commons.gen.model.Tenant;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
@@ -29,7 +30,7 @@ public class TenantDefaultDashboardProvisioner implements TenantProvisioner {
     private final DashboardSpecService dashboardSpecService;
     private final ApplicationProperties applicationProperties;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
     /**
      * Create default dashboard.

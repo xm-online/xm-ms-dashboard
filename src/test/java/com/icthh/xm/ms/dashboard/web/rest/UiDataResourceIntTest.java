@@ -1,13 +1,14 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.icthh.xm.commons.tenant.YamlMapperUtils;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.commons.lep.api.LepManagementService;
 import com.icthh.xm.commons.security.XmAuthenticationContext;
 import com.icthh.xm.commons.security.XmAuthenticationContextHolder;
-import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.ms.dashboard.AbstractSpringBootTest;
 import com.icthh.xm.ms.dashboard.domain.UiData;
 import com.icthh.xm.ms.dashboard.domain.spec.UiDataSpec;
@@ -18,9 +19,7 @@ import com.icthh.xm.ms.dashboard.service.dto.UiDataDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -68,11 +67,11 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
     @Autowired
-    private org.springframework.http.converter.json.MappingJackson2HttpMessageConverter jacksonMessageConverter;
+    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
     @Autowired
     private LepManagementService lepManagementService;
 
-    @MockBean
+    @MockitoBean
     private XmAuthenticationContextHolder xmAuthenticationContextHolder;
 
     private MockMvc restUiDataMockMvc;
@@ -224,7 +223,7 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
         uiDataSpecService.onRefresh("/config/tenants/XM/dashboard/ui-data-spec.yml", null);
     }
 
-    private void addSpec() throws JsonProcessingException {
+    private void addSpec() {
         UiDataSpecs uiDataSpecs = new UiDataSpecs();
         UiDataSpec uiDataSpec = new UiDataSpec();
         uiDataSpec.setKey(DEFAULT_TYPE_KEY);
@@ -240,7 +239,7 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
         """;
         uiDataSpec.setDataSpec(dataSpec);
         uiDataSpecs.setItems(List.of(uiDataSpec));
-        var spec = new ObjectMapper(new YAMLFactory()).writeValueAsString(uiDataSpecs);
+        var spec = YamlMapperUtils.yamlDefaultMapper().writeValueAsString(uiDataSpecs);
         uiDataSpecService.onRefresh("/config/tenants/XM/dashboard/ui-data-spec.yml", spec);
     }
 

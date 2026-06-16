@@ -8,6 +8,7 @@ import com.icthh.xm.commons.exceptions.ErrorConstants;
 import com.icthh.xm.ms.dashboard.repository.DashboardRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +18,9 @@ import org.springframework.stereotype.Component;
  * see https://stackoverflow.com/questions/41989906/jackson-referencing-an-object-as-a-property
  */
 @Slf4j
-@AllArgsConstructor
 @Component
 @Scope("prototype")
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class DashboardIdResolver extends SimpleObjectIdResolver {
 
     DashboardRepository repository;

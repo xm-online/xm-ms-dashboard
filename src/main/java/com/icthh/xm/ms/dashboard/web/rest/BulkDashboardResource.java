@@ -1,6 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
+
 import com.icthh.xm.commons.permission.annotation.PrivilegeDescription;
 import com.icthh.xm.ms.dashboard.service.bulk.AtomicBulkDashboardService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
@@ -26,7 +26,6 @@ public class BulkDashboardResource {
      *
      * @param dashboardItems request body with list of dashboards objects
      */
-    @Timed
     @PostMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.CREATE.BULK')")
     @PrivilegeDescription("Privilege to create dashboard bulk")
@@ -41,7 +40,6 @@ public class BulkDashboardResource {
      *
      * @param dashboardItems request body with list of dashboards objects
      */
-    @Timed
     @PutMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.UPDATE.BULK')")
     @PrivilegeDescription("Privilege to update dashboard bulk")
@@ -56,7 +54,6 @@ public class BulkDashboardResource {
      *
      * @param dashboardItems request body with list of dashboards objects
      */
-    @Timed
     @DeleteMapping
     @PreAuthorize("hasPermission('dashboard','DASHBOARD.DELETE.BULK')")
     @PrivilegeDescription("Privilege to delete dashboard bulk")

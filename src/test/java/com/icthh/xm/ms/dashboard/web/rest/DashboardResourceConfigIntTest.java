@@ -26,9 +26,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Test class for the DashboardResource REST controller for Config dashboard store type.
@@ -59,7 +59,7 @@ public class DashboardResourceConfigIntTest extends DashboardResourceIntTest {
     @Autowired
     private DashboardRepository dashboardRepository;
 
-    @MockBean
+    @MockitoBean
     private TenantConfigRepository tenantConfigRepository;
 
     private TenantContextHolder tenantContextHolder;

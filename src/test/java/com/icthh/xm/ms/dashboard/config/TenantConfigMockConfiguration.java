@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import tools.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class TenantConfigMockConfiguration {
@@ -48,6 +50,11 @@ public class TenantConfigMockConfiguration {
     @Bean
     public XmConfigProperties xmConfigProperties() {
         return new XmConfigProperties();
+    }
+
+    @Bean
+    public JacksonJsonHttpMessageConverter converter(JsonMapper jsonMapper) {
+        return new JacksonJsonHttpMessageConverter(jsonMapper);
     }
 
     @Bean

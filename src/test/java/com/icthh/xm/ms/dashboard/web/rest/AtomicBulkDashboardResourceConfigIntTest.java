@@ -21,8 +21,8 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 /**
  * Test class for the BulkDashboardResource REST controller for Config dashboard store type.
@@ -47,7 +47,7 @@ public class AtomicBulkDashboardResourceConfigIntTest extends AtomicBulkDashboar
     @Autowired
     private DashboardRepository dashboardRepository;
 
-    @MockBean
+    @MockitoBean
     private TenantConfigRepository tenantConfigRepository;
 
     private TenantContextHolder tenantContextHolder;
