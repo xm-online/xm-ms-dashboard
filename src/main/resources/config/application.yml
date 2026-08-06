@@ -174,7 +174,7 @@ xm-config:
 application:
     cache-limit: 0
     timeline-ignored-http-methods:
-    tenant-ignored-path-list: /v2/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
+    tenant-ignored-path-list: /v3/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
     timelines-enabled: true
     kafka-enabled: true
     kafka-system-queue: system_queue

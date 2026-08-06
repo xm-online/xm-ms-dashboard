@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
+import tools.jackson.databind.json.JsonMapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -53,7 +54,7 @@ public class ProfileResourceIntTest extends AbstractSpringBootTest {
     private ProfileService profileService;
 
     @Autowired
-    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
+    private JsonMapper jsonMapper;
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
@@ -75,7 +76,7 @@ public class ProfileResourceIntTest extends AbstractSpringBootTest {
         this.restProfileMockMvc = MockMvcBuilders.standaloneSetup(profileResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(jsonMapper)).build();
     }
 
     /**

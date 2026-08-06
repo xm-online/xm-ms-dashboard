@@ -131,7 +131,7 @@ application:
     timeline-ignored-http-methods:
     kafka-enabled: false
     kafka-system-queue: system_queue
-    tenant-ignored-path-list: /v2/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
+    tenant-ignored-path-list: /v3/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
 
     specification-name: dashboardspec.yml
     specification-path-pattern: /config/tenants/{tenantName}/dashboard/${application.specification-name}

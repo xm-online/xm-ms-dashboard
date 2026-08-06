@@ -53,11 +53,6 @@ public class TenantConfigMockConfiguration {
     }
 
     @Bean
-    public JacksonJsonHttpMessageConverter converter(JsonMapper jsonMapper) {
-        return new JacksonJsonHttpMessageConverter(jsonMapper);
-    }
-
-    @Bean
     public TenantVerifyInterceptor tenantVerifyInterceptor() {
         return mock(TenantVerifyInterceptor.class);
     }

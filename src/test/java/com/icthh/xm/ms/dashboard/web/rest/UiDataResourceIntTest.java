@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
+import tools.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.icthh.xm.commons.tenant.YamlMapperUtils;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
@@ -67,7 +68,7 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
     @Autowired
     private ExceptionTranslator exceptionTranslator;
     @Autowired
-    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
+    private JsonMapper jsonMapper;
     @Autowired
     private LepManagementService lepManagementService;
 
@@ -95,7 +96,7 @@ public class UiDataResourceIntTest extends AbstractSpringBootTest {
         this.restUiDataMockMvc = MockMvcBuilders.standaloneSetup(uiDataResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
-            .setMessageConverters(jacksonMessageConverter)
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(jsonMapper))
             .build();
         var authContext = mock(XmAuthenticationContext.class);
         when(authContext.getUserKey()).thenReturn(Optional.of(DEFAULT_OWNER));
