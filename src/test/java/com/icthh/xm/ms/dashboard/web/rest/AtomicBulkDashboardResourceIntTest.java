@@ -46,7 +46,7 @@ public class AtomicBulkDashboardResourceIntTest extends AbstractSpringBootTest {
     @Autowired
     private BulkDashboardResource dashboardResource;
     @Autowired
-    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
+    private JsonMapper jsonMapper;
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
@@ -55,7 +55,7 @@ public class AtomicBulkDashboardResourceIntTest extends AbstractSpringBootTest {
         httpMock = standaloneSetup(dashboardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
-            .setMessageConverters(jacksonMessageConverter)
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(jsonMapper))
             .build();
     }
 

@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
+import tools.jackson.databind.json.JsonMapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.hasItem;
@@ -98,7 +99,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
     private WidgetService widgetService;
 
     @Autowired
-    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
+    private JsonMapper jsonMapper;
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
@@ -133,7 +134,7 @@ public class DashboardResourceIntTest extends AbstractSpringBootTest {
         this.restDashboardMockMvc = MockMvcBuilders.standaloneSetup(dashboardResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(jsonMapper)).build();
 
         lepManagementService.beginThreadContext();
     }

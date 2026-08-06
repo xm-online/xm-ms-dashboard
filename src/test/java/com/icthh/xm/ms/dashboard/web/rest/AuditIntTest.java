@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.web.rest;
 
+import tools.jackson.databind.json.JsonMapper;
 import com.google.common.collect.ImmutableMap;
 import com.icthh.xm.commons.i18n.error.web.ExceptionTranslator;
 import com.icthh.xm.commons.lep.api.LepManagementService;
@@ -83,7 +84,7 @@ public class AuditIntTest extends AbstractSpringBootTest {
     private WidgetService widgetService;
 
     @Autowired
-    private JacksonJsonHttpMessageConverter jacksonMessageConverter;
+    private JsonMapper jsonMapper;
 
     @Autowired
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
@@ -112,12 +113,12 @@ public class AuditIntTest extends AbstractSpringBootTest {
         this.restDashboardMockMvc = MockMvcBuilders.standaloneSetup(dashboardResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(jsonMapper)).build();
         WidgetResource widgetResourceMock = new WidgetResource(widgetService, widgetResource);
         this.restWidgetMockMvc = MockMvcBuilders.standaloneSetup(widgetResourceMock)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(new JacksonJsonHttpMessageConverter(jsonMapper)).build();
 
         lepManagementService.beginThreadContext();
     }
