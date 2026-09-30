@@ -27,9 +27,6 @@ public final class Constants {
     public static final String HEADER_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
     public static final String HEADER_CONTENT_ID = "Content-ID";
 
-    public static final String CERTIFICATE = "X.509";
-    public static final String PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----%n%s%n-----END PUBLIC KEY-----";
-
     private Constants() {
     }
 }
