@@ -1,9 +1,12 @@
 package com.icthh.xm.ms.dashboard.repository.impl;
 
+import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.commons.tenant.YamlMapperUtils;
 import tools.jackson.databind.ObjectMapper;
 import com.icthh.xm.commons.config.client.api.RefreshableConfiguration;
+import com.icthh.xm.commons.config.client.repository.CommonConfigRepository;
 import com.icthh.xm.commons.config.client.repository.TenantConfigRepository;
+import com.icthh.xm.commons.config.domain.Configuration;
 import com.icthh.xm.commons.tenant.TenantContextHolder;
 import com.icthh.xm.commons.tenant.TenantContextUtils;
 import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
@@ -13,6 +16,7 @@ import com.icthh.xm.ms.dashboard.domain.DashboardSpec;
 import com.icthh.xm.ms.dashboard.service.DashboardSpecService;
 import com.icthh.xm.ms.dashboard.service.dto.DashboardDto;
 import com.icthh.xm.ms.dashboard.service.dto.WidgetDto;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -45,6 +49,8 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class ConfigDashboardRefreshableRepository implements RefreshableConfiguration {
 
+    public static final String ERROR_INVALID_TYPE_KEY = "error.dashboard.type.key.invalid";
+
     private static final String TENANT_NAME = "tenantName";
 
     private final Map<String, Map<String, DashboardConfig>> dashboardsByTenantByFile = new ConcurrentHashMap<>();
@@ -55,6 +61,7 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
     private final ApplicationProperties applicationProperties;
     private final TenantContextHolder tenantContextHolder;
     private final TenantConfigRepository tenantConfigRepository;
+    private final CommonConfigRepository commonConfigRepository;
     private final DashboardSpecService dashboardSpecService;
 
     @Override
@@ -178,18 +185,33 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         String tenant = getTenantKeyValue();
         String fullPath = getFullPath(dashboard);
         String dashboardConfigPath = getDashboardConfigApiPath(dashboard.getTypeKey(), tenant, fullPath);
-
-        DashboardConfig dashboardConfig = dashboardsByTenantByFile.getOrDefault(tenant, Map.of()).get(dashboardConfigPath);
-
-        String oldConfigHash = "";
-        if (dashboardConfig != null) {
-            oldConfigHash = dashboardConfig.getOldHash();
-        }
-        tenantConfigRepository.updateConfigFullPath(tenant,
-                                                    dashboardConfigPath,
-                                                    mapper.writeValueAsString(dashboard),
-                                                    oldConfigHash);
+        sendToConfig(tenant, dashboardConfigPath, mapper.writeValueAsString(dashboard));
         return dashboard;
+    }
+
+    private void sendToConfig(String tenant, String apiPath, String content) {
+        if (applicationProperties.getStorage().getMsConfig().isUpdateViaKafka()) {
+            sendToConfigQueue(tenant, apiPath, content);
+        } else {
+            tenantConfigRepository.updateConfigFullPath(tenant, apiPath, content, "");
+        }
+    }
+
+    private void deleteFromConfig(String tenant, String apiPath) {
+        if (applicationProperties.getStorage().getMsConfig().isUpdateViaKafka()) {
+            sendToConfigQueue(tenant, apiPath, "");
+        } else {
+            tenantConfigRepository.deleteConfigFullPath(tenant, apiPath);
+        }
+    }
+
+    /**
+     * Sends the file to xm-ms-config through the config Kafka queue; empty content deletes the file.
+     * The old config hash is not sent: the update is asynchronous, so a hash conflict would be dropped silently.
+     */
+    private void sendToConfigQueue(String tenant, String apiPath, String content) {
+        String configPath = StringUtils.removeStart(apiPath, "/api").replace("{" + TENANT_NAME + "}", tenant);
+        commonConfigRepository.updateConfigFullPath(new Configuration(configPath, content), null);
     }
 
     public <S extends Dashboard> String getDashboardConfigApiPath(String dashBoardTypeKey, String tenant, String fullPath) {
@@ -213,18 +235,30 @@ public class ConfigDashboardRefreshableRepository implements RefreshableConfigur
         String fullPath = getFullPath(dashboard);
         String dashboardConfigApiPath = getDashboardConfigApiPath(dashboard.getTypeKey(), tenant, fullPath);
         dashboardPathByTenantByTypeKey.getOrDefault(tenant, new HashMap<>()).remove(dashboard.getTypeKey());
-        tenantConfigRepository.deleteConfigFullPath(tenant, dashboardConfigApiPath);
+        deleteFromConfig(tenant, dashboardConfigApiPath);
     }
 
     public  <S extends Dashboard> String getFullPath(S dashboard) {
         MsConfigStorageProperties msConfigProperties = applicationProperties.getStorage().getMsConfig();
         String tenantDashboardsFolderPath = msConfigProperties.getTenantDashboardsFolderPath();
-        return "/api"
-            + tenantDashboardsFolderPath
+        String configPath = tenantDashboardsFolderPath
             + dashboard.getTypeKey()
             + "-"
             + dashboard.getId()
             + ".yml";
+        assertPathInsideDashboardsFolder(tenantDashboardsFolderPath, configPath);
+        return "/api" + configPath;
+    }
+
+    /**
+     * The type key is part of the config file path: it may name sub folders (`a/b`), but must not contain
+     * `.` / `..` segments or anything else that the normalization changes, so the file stays in the dashboards folder.
+     */
+    private static void assertPathInsideDashboardsFolder(String dashboardsFolderPath, String configPath) {
+        Path normalized = Path.of(configPath).normalize();
+        if (!normalized.startsWith(Path.of(dashboardsFolderPath)) || !normalized.toString().equals(configPath)) {
+            throw new BusinessException(ERROR_INVALID_TYPE_KEY, "Dashboard typeKey leads outside the dashboards folder");
+        }
     }
 
     private void updatedDashboardId(DashboardDto dashboard, Set<Long> allIds, Set<Long> usedIds) {

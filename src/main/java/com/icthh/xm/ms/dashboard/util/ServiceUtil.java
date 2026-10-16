@@ -1,5 +1,6 @@
 package com.icthh.xm.ms.dashboard.util;
 
+import com.icthh.xm.commons.exceptions.BusinessException;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.domain.Profile;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +26,9 @@ public final class ServiceUtil {
     public static final String REVISION_PREFIX = "originalId.revision.";
     public static final String REVISION_TIMESTAMP = "revtstmp";
     public static final String REVISION_ID = "rev";
+    public static final String ERROR_INVALID_SORT_PROPERTY = "error.audit.sort.invalid";
+    /** Property path only: the value is appended verbatim to the HQL ORDER BY of the Envers query. */
+    private static final Pattern SORT_PROPERTY_PATTERN = Pattern.compile("[A-Za-z0-9_.]+");
 
     private ServiceUtil() {
         throw new AssertionError();
@@ -47,10 +52,17 @@ public final class ServiceUtil {
     public static Sort.Order getPageOrder(Pageable pageable) {
         Sort.Order order = pageable.getSortOr(Sort.by(REVISION_PREFIX + REVISION_TIMESTAMP).ascending()).stream().findFirst().get();
         String orderProperty = order.getProperty();
+        assertSortPropertyValid(orderProperty);
         if (REVISION_TIMESTAMP.equals(orderProperty) || REVISION_ID.equals(orderProperty)) {
             order = new Sort.Order(order.getDirection(), REVISION_PREFIX + orderProperty, order.getNullHandling());
         }
         return order;
+    }
+
+    private static void assertSortPropertyValid(String orderProperty) {
+        if (!SORT_PROPERTY_PATTERN.matcher(orderProperty).matches()) {
+            throw new BusinessException(ERROR_INVALID_SORT_PROPERTY, "Invalid audit sort property: " + orderProperty);
+        }
     }
 
     public static Page<Map<String, Object>> getResult(List resultList, Pageable pageable, Long totalCount) {

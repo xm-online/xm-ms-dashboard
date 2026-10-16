@@ -5,9 +5,14 @@ import com.icthh.xm.ms.dashboard.domain.DefaultProfile;
 import com.icthh.xm.ms.dashboard.domain.Profile;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import com.icthh.xm.commons.exceptions.BusinessException;
 
 import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -42,6 +47,26 @@ public class ServiceUtilUnitTest {
 
         List<Dashboard> dashboards = ServiceUtil.retrieveDashboardsFromDefProfiles(defaultProfiles);
         assertTrue(dashboardsAmount == dashboards.size());
+    }
+
+    @Test
+    public void getPageOrderKeepsPlainPropertyAndMapsRevisionAliases() {
+        assertEquals("name", ServiceUtil.getPageOrder(PageRequest.of(0, 10, Sort.by("name"))).getProperty());
+        assertEquals("originalId.revision.rev",
+            ServiceUtil.getPageOrder(PageRequest.of(0, 10, Sort.by("rev"))).getProperty());
+        assertEquals("originalId.revision.revtstmp",
+            ServiceUtil.getPageOrder(PageRequest.of(0, 10, Sort.by("revtstmp").descending())).getProperty());
+        assertEquals("originalId.revision.revtstmp",
+            ServiceUtil.getPageOrder(PageRequest.of(0, 10)).getProperty());
+    }
+
+    @Test
+    public void getPageOrderRejectsSortValueThatIsNotAPropertyPath() {
+        for (String sort : List.of("name, id", "name)", "name asc", "config['a']")) {
+            BusinessException ex = assertThrows(BusinessException.class,
+                () -> ServiceUtil.getPageOrder(PageRequest.of(0, 10, Sort.by(sort))), sort);
+            assertEquals(ServiceUtil.ERROR_INVALID_SORT_PROPERTY, ex.getCode());
+        }
     }
 
     private Dashboard buildDashboard() {

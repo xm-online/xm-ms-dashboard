@@ -130,11 +130,15 @@ public class WidgetResource {
     }
 
     @GetMapping("/widgets-audit/{id}")
+    @PreAuthorize("hasPermission({'id': #id}, 'WIDGET.AUDIT.GET_LIST.ITEM')")
+    @PrivilegeDescription("Privilege to get the audit history of the widget by id")
     public ResponseEntity<Page<Map<String, Object>>> getWidgetAuditById(@PathVariable Long id, Pageable pageable) {
         return ResponseEntity.ok(widgetService.findAuditsById(id, pageable));
     }
 
     @GetMapping("/widgets-audit")
+    @PreAuthorize("hasPermission(null, 'WIDGET.AUDIT.GET_LIST')")
+    @PrivilegeDescription("Privilege to get the audit history of all widgets")
     public ResponseEntity<Page<Map<String, Object>>> getAllWidgetAudits(Pageable pageable) {
         return ResponseEntity.ok(widgetService.findAllAudits(pageable));
     }

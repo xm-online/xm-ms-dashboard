@@ -22,12 +22,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "application.storage.ms-config.update-via-kafka", havingValue = "false", matchIfMissing = true)
 public class IdRefreshableRepository implements RefreshableConfiguration, IdRepository {
 
     private final Map<String, DashboardCounterState> dashboards = new ConcurrentHashMap<>();
