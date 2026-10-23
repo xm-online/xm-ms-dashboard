@@ -166,11 +166,15 @@ public class DashboardResource {
     }
 
     @GetMapping("/dashboards-audit/{id}")
+    @PreAuthorize("hasPermission({'id': #id}, 'DASHBOARD.AUDIT.GET_LIST.ITEM')")
+    @PrivilegeDescription("Privilege to get the audit history of the dashboard by id")
     public ResponseEntity<Page<Map<String, Object>>> getDashboardAuditById(@PathVariable Long id, Pageable pageable) {
         return ResponseEntity.ok(dashboardService.findAuditsById(id, pageable));
     }
 
     @GetMapping("/dashboards-audit")
+    @PreAuthorize("hasPermission(null, 'DASHBOARD.AUDIT.GET_LIST')")
+    @PrivilegeDescription("Privilege to get the audit history of all dashboards")
     public ResponseEntity<Page<Map<String, Object>>> getAllDashboardsAudits(Pageable pageable) {
         return ResponseEntity.ok(dashboardService.findAllAudits(pageable));
     }

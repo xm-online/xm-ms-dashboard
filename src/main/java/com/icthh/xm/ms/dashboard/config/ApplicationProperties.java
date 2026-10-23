@@ -82,6 +82,11 @@ public class ApplicationProperties {
                 private String tenantDashboardPropertiesIdPathPattern;
                 private String tenantDashboardPropertiesIdName;
                 private Long idReservedQuantity;
+                /**
+                 * MSCONFG mode: write dashboard files through the xm-ms-config Kafka queue instead of the HTTP API
+                 * with the user token, and generate ids from time instead of the dashboards-id.yml counter.
+                 */
+                private boolean updateViaKafka;
         }
 
     }
