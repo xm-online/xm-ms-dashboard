@@ -27,7 +27,6 @@ management:
     endpoint:
         health:
             show-details: when_authorized
-            roles: 'SUPER-ADMIN'
             probes:
                 enabled: true
             group:
@@ -127,6 +126,7 @@ spring:
         producer:
             key-serializer: org.apache.kafka.common.serialization.StringSerializer
             value-serializer: org.apache.kafka.common.serialization.StringSerializer
+        # Kafka connection by environment variables, PLAINTEXT when not set: https://github.com/xm-online/xm-ms-template/blob/main/README.md#kafka-connection
 
 server:
     servlet:
@@ -174,7 +174,7 @@ xm-config:
 application:
     cache-limit: 0
     timeline-ignored-http-methods:
-    tenant-ignored-path-list: /v3/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health
+    tenant-ignored-path-list: /v3/api-docs, /api/profile-info, /swagger-resources/configuration/ui, /management/health, /management/health/liveness, /management/health/readiness
     timelines-enabled: true
     kafka-enabled: true
     kafka-system-queue: system_queue
@@ -196,6 +196,9 @@ application:
             tenant-dashboard-properties-id-name: dashboards-id.yml
             id-reserved-quantity: 1000
             update-via-kafka: false
+    config-private-key:
+    api-docs:
+        privilege-check: true
 gracefulShutdown:
     enabled: false
     shutdownDelay:
