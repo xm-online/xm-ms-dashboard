@@ -1,0 +1,7 @@
+application:
+    api-docs:
+        privilege-check: false
+management:
+    endpoint:
+        health:
+            roles: SUPER-ADMIN

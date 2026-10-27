@@ -105,12 +105,6 @@ jhipster:
         caffeine: # Caffeine configuration
             time-to-live-seconds: 3600 # By default objects stay 1 hour in the cache. This sets expireAfterWrite in Caffeine (https://github.com/ben-manes/caffeine/wiki/Eviction#time-based)
             max-entries: 1000 # Number of objects in each cache entry
-    security:
-        client-authorization:
-            access-token-uri: http://uaa/oauth/token
-            token-service-id: uaa
-            client-id:
-            client-secret:
     logging:
         use-json-format: false # By default, logs are not in Json format
         logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration

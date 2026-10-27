@@ -4,7 +4,7 @@ services:
         image: dashboard
         environment:
             - _JAVA_OPTIONS=-Xmx512m -Xms256m
-            - SPRING_PROFILES_ACTIVE=prod,swagger
+            - SPRING_PROFILES_ACTIVE=prod,swagger,migration
             - SPRING_CLOUD_CONSUL_HOST=consul
             - SPRING_CLOUD_CONSUL_PORT=8500
             - SPRING_DATASOURCE_URL=jdbc:postgresql://dashboard-postgresql:5432/dashboard
