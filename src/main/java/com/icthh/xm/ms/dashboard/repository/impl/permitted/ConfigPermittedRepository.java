@@ -1,9 +1,11 @@
 package com.icthh.xm.ms.dashboard.repository.impl.permitted;
 
 import com.icthh.xm.commons.permission.service.PermissionCheckService;
+import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -17,16 +19,29 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public abstract class ConfigPermittedRepository {
 
     private final PermissionCheckService permissionService;
-    private final ExpressionParser expressionParser;
+    private volatile ExpressionParser expressionParser;
     private final Map<String, Expression> expressions = new ConcurrentHashMap<>();
 
     protected ConfigPermittedRepository(
         PermissionCheckService permissionService) {
         this.permissionService = permissionService;
+        this.expressionParser = createParser(SpelParserConfiguration.DEFAULT_MAX_EXPRESSION_LENGTH);
+    }
 
+    // Multi-role conditions are OR-joined and can exceed Spring's default SpEL length limit
+    @Autowired(required = false)
+    public void setApplicationProperties(ApplicationProperties applicationProperties) {
+        this.expressionParser = createParser(applicationProperties.getSpelMaxExpressionLength());
+        this.expressions.clear();
+    }
+
+    private ExpressionParser createParser(int maxExpressionLength) {
         SpelParserConfiguration config = new SpelParserConfiguration(SpelCompilerMode.MIXED,
-                                                                     this.getClass().getClassLoader());
-        expressionParser = new SpelExpressionParser(config);
+                                                                     this.getClass().getClassLoader(),
+                                                                     false, false,
+                                                                     Integer.MAX_VALUE,
+                                                                     maxExpressionLength);
+        return new SpelExpressionParser(config);
     }
 
     public Boolean matchSpelExpression(String privilegeKey, Object obj) {

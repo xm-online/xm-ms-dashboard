@@ -35,6 +35,9 @@ public class ApplicationProperties extends XmCommonsApplicationProperties {
 
     private Integer cacheLimit;
 
+    /** Max length of the SpEL permission condition (Spring default is 10000). */
+    private int spelMaxExpressionLength = 10_000;
+
     @Getter
     @Setter
     public static class Amazon {
