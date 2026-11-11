@@ -1,6 +1,7 @@
 package com.icthh.xm.ms.dashboard.repository.impl.permitted;
 
 import com.icthh.xm.commons.permission.service.PermissionCheckService;
+import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
@@ -20,12 +21,16 @@ public abstract class ConfigPermittedRepository {
     private final ExpressionParser expressionParser;
     private final Map<String, Expression> expressions = new ConcurrentHashMap<>();
 
-    protected ConfigPermittedRepository(
-        PermissionCheckService permissionService) {
+    // Multi-role conditions are OR-joined and can exceed Spring's default SpEL length limit
+    protected ConfigPermittedRepository(PermissionCheckService permissionService,
+                                        ApplicationProperties applicationProperties) {
         this.permissionService = permissionService;
 
         SpelParserConfiguration config = new SpelParserConfiguration(SpelCompilerMode.MIXED,
-                                                                     this.getClass().getClassLoader());
+                                                                     this.getClass().getClassLoader(),
+                                                                     false, false,
+                                                                     Integer.MAX_VALUE,
+                                                                     applicationProperties.getSpelMaxExpressionLength());
         expressionParser = new SpelExpressionParser(config);
     }
 
