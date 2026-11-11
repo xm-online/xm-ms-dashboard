@@ -24,16 +24,18 @@ public class ConfigPermittedRepositoryUnitTest extends AbstractUnitTest {
         return condition;
     }
 
-    private ConfigPermittedRepository repository() {
+    private ConfigPermittedRepository repository(int spelMaxExpressionLength) {
         PermissionCheckService permissionService = mock(PermissionCheckService.class);
         when(permissionService.createCondition(any(), eq("DASHBOARD.GET_LIST"), any())).thenReturn(longCondition());
-        return new ConfigPermittedRepository(permissionService) {
+        ApplicationProperties properties = new ApplicationProperties();
+        properties.setSpelMaxExpressionLength(spelMaxExpressionLength);
+        return new ConfigPermittedRepository(permissionService, properties) {
         };
     }
 
     @Test
     public void failsOnLongConditionByDefault() {
-        ConfigPermittedRepository repository = repository();
+        ConfigPermittedRepository repository = repository(10_000);
 
         assertThatThrownBy(() -> repository.matchSpelExpression("DASHBOARD.GET_LIST", "TYPE_KEY_NUMBER_399"))
             .hasMessageContaining("EL1079E");
@@ -41,10 +43,7 @@ public class ConfigPermittedRepositoryUnitTest extends AbstractUnitTest {
 
     @Test
     public void matchesLongConditionWhenLimitIsOverridden() {
-        ConfigPermittedRepository repository = repository();
-        ApplicationProperties properties = new ApplicationProperties();
-        properties.setSpelMaxExpressionLength(20_000);
-        repository.setApplicationProperties(properties);
+        ConfigPermittedRepository repository = repository(20_000);
 
         assertThat(repository.matchSpelExpression("DASHBOARD.GET_LIST", "TYPE_KEY_NUMBER_399")).isTrue();
     }

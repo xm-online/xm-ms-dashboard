@@ -3,6 +3,7 @@ package com.icthh.xm.ms.dashboard.repository.impl.permitted;
 import static java.util.stream.Collectors.toList;
 
 import com.icthh.xm.commons.permission.service.PermissionCheckService;
+import com.icthh.xm.ms.dashboard.config.ApplicationProperties;
 import com.icthh.xm.ms.dashboard.domain.Dashboard;
 import com.icthh.xm.ms.dashboard.mapper.DashboardMapper;
 import com.icthh.xm.ms.dashboard.repository.DashboardPermittedRepository;
@@ -20,9 +21,10 @@ public class ConfigDashboardPermittedRepository extends ConfigPermittedRepositor
     private final DashboardMapper dashboardMapper;
 
     protected ConfigDashboardPermittedRepository(PermissionCheckService permissionService,
+        ApplicationProperties applicationProperties,
         ConfigDashboardRefreshableRepository refreshableRepository,
         DashboardMapper dashboardMapper) {
-        super(permissionService);
+        super(permissionService, applicationProperties);
         this.refreshableRepository = refreshableRepository;
         this.dashboardMapper = dashboardMapper;
     }
